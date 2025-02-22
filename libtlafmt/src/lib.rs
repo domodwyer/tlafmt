@@ -106,7 +106,7 @@ mod tests {
     fn test_corpus() {
         use std::fs;
 
-        glob!("../../", "tests/corpus/*.tla", |path| {
+        glob!("../", "tests/corpus/*.tla", |path| {
             let input = fs::read_to_string(path).expect("read test corpus file");
             assert_rewrite!(&input);
         });

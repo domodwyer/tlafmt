@@ -1,0 +1,17 @@
+---
+source: libtlafmt/src/ast_format/module.rs
+expression: output
+---
+----------------------------------- MODULE A -----------------------------------
+LOCAL C == 42
+LOCAL A == 42
+
+\* Comment
+
+LOCAL T == 13
+(* Another *)
+
+(* BANANAS *)
+LOCAL S == 24
+
+================================================================================

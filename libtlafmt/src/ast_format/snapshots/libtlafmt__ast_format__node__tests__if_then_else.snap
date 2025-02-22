@@ -1,0 +1,13 @@
+---
+source: libtlafmt/src/ast_format/node.rs
+expression: output
+---
+-------------------------------- MODULE Bananas --------------------------------
+DoStuff ==
+    IF x THEN
+    42
+    ELSE
+    24
+
+MoreStuff = IF == x THEN 42 ELSE 24 
+================================================================================

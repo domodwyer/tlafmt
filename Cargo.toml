@@ -1,0 +1,10 @@
+[package]
+name = "tlafmt"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+libtlafmt = { path = "libtlafmt" }
+
+[workspace]
+members = ["libtlafmt"]

@@ -1,0 +1,10 @@
+---
+source: libtlafmt/src/ast_format/node.rs
+expression: output
+---
+-------------------------------- MODULE Bananas --------------------------------
+Spec == \* Initialize state with Init and transition with Next.
+    Init /\ [][Next]_<< store, tx, snapshotStore, written, missed >>
+--------------------------------------------------------------------------------
+THEOREM Spec => [](TypeInvariant /\ TxLifecycle)
+================================================================================

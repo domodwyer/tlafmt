@@ -1,0 +1,17 @@
+---
+source: libtlafmt/src/ast_format/node.rs
+expression: output
+---
+-------------------------------- MODULE Bananas --------------------------------
+DoStuff(
+    b,
+    a, \* platanos?
+    n,
+    
+    A, N,
+    a,
+    S (* are great
+    dont
+    you think*)
+) == 42
+================================================================================

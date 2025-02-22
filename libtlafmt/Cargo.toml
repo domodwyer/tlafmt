@@ -1,0 +1,13 @@
+[package]
+name = "libtlafmt"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+thiserror = "2.0.11"
+tree-sitter = "0.25.1"
+tree-sitter-tlaplus = "1.5.0"
+
+[dev-dependencies]
+insta = { version = "1.42.1", features = ["glob"] }
+pretty_assertions = "1.4.1"

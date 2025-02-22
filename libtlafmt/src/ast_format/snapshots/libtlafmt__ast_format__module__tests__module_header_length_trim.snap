@@ -1,0 +1,6 @@
+---
+source: libtlafmt/src/ast_format/module.rs
+expression: output
+---
+------------------------- MODULE DifferentialEquations -------------------------
+================================================================================

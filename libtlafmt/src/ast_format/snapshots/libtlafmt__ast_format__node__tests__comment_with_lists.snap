@@ -1,0 +1,13 @@
+---
+source: libtlafmt/src/ast_format/node.rs
+expression: output
+---
+-------------------------------- MODULE Bananas --------------------------------
+DoStuff ==
+    /\ A' = 1
+    \* Comment in a list.
+    /\ B' = 2
+
+\* Some comment for the operator.
+Another == 42
+================================================================================

@@ -1,0 +1,17 @@
+---
+source: libtlafmt/src/ast_format/node.rs
+expression: output
+---
+-------------------------------- MODULE Bananas --------------------------------
+Integrate(D, a, b, InitVals) ==
+    LET n == Len(InitVals)
+    gg == CHOOSE g:
+        \E e \in PosReal:
+            /\ g \in [0..n -> [OpenInterval(a - e, b + e) -> Real]]
+            /\ \A i \in 1..n:
+                /\ IsDeriv(i, g[i], g[0])
+                /\ g[i - 1][a] = InitVals[i]
+            /\ \A r \in OpenInterval(a - e, b + e):
+                D[<< r >> \o [i \in 1..(n + 1) |-> g[i - 1][r]]] = 0
+    IN [i \in 1..n |-> gg[i - 1][b]]
+================================================================================

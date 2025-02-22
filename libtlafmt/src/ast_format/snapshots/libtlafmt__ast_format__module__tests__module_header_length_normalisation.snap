@@ -1,0 +1,8 @@
+---
+source: libtlafmt/src/ast_format/module.rs
+expression: output
+---
+Some bananas
+------------------------- MODULE DifferentialEquations -------------------------
+LOCAL X == 42
+================================================================================

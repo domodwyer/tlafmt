@@ -1,0 +1,27 @@
+---
+source: libtlafmt/src/ast_format/node.rs
+expression: output
+---
+-------------------------------- MODULE Bananas --------------------------------
+Next ==
+    \/ ResetCounters
+    \/ \E t \in Threads:
+        \/ ThreadReadHealth(t)
+        \/ ThreadShouldProbe_health(t)
+
+LOCAL IsFirstDeriv(df, f) ==
+    /\ df \in [f -> Real]
+    /\ \A r \in f:
+        \A e \in PosReal:
+            \E d \in PosReal:
+                \A s \in Nbhd(r, d) \ {r}:
+                    (f[s] - f[r]) /(s - r) \in Nbhd(df[r], e)
+
+Integrate(D, a, b, InitVals) ==
+    LET n == Len(InitVals)
+    gg == CHOOSE g:
+        \E e \in PosReal:
+            /\ \A r \in OpenInterval(a - e, b + e):
+                D[<< r >> \o [i \in 1..(n + 1) |-> g[i - 1][r]]] = 0
+    IN [i \in 1..n |-> gg[i - 1][b]]
+================================================================================

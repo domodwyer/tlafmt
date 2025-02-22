@@ -14,7 +14,7 @@ struct Args {
 
     /// Check the input file and exit with an error (code 3) if it needs
     /// formatting.
-    #[arg(long)]
+    #[arg(short, long)]
     check: bool,
 
     /// Overwrite the source file with the formatted output instead of printing

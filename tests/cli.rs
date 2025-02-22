@@ -2,6 +2,7 @@ use std::path::PathBuf;
 
 use assert_cmd::Command;
 use predicates::prelude::*;
+use pretty_assertions::assert_eq;
 use tempfile::TempDir;
 
 /// Path to an unformatted file.
@@ -53,7 +54,7 @@ Arguments:
   <FILE>  Path to the TLA+ file to format
 
 Options:
-      --check     Check the input file and exit with an error (code 3) if it needs formatting
+  -c, --check     Check the input file and exit with an error (code 3) if it needs formatting
   -i, --in-place  Overwrite the source file with the formatted output instead of printing it to stdout
   -h, --help      Print help
   -V, --version   Print version
@@ -119,5 +120,5 @@ fn test_in_place() {
     let got = std::fs::read_to_string(file).unwrap();
 
     // Confirm the file matches the formatted sample file.
-    pretty_assertions::assert_eq!(control, got);
+    assert_eq!(control, got);
 }

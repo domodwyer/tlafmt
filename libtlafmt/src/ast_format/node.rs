@@ -188,6 +188,7 @@ where
 
         // Syntax errors reported by the AST parser.
         "ERROR" => {
+            #[cfg(not(fuzzing))] // No output during fuzzing for faster execs.
             eprintln!(
                 "[ERROR] syntax parsing error for {:?} => '{}'",
                 def,
@@ -199,6 +200,7 @@ where
 
         // Unformatted nodes that are printed as-is.
         _ => {
+            #[cfg(not(fuzzing))] // No output during fuzzing for faster execs.
             eprintln!(
                 "[WARN] unformatted node {:?} => '{}'",
                 def,

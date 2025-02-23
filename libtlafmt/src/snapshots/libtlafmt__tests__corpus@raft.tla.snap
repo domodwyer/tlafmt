@@ -1,7 +1,7 @@
 ---
 source: libtlafmt/src/lib.rs
 expression: output
-input_file: tests/corpus/raft.tla
+input_file: libtlafmt/tests/corpus/raft.tla
 ---
 --------------------------------- MODULE raft ----------------------------------
 \* This is the formal specification for the Raft consensus algorithm.
@@ -388,9 +388,9 @@ HandleAppendEntriesRequest(i, j, m) ==
                                     /\ m.mentries /= <<>>
                                     /\ Len(log[i]) >= index
                                     /\ log[i][index] .term = m.mentries[1] .term
-\* This could make our commitIndex decrease (for
-\* example if we process an old, duplicated request),
-\* but that doesn't really affect anything.
+                                    \* This could make our commitIndex decrease (for
+                                    \* example if we process an old, duplicated request),
+                                    \* but that doesn't really affect anything.
                             /\ commitIndex' = [commitIndex EXCEPT ![i] =
                                 m.mcommitIndex]
                             /\ Reply([mtype |-> AppendEntriesResponse,
@@ -502,7 +502,7 @@ Next ==
         \/ \E m \in DOMAIN messages: Receive(m)
         \/ \E m \in DOMAIN messages: DuplicateMessage(m)
         \/ \E m \in DOMAIN messages: DropMessage(m)
-\* History variable that tracks every log ever:
+        \* History variable that tracks every log ever:
     /\ allLogs' = allLogs \union {log[i]: i \in Server}
 
 \* The specification must start with the initial state and transition according

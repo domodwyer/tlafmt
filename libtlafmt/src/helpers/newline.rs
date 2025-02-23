@@ -13,10 +13,10 @@ impl EmptyLines {
     ///
     /// This call will preserve the (lack of) existing newlines, but squashes
     /// consecutive empty lines to at most 1.
-    pub(crate) fn maybe_insert<'a, W>(
+    pub(crate) fn maybe_insert<W>(
         &mut self,
         node: &Node<'_>,
-        out: &mut Renderer<'a, W>,
+        out: &mut Renderer<'_, W>,
     ) -> Result<bool, std::io::Error>
     where
         W: std::io::Write,

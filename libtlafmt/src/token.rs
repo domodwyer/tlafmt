@@ -240,7 +240,7 @@ pub(crate) enum Token<'a> {
     StepOrStutter(&'a str),
 }
 
-impl<'a> Token<'a> {
+impl Token<'_> {
     /// Returns true when `self` and `next` are allowed to appear in sequence.
     ///
     /// If false, the caller is expected to drop `self` when rendering.

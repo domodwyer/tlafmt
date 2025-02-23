@@ -13,12 +13,12 @@ pub(crate) fn format_node<'a, 'b: 'a, W>(
     def: Node<'b>,
     input: &'a str,
     empty_lines: &mut EmptyLines,
-    mut writer: &mut Renderer<'a, W>,
+    writer: &mut Renderer<'a, W>,
 ) -> Result<(), Error>
 where
     W: std::io::Write,
 {
-    empty_lines.maybe_insert(&def, &mut writer)?;
+    empty_lines.maybe_insert(&def, writer)?;
 
     // When false, child nodes will be indented from `def` when rendered.
     let mut skip_indent = false;
@@ -211,10 +211,10 @@ where
 
     // Begin rewriting the definition body.
     let mut c = def.walk();
-    let mut iter = def.children(&mut c);
+    let iter = def.children(&mut c);
 
-    while let Some(n) = iter.next() {
-        empty_lines.maybe_insert(&n, &mut writer)?;
+    for n in iter {
+        empty_lines.maybe_insert(&n, writer)?;
 
         if !skip_indent {
             writer.indent_inc();
@@ -268,8 +268,8 @@ fn into_output_token<'a>(node: &Node<'_>, input: &'a str) -> Option<Token<'a>> {
         "eq" | "=" => Token::Eq,
         "def_eq" => Token::Eq2,
         "neq" => Token::NotEq,
-        "identifier" | "identifier_ref" => Token::Ident(get_str(&node, input)),
-        "nat_number" => Token::Lit(get_str(&node, input)),
+        "identifier" | "identifier_ref" => Token::Ident(get_str(node, input)),
+        "nat_number" => Token::Lit(get_str(node, input)),
         "prev_func_val" => Token::At,
         ":" => Token::SemiColon,
         "!" => Token::Bang,

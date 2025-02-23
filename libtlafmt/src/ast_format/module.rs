@@ -9,7 +9,7 @@ pub(super) fn format_module<'a, 'b: 'a, W>(
     n: Node<'b>,
     input: &'a str,
     empty_lines: &mut EmptyLines,
-    mut out: &mut Renderer<'a, W>,
+    out: &mut Renderer<'a, W>,
 ) -> Result<(), Error>
 where
     W: Write,
@@ -21,10 +21,10 @@ where
 
     while let Some(node) = iter.peek() {
         // Emit newlines, squashing repeated newlines to at most 1 empty line.
-        empty_lines.maybe_insert(node, &mut out)?;
+        empty_lines.maybe_insert(node, out)?;
 
         match node.kind() {
-            "header_line" => format_module_header(&mut iter, input, &mut out),
+            "header_line" => format_module_header(&mut iter, input, out),
             _ => format_node(iter.next().unwrap(), input, empty_lines, out),
         }?;
     }

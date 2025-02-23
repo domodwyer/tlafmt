@@ -81,7 +81,7 @@ where
             // If this token cannot appear before the next token, skip rendering
             // this one.
             if let Some((next, _)) = iter.peek() {
-                if !t.can_precede(&next) {
+                if !t.can_precede(next) {
                     continue;
                 }
             }

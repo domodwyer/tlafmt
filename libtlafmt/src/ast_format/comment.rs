@@ -42,9 +42,7 @@ where
     }
 
     writer.indent_set(0);
-
     let ret = writer.push(Token::Comment(get_str(&def, input)));
-
     writer.indent_set(orig);
 
     ret.map_err(Into::into)

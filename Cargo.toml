@@ -2,10 +2,16 @@
 name = "tlafmt"
 version = "0.1.0"
 edition = "2021"
+authors = ["Dom <dom@itsallbroken.com>"]
+description = "A formatter for TLA+ specs"
+repository = "https://github.com/domodwyer/tlafmt"
+license = "Apache-2.0"
+categories = ["command-line-utilities", "development-tools"]
+keywords = ["tla", "plus", "tla+", "formatter"]
 
 [dependencies]
 clap = { version = "4.5.30", features = ["derive"] }
-libtlafmt = { path = "libtlafmt" }
+libtlafmt = { path = "libtlafmt", version = "0.1.0" }
 tempfile = "3.17.1"
 thiserror = "2.0.11"
 

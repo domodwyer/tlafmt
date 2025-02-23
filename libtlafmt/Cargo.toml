@@ -2,6 +2,13 @@
 name = "libtlafmt"
 version = "0.1.0"
 edition = "2021"
+authors = ["Dom <dom@itsallbroken.com>"]
+description = "A formatter library for TLA+ specs, core of tlafmt"
+documentation = "https://docs.rs/tlafmt"
+repository = "https://github.com/domodwyer/tlafmt"
+license = "Apache-2.0"
+categories = ["command-line-utilities", "development-tools"]
+keywords = ["tla", "plus", "tla+", "formatter"]
 
 [dependencies]
 thiserror = "2.0.11"

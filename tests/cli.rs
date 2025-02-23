@@ -44,9 +44,8 @@ fn test_help_text() {
     .unwrap();
 
     assert_eq!(
-        stderr,
         "\
-Formatter of TLA+ specs
+A formatter for TLA+ specs
 
 Usage: tlafmt [OPTIONS] <FILE>
 
@@ -58,7 +57,8 @@ Options:
   -i, --in-place  Overwrite the source file with the formatted output instead of printing it to stdout
   -h, --help      Print help
   -V, --version   Print version
-"
+",
+    stderr
     );
 }
 

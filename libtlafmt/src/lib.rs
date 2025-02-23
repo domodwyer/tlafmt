@@ -1,19 +1,4 @@
-//! A library for formatting TLA+ specs.
-//!
-//! This crate is the formatter implementation for [tlafmt].
-//!
-//! Formatting a TLA file occurs in three phases within this crate:
-//!
-//!   1. The input file is parsed into an abstract syntax tree.
-//!   2. The AST is then lowered into a formatter-specific representation.
-//!   3. The format representation is rendered into output text.
-//!
-//! Step (1) is performed when calling [`ParsedFile::new()`] to initialise a new
-//! instance, and steps (2) and (3) are performed when [`ParsedFile::format()`]
-//! is called, writing the output to a provided [`std::io::Write`] sink.
-//!
-//! [tlafmt]: https://github.com/domodwyer/tlafmt
-//!
+#![doc = include_str!("../README.md")]
 
 //   Copyright 2025 Dom Dwyer <dom@itsallbroken.com>
 //

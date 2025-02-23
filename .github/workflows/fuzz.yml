@@ -63,7 +63,7 @@ jobs:
           -max_len=1022
 
       - name: Upload crash
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure() && steps.fuzz.outcome == 'failure'
         with:
           name: fuzz-crash

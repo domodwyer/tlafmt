@@ -15,9 +15,12 @@ jobs:
   lint:
     uses: ./.github/workflows/lint.yml
 
+  fuzz:
+    uses: ./.github/workflows/fuzz.yml
+
   # Validate the crate version matches the tag.
   check_version:
-    needs: [build, test, lint]
+    needs: [build, test, lint, fuzz]
     runs-on: ubuntu-latest
 
     steps:
@@ -28,7 +31,7 @@ jobs:
 
   # Create a github release
   github_release:
-    needs: [build, test, lint, check_version]
+    needs: [build, test, lint, fuzz, check_version]
 
     runs-on: ubuntu-latest
 
@@ -42,7 +45,7 @@ jobs:
 
   # Publish the crate (scoping the secret to only this job)
   publish_crate:
-    needs: [build, test, lint, github_release]
+    needs: [build, test, lint, fuzz, github_release]
     permissions:
       contents: write
     env:

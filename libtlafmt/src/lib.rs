@@ -1,3 +1,20 @@
+//! A library for formatting TLA+ specs.
+//!
+//! This crate is the formatter implementation for [tlafmt].
+//!
+//! Formatting a TLA file occurs in three phases within this crate:
+//!
+//!   1. The input file is parsed into an abstract syntax tree.
+//!   2. The AST is then lowered into a formatter-specific representation.
+//!   3. The format representation is rendered into output text.
+//!
+//! Step (1) is performed when calling [`ParsedFile::new()`] to initialise a new
+//! instance, and steps (2) and (3) are performed when [`ParsedFile::format()`]
+//! is called, writing the output to a provided [`std::io::Write`] sink.
+//!
+//! [tlafmt]: https://github.com/domodwyer/tlafmt
+//!
+
 //   Copyright 2025 Dom Dwyer <dom@itsallbroken.com>
 //
 //   Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,17 +65,7 @@ pub enum Error {
     StepOrStutter,
 }
 
-/// A parsed TLA file.
-///
-/// Formatting a TLA file occurs in three phases:
-///
-///   1. The input file is parsed into an abstract syntax tree.
-///   2. The AST is then lowered into a formatter-specific representation.
-///   3. The format representation is rendered into output text.
-///
-/// Step (1) is performed when calling [`ParsedFile::new()`] to initialise a new
-/// instance, and steps (2) and (3) are performed when [`ParsedFile::format()`]
-/// is called.
+/// A parsed TLA file ready for formatting.
 #[derive(Debug)]
 pub struct ParsedFile<'a> {
     t: Tree,

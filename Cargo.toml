@@ -25,6 +25,7 @@ explicit_iter_loop = "warn"
 future_not_send = "warn"
 todo = "warn"
 use_self = "warn"
+missing_docs = "warn"
 
 [workspace.lints.rust]
 missing_copy_implementations = "warn"

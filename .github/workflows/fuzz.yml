@@ -1,0 +1,70 @@
+name: fuzz
+
+on:
+  workflow_call:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  # Run each fuzz target for 60s.
+  fuzz:
+    runs-on: ubuntu-latest
+    container:
+      image: rustlang/rust:nightly
+      env:
+        CARGO_HOME: "/cargo/"
+
+    steps:
+      - name: Ensure node is installed for act checkout
+        if: ${{ env.ACT }}
+        run: command -v node || (apt update && apt install -y nodejs zstd)
+
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Cache cargo dir
+        id: cargo-dir
+        uses: actions/cache@v4
+        with:
+          key: ${{ runner.os }}-cargo-nightly
+          path: /cargo
+
+      - name: Cache cargo-fuzz
+        id: cache-cargo-fuzz
+        uses: actions/cache@v4
+        with:
+          key: ${{ runner.os }}-cargo-fuzz
+          path: /usr/local/cargo/bin/cargo-fuzz
+
+      - name: Install cargo-fuzz
+        if: steps.cache-cargo-fuzz.outputs.cache-hit != 'true'
+        run: cargo install -f cargo-fuzz --all-features
+
+      - name: Seed fuzzing corpus from test corpus
+        run: >
+          mkdir -p libtlafmt/fuzz/corpus/e2e;
+          cp libtlafmt/tests/corpus/* libtlafmt/fuzz/corpus
+
+      - name: Cache corpus
+        id: cache-fuzz-corpus
+        uses: actions/cache@v4
+        with:
+          enableCrossOsArchive: true
+          key: fuzz-corpus-e2e
+          path: libtlafmt/fuzz/corpus/e2e
+
+      - name: Run fuzzer
+        id: fuzz
+        run: >
+          cd libtlafmt &&
+          cargo +nightly fuzz run e2e --
+          -max_total_time=120
+          -max_len=1022
+
+      - name: Upload crash
+        uses: actions/upload-artifact@v4
+        if: failure() && steps.fuzz.outcome == 'failure'
+        with:
+          name: fuzz-crash
+          path: libtlafmt/fuzz/artifacts/e2e

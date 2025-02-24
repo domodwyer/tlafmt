@@ -246,7 +246,6 @@ impl Token<'_> {
     /// If false, the caller is expected to drop `self` when rendering.
     pub(crate) fn can_precede(&self, next: &Self) -> bool {
         match (self, next) {
-            (Token::SourceNewline, Token::Newline) => false,
             (Token::Comma, Token::ParenClose) => false,
             _ => true,
         }

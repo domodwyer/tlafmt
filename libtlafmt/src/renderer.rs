@@ -88,7 +88,10 @@ where
 
             let s = match &t {
                 Token::StepOrStutter(ident) => {
-                    self.indent.write_all(format!("[{ident}]_").as_bytes())?;
+                    let s = format!("[{ident}]_");
+                    debug_assert_eq!(s.len(), token_len(&t));
+
+                    self.indent.write_all(s.as_bytes())?;
                     continue;
                 }
 
@@ -100,34 +103,18 @@ where
                 }
 
                 Token::ModuleHeader(name) => {
-                    const MODULE: &str = " MODULE ";
-                    let line_len = LINE_WIDTH
-                        .checked_sub(name.len())
-                        .and_then(|v| v.checked_sub(MODULE.len() + 1))
-                        .and_then(|v| v.checked_div(2))
-                        .unwrap_or(1);
+                    let s = render_module_header(name);
+                    debug_assert_eq!(s.len(), token_len(&t));
 
-                    // Sometimes the module dashes can't be exactly equal and fill up the entire
-                    // line because the "MODULE" and name have an odd length.
-                    //
-                    // When this happens, pad the right-side line with an extra dash.
-                    let mut right_extra = 0;
-                    if (line_len * 2) + MODULE.len() + 1 + name.len() == LINE_WIDTH - 1 {
-                        right_extra = 1;
-                    }
-
-                    write!(
-                        &mut self.indent,
-                        "{}{MODULE}{name} {}",
-                        "-".repeat(line_len),
-                        "-".repeat(line_len + right_extra)
-                    )?;
+                    self.indent.write_all(s.as_bytes())?;
 
                     continue;
                 }
 
                 Token::LineDivider(c) => {
                     let s = std::iter::repeat(c).take(LINE_WIDTH).collect::<String>();
+                    debug_assert_eq!(s.len(), token_len(&t));
+
                     self.indent.write_all(s.as_bytes())?;
                     continue;
                 }
@@ -207,6 +194,10 @@ where
                 Token::KeywordTheorem => "THEOREM",
             };
 
+            // Invariant: the rendered text must match the reported token
+            // length.
+            debug_assert_eq!(s.len(), token_len(&t), "{s:?}");
+
             // Write the rendered token.
             self.indent.write_all(s.as_bytes())?;
 
@@ -220,6 +211,114 @@ where
         }
 
         Ok(())
+    }
+}
+
+/// Render a module header line for `name`.
+fn render_module_header(name: &&str) -> String {
+    const MODULE: &str = " MODULE ";
+    let line_len = LINE_WIDTH
+        .checked_sub(name.len())
+        .and_then(|v| v.checked_sub(MODULE.len() + 1))
+        .and_then(|v| v.checked_div(2))
+        .unwrap_or(1);
+
+    // Sometimes the module dashes can't be exactly equal and fill up the entire
+    // line because the "MODULE" and name have an odd length.
+    //
+    // When this happens, pad the right-side line with an extra dash.
+    let mut right_extra = 0;
+    if (line_len * 2) + MODULE.len() + 1 + name.len() == LINE_WIDTH - 1 {
+        right_extra = 1;
+    }
+
+    format!(
+        "{}{MODULE}{name} {}",
+        "-".repeat(line_len),
+        "-".repeat(line_len + right_extra)
+    )
+}
+
+/// Return the size of a rendered [`Token`], exclusive of whitespace delimiters.
+fn token_len(t: &Token<'_>) -> usize {
+    match t {
+        Token::Raw(s) => s.len(),
+        Token::ModuleHeader(name) => render_module_header(name).len(),
+        Token::Comment(s) => s.len(),
+        Token::Newline | Token::SourceNewline => 1,
+        Token::KeywordChoose => 6,
+        Token::KeywordLet => 3,
+        Token::KeywordIn => 2,
+        Token::KeywordUnchanged => 9,
+        Token::KeywordExtends => 7,
+        Token::KeywordConstant => 8,
+        Token::KeywordConstants => 9,
+        Token::KeywordVariable => 8,
+        Token::KeywordVariables => 9,
+        Token::KeywordExcept => 6,
+        Token::KeywordEnabled => 7,
+        Token::KeywordTheorem => 7,
+        Token::KeywordLocal => 5,
+        Token::KeywordInstance => 8,
+        Token::KeywordDomain => 6,
+        Token::KeywordSubset => 6,
+        Token::KeywordIf => 2,
+        Token::KeywordThen => 4,
+        Token::KeywordElse => 4,
+        Token::Exists => 2,
+        Token::All => 2,
+        Token::SetIn => 3,
+        Token::SetNotIn => 6,
+        Token::And => 2,
+        Token::Or => 2,
+        Token::MapsTo => 2,
+        Token::MapTo => 2,
+        Token::AllMapsTo => 3,
+        Token::Ident(s) => s.len(),
+        Token::Lit(s) => s.len(),
+        Token::ParenOpen => 1,
+        Token::ParenClose => 1,
+        Token::Comma => 1,
+        Token::SemiColon => 1,
+        Token::Plus => 1,
+        Token::Minus => 1,
+        Token::Multiply => 1,
+        Token::Eq => 1,
+        Token::Eq2 => 2,
+        Token::NotEq => 2,
+        Token::SubsetEq => 9,
+        Token::Dot => 1,
+        Token::Dots2 => 2,
+        Token::At => 1,
+        Token::SquareOpen => 1,
+        Token::SquareClose => 1,
+        Token::CurlyOpen => 1,
+        Token::CurlyClose => 1,
+        Token::AngleOpen => 2,
+        Token::AngleClose => 2,
+        Token::AppendShort => 2,
+        Token::Real => 4,
+        Token::GreaterThan => 1,
+        Token::GreaterThanEqual => 2,
+        Token::LessThan => 1,
+        Token::LessThanEqual => 2,
+        Token::Not => 1,
+        Token::SetMinus => 1,
+        Token::Divide => 1,
+        Token::LineDivider(_) => LINE_WIDTH,
+        Token::Prime => 1,
+        Token::Always => 2,
+        Token::Eventually => 2,
+        Token::Implies => 2,
+        Token::Bang => 1,
+        Token::True => 4,
+        Token::False => 5,
+        Token::WeakFairness => 3,
+        Token::StrongFairness => 3,
+        Token::Union => 6,
+        Token::Intersect => 10,
+        Token::Compose => 2,
+        Token::StepOrStutter(s) => s.len() + 3,
     }
 }
 

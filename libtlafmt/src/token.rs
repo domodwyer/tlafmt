@@ -32,6 +32,51 @@ pub(crate) enum Token<'a> {
     /// A `UNCHANGED` sequence.
     KeywordUnchanged,
 
+    /// A `LOCAL` keyword.
+    KeywordLocal,
+
+    /// A `INSTANCE` keyword.
+    KeywordInstance,
+
+    /// A `DOMAIN` keyword.
+    KeywordDomain,
+
+    /// A `SUBSET` keyword.
+    KeywordSubset,
+
+    /// A `IF`.
+    KeywordIf,
+
+    /// A `THEN`.
+    KeywordThen,
+
+    /// A `ELSE`.
+    KeywordElse,
+
+    /// A "EXTENDS" sequence.
+    KeywordExtends,
+
+    /// A "CONSTANT" sequence.
+    KeywordConstant,
+
+    /// A "CONSTANTS" sequence.
+    KeywordConstants,
+
+    /// A "VARIABLE" sequence.
+    KeywordVariable,
+
+    /// A "VARIABLES" sequence.
+    KeywordVariables,
+
+    /// A "EXCEPT" sequence.
+    KeywordExcept,
+
+    /// A `ENABLED` sequence.
+    KeywordEnabled,
+
+    /// A `THEOREM` sequence.
+    KeywordTheorem,
+
     /// A `\E` sequence.
     Exists,
 
@@ -131,27 +176,6 @@ pub(crate) enum Token<'a> {
     /// A `Real` sequence.
     Real,
 
-    /// A `LOCAL` keyword.
-    KeywordLocal,
-
-    /// A `INSTANCE` keyword.
-    KeywordInstance,
-
-    /// A `DOMAIN` keyword.
-    KeywordDomain,
-
-    /// A `SUBSET` keyword.
-    KeywordSubset,
-
-    /// A `IF`.
-    KeywordIf,
-
-    /// A `THEN`.
-    KeywordThen,
-
-    /// A `ELSE`.
-    KeywordElse,
-
     /// A `<`.
     GreaterThan,
 
@@ -175,30 +199,6 @@ pub(crate) enum Token<'a> {
 
     /// A dividing line composed of `-----` or `=====`.
     LineDivider(char),
-
-    /// A "EXTENDS" sequence.
-    KeywordExtends,
-
-    /// A "CONSTANT" sequence.
-    KeywordConstant,
-
-    /// A "CONSTANTS" sequence.
-    KeywordConstants,
-
-    /// A "VARIABLE" sequence.
-    KeywordVariable,
-
-    /// A "VARIABLES" sequence.
-    KeywordVariables,
-
-    /// A "EXCEPT" sequence.
-    KeywordExcept,
-
-    /// A `ENABLED` sequence.
-    KeywordEnabled,
-
-    /// A `THEOREM` sequence.
-    KeywordTheorem,
 
     /// A prime var marker `'`.
     Prime,

@@ -10,7 +10,7 @@ categories = ["command-line-utilities", "development-tools"]
 keywords = ["tla", "plus", "tla+", "formatter"]
 
 [dependencies]
-clap = { version = "4.5.30", features = ["derive"] }
+clap = { version = "4.5.31", features = ["derive"] }
 libtlafmt = { path = "libtlafmt", version = "0.1.0" }
 tempfile = "3.17.1"
 thiserror = "2.0.11"

@@ -3,11 +3,7 @@ source: libtlafmt/src/ast_format/node.rs
 expression: output
 ---
 -------------------------------- MODULE Bananas --------------------------------
-A ==
-    LET B == 42
-    IN
-        /\ C = D
-    
-\* Where is this placed?
-B == 24
+X ==
+    /\ x = 4
+    /\ y = 2
 ================================================================================

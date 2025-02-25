@@ -1,7 +1,7 @@
 ---
 source: libtlafmt/src/lib.rs
 expression: output
-input_file: tests/corpus/key_value_store.tla
+input_file: libtlafmt/tests/corpus/key_value_store.tla
 ---
 ----------------------------- MODULE KeyValueStore -----------------------------
 (**************************************************************************)
@@ -12,14 +12,14 @@ input_file: tests/corpus/key_value_store.tla
 (* specifications/SnapshotIsolation specs in the tlaplus/examples repo.   *)
 (**************************************************************************)
 
-CONSTANTS Key, \* The set of all keys.
-    Val, \* The set of all values.
-    TxId \* The set of all transaction IDs.
-VARIABLES store, \* A data store mapping keys to values.
-    tx, \* The set of open snapshot transactions.
-    snapshotStore, \* Snapshots of the store for each transaction.
-    written, \* A log of writes performed within each transaction.
-    missed \* The set of writes invisible to each transaction.
+CONSTANTS Key,              \* The set of all keys.
+    Val,                    \* The set of all values.
+    TxId                    \* The set of all transaction IDs.
+VARIABLES store,            \* A data store mapping keys to values.
+    tx,                     \* The set of open snapshot transactions.
+    snapshotStore,          \* Snapshots of the store for each transaction.
+    written,                \* A log of writes performed within each transaction.
+    missed                  \* The set of writes invisible to each transaction.
 --------------------------------------------------------------------------------
 NoVal == \* Choose something to represent the absence of a value.
 CHOOSE v: v \notin Val
@@ -28,12 +28,12 @@ Store == \* The set of all key-value stores.
 [Key -> Val \union {NoVal}]
 
 Init == \* The initial predicate.
-    /\ store = [k \in Key |-> NoVal] \* All store values are initially NoVal.
-    /\ tx = {} \* The set of open transactions is initially empty.
-    /\ snapshotStore = \* All snapshotStore values are initially NoVal.
+    /\ store = [k \in Key |-> NoVal]        \* All store values are initially NoVal.
+    /\ tx = {}                              \* The set of open transactions is initially empty.
+    /\ snapshotStore =                      \* All snapshotStore values are initially NoVal.
         [t \in TxId |-> [k \in Key |-> NoVal]]
-    /\ written = [t \in TxId |-> {}] \* All write logs are initially empty.
-    /\ missed = [t \in TxId |-> {}] \* All missed writes are initially empty.
+    /\ written = [t \in TxId |-> {}]        \* All write logs are initially empty.
+    /\ missed = [t \in TxId |-> {}]         \* All missed writes are initially empty.
 
 TypeInvariant == \* The type invariant.
     /\ store \in Store
@@ -88,7 +88,7 @@ RollbackTx(t) == \* Close the transaction without merging writes into store.
 CloseTx(t) == \* Close transaction t, merging writes into store.
     /\ t \in tx
     /\ missed[t] \intersect written[t] = {} \* Detection of write-write conflicts.
-    /\ store' = \* Merge snapshotStore writes into store.
+    /\ store' =                             \* Merge snapshotStore writes into store.
         [k \in Key |-> IF k \in written[t] THEN snapshotStore[t][k] ELSE store[k]]
     /\ tx' = tx \ {t}
     /\ missed' = \* Update the missed writes for other open transactions.

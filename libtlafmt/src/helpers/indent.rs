@@ -10,7 +10,7 @@ pub(crate) struct IndentDecorator<W> {
     out: W,
 
     /// The indentation depth to render for subsequent writes.
-    depth: usize,
+    depth: u8,
 
     /// True when the last byte wrote to `out` was a newline.
     last_char_newline: bool,
@@ -25,7 +25,7 @@ impl<W> IndentDecorator<W> {
         }
     }
 
-    pub(crate) fn set(&mut self, depth: usize) {
+    pub(crate) fn set(&mut self, depth: u8) {
         self.depth = depth;
     }
 }

@@ -319,11 +319,22 @@ mod tests {
     use crate::assert_rewrite;
 
     #[test]
-    fn test_basic() {
+    fn test_basic_def() {
         assert_rewrite!(
             "\
     ---- MODULE Bananas ------
     X == 42
+    ====="
+        );
+    }
+
+    #[test]
+    fn test_basic_conj() {
+        assert_rewrite!(
+            r"
+    ---- MODULE Bananas ------
+    X == /\ x = 4
+         /\ y = 2
     ====="
         );
     }
@@ -441,26 +452,6 @@ Integrate(D, a, b, InitVals) ==
     }
 
     #[test]
-    fn test_operator_long_form_inline_comment() {
-        assert_rewrite!(
-            "\
----- MODULE Bananas ------
-DoStuff(
-b,
-a  , \\* platanos?
-n,
-
-A,		N     ,
-a,
-S (* are great
-    dont
-    you think*)
-) == 42
-====="
-        );
-    }
-
-    #[test]
     fn test_operator_preceding_line_comment() {
         assert_rewrite!(
             "\
@@ -543,22 +534,6 @@ DoStuff (*comment*)
     }
 
     #[test]
-    fn test_comment_with_lists() {
-        assert_rewrite!(
-            r"
----- MODULE Bananas ------
-DoStuff ==
-    /\ A' = 1
-    \* Comment in a list.
-    /\ B' = 2
-
-\* Some comment for the operator.
-Another == 42
-====="
-        );
-    }
-
-    #[test]
     fn test_set_map() {
         assert_rewrite!(
             r"
@@ -636,22 +611,6 @@ Spec == \* Initialize state with Init and transition with Next.
     Init /\ [][Next]_<<store, tx, snapshotStore, written, missed>>
 ----------------------------------------------------------------------------
 THEOREM Spec => [](TypeInvariant /\ TxLifecycle)
-=============================================================================
-"
-        );
-    }
-
-    #[test]
-    fn test_comment_let_in_list() {
-        assert_rewrite!(
-            r"
----- MODULE Bananas ------
-A ==
-    LET B == 42
-    IN /\ C = D
-
-\* Where is this placed?
-B == 24
 =============================================================================
 "
         );

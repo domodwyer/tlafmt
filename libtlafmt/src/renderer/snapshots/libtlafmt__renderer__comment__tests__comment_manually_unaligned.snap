@@ -1,0 +1,9 @@
+---
+source: libtlafmt/src/renderer/comment.rs
+expression: output
+---
+-------------------------------- MODULE bananas --------------------------------
+Op ==
+    /\ bananas = 42 \* This is an important number.
+    /\ platanos' = 42 \* That should be assigned here.
+================================================================================

@@ -1,18 +1,25 @@
+mod comment;
+
 use std::io::Write;
 
+use comment::align_comments;
+
 use crate::{helpers::IndentDecorator, token::Token, LINE_WIDTH};
+
+#[derive(Debug, Clone, Copy)]
+struct Indent(u8);
 
 /// A renderer of [`Token`] instances, writing the resulting output to `W`.
 pub(crate) struct Renderer<'a, W> {
     /// The current indentation depth.
-    indent_depth: usize,
+    indent_depth: Indent,
 
     /// A decorator over `W` that emits indentation after every rendered
     /// newline.
     indent: IndentDecorator<W>,
 
     /// A buffer containing the lowered formatter [`Token`] to write to `W`.
-    buf: Vec<(Token<'a>, usize)>,
+    buf: Vec<(Token<'a>, Indent)>,
 
     /// True when the last token wrote to `ident` was a newline.
     last_token_was_newline: bool,
@@ -25,7 +32,7 @@ where
     /// Initialise a [`Renderer`] to write to `out`.
     pub(crate) fn new(out: W) -> Self {
         Self {
-            indent_depth: 0,
+            indent_depth: Indent(0),
             indent: IndentDecorator::new(out),
             buf: Default::default(),
             last_token_was_newline: false,
@@ -33,18 +40,18 @@ where
     }
 
     /// Read the current indentation depth.
-    pub(crate) fn indent_get(&self) -> usize {
-        self.indent_depth
+    pub(crate) fn indent_get(&self) -> u8 {
+        self.indent_depth.0
     }
 
     /// Increase the indentation depth.
     pub(crate) fn indent_inc(&mut self) {
-        self.indent_depth += 1;
+        self.indent_depth.0 += 1;
     }
 
     /// Decrease the indentation depth.
-    pub(crate) fn indent_set(&mut self, v: usize) {
-        self.indent_depth = v;
+    pub(crate) fn indent_set(&mut self, v: u8) {
+        self.indent_depth.0 = v;
     }
 
     /// Decrement the indentation depth.
@@ -53,30 +60,29 @@ where
     ///
     /// Panics if the indentation depth is 0.
     pub(crate) fn indent_dec(&mut self) {
-        debug_assert_ne!(self.indent_depth, 0);
+        debug_assert_ne!(self.indent_depth.0, 0);
 
-        self.indent_depth -= 1;
+        self.indent_depth.0 -= 1;
     }
 
     /// Add `t` to the render queue.
     pub(crate) fn push(&mut self, t: Token<'a>) -> Result<(), std::io::Error> {
-        // Incrementally emit the tokens - this is not required for correctness.
-        if matches!(t, Token::SourceNewline | Token::Newline) {
-            self.buf.push((t, self.indent_depth));
-            return self.flush();
-        }
-
         self.buf.push((t, self.indent_depth));
 
         Ok(())
     }
 
     /// Flush the queue of [`Token`], rendering them to the output sink.
-    pub(crate) fn flush(&mut self) -> Result<(), std::io::Error> {
+    pub(crate) fn flush(mut self) -> Result<(), std::io::Error> {
+        // Find consecutive lines that contain end-of-line comments that are
+        // aligned vertically and rewrite them to preserve their alignment after
+        // their respective lines are formatted.
+        align_comments(&mut self.buf);
+
         let mut iter = self.buf.drain(..).peekable();
 
         while let Some((t, indent_depth)) = iter.next() {
-            self.indent.set(indent_depth);
+            self.indent.set(indent_depth.0);
 
             // If this token cannot appear before the next token, skip rendering
             // this one.
@@ -119,7 +125,7 @@ where
                     continue;
                 }
 
-                Token::Raw(s) | Token::Comment(s) => s,
+                Token::Raw(s) | Token::Comment(s, _) => s,
                 Token::Prime => "'",
                 Token::Always => "[]",
                 Token::Eventually => "<>",
@@ -196,22 +202,26 @@ where
 
             // Invariant: the rendered text must match the reported token
             // length.
-            debug_assert_eq!(s.len(), token_len(&t), "{s:?}");
+            debug_assert!(s.len() == token_len(&t) || is_newline(&t), "{s:?}");
 
             // Write the rendered token.
             self.indent.write_all(s.as_bytes())?;
 
             // Insert a space if this node and the next node can be space
             // delimited.
-            if iter.peek().is_some_and(|(v, _)| t.is_space_delimited(v)) {
-                self.indent.write_all(b" ")?;
+            if let Some(n) = iter.peek().map(|(v, _)| t.delimiting_space_len(v)) {
+                self.indent.write_all(&b" ".repeat(n))?;
             }
 
-            self.last_token_was_newline = matches!(t, Token::SourceNewline | Token::Newline);
+            self.last_token_was_newline = is_newline(&t);
         }
 
         Ok(())
     }
+}
+
+fn is_newline(t: &Token) -> bool {
+    matches!(t, Token::Newline | Token::SourceNewline)
 }
 
 /// Render a module header line for `name`.
@@ -244,8 +254,8 @@ fn token_len(t: &Token<'_>) -> usize {
     match t {
         Token::Raw(s) => s.len(),
         Token::ModuleHeader(name) => render_module_header(name).len(),
-        Token::Comment(s) => s.len(),
-        Token::Newline | Token::SourceNewline => 1,
+        Token::Comment(s, _) => s.len(),
+        Token::Newline | Token::SourceNewline => 0,
         Token::KeywordChoose => 6,
         Token::KeywordLet => 3,
         Token::KeywordIn => 2,
@@ -335,7 +345,6 @@ mod tests {
         }
 
         w.flush().unwrap();
-        drop(w);
 
         String::from_utf8(buf).expect("valid utf8 output")
     }

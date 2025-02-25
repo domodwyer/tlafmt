@@ -29,7 +29,6 @@ where
         }?;
     }
 
-    out.flush()?;
     Ok(())
 }
 

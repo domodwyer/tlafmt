@@ -1,3 +1,43 @@
+use tree_sitter::Node;
+
+/// Positional metadata for a token.
+#[derive(Debug, Clone, Copy)]
+pub(crate) enum Position {
+    /// The absolute position where this token appears in the source / input
+    /// spec.
+    Source { row: usize, col: usize },
+
+    /// The amount of padding whitespace to precede to this token (relative
+    /// positioning w.r.t previous token).
+    Padding(usize),
+}
+
+impl Position {
+    pub(crate) fn unwrap_row(&self) -> usize {
+        match self {
+            Self::Source { row, .. } => *row,
+            _ => unreachable!(),
+        }
+    }
+
+    pub(crate) fn unwrap_col(&self) -> usize {
+        match self {
+            Self::Source { col, .. } => *col,
+            _ => unreachable!(),
+        }
+    }
+}
+
+impl From<&Node<'_>> for Position {
+    fn from(n: &Node<'_>) -> Self {
+        let pos = n.start_position();
+        Self::Source {
+            row: pos.row,
+            col: pos.column,
+        }
+    }
+}
+
 /// The formatter token to be rendered.
 #[derive(Debug, Clone)]
 pub(crate) enum Token<'a> {
@@ -12,7 +52,7 @@ pub(crate) enum Token<'a> {
     /// A comment (inline or box).
     ///
     /// NOTE: this str may contain newlines.
-    Comment(&'a str),
+    Comment(&'a str, Position),
 
     /// A linebreak specified in the input sourcecode.
     SourceNewline,
@@ -253,31 +293,36 @@ impl Token<'_> {
 
     /// Returns true when `self` and `next` should be delimited by a space
     /// character when rendered.
-    pub(crate) fn is_space_delimited(&self, next: &Self) -> bool {
+    pub(crate) fn delimiting_space_len(&self, next: &Self) -> usize {
         match (self, next) {
-            (_, Token::ModuleHeader(_)) => false,
+            (_, Token::ModuleHeader(_)) => 0,
 
-            (Token::Raw(_), _) => true,
-            (_, Token::Raw(_)) => true,
+            (Token::Raw(_), _) => 1,
+            (_, Token::Raw(_)) => 1,
+
+            // Comments with explicit whitespace padding render the provided
+            // amount of space, but never after newlines.
+            (Token::Newline | Token::SourceNewline, Token::Comment(..)) => 0,
+            (_, Token::Comment(_, Position::Padding(v))) => *v,
 
             // These tokens can never be followed by a space, irrespective of
             // the next token.
-            (Token::ParenOpen | Token::SquareOpen | Token::CurlyOpen | Token::Dots2, _) => false,
+            (Token::ParenOpen | Token::SquareOpen | Token::CurlyOpen | Token::Dots2, _) => 0,
 
             // No space between Fn[application].
-            (Token::Ident(_), Token::SquareOpen) => false,
+            (Token::Ident(_), Token::SquareOpen) => 0,
 
             // No space between x[1][2].
-            (Token::SquareClose, Token::SquareOpen) => false,
+            (Token::SquareClose, Token::SquareOpen) => 0,
 
-            (Token::AngleOpen, Token::AngleClose) => false,
+            (Token::AngleOpen, Token::AngleClose) => 0,
 
             // A `record.field` sequence.
-            (Token::Ident(_), Token::Dot) => false,
-            (Token::Dot, Token::Ident(_)) => false,
+            (Token::Ident(_), Token::Dot) => 0,
+            (Token::Dot, Token::Ident(_)) => 0,
 
             // A `EXCEPT !.ok` sequence or `EXCEPT ![x]`.
-            (Token::Bang, Token::Dot | Token::SquareOpen) => false,
+            (Token::Bang, Token::Dot | Token::SquareOpen) => 0,
 
             // A `something > (n + 1)` sequence.
             (
@@ -287,27 +332,27 @@ impl Token<'_> {
                 | Token::LessThanEqual
                 | Token::Compose,
                 Token::ParenOpen,
-            ) => true,
+            ) => 1,
 
             // Any "not" sequence such as `~(thing)`.
-            (Token::Not, _) => false,
+            (Token::Not, _) => 0,
 
             // Chained liveness tokens are not space delimited, nor should there
             // be a space before the [Next] portion in `<>[][Next]_vars`.
             (
                 Token::Eventually | Token::Always,
                 Token::Eventually | Token::Always | Token::StepOrStutter(_),
-            ) => false,
+            ) => 0,
 
             // Fairness bounds must not be space delimited.
-            (Token::WeakFairness | Token::StrongFairness, _) => false,
+            (Token::WeakFairness | Token::StrongFairness, _) => 0,
 
             // Unchanged vars `[Next]_vars`.
-            (Token::StepOrStutter(_), _) => false,
+            (Token::StepOrStutter(_), _) => 0,
 
             // Eq followed by parens.
             (Token::Eq | Token::NotEq, Token::ParenOpen | Token::SquareOpen | Token::AngleOpen) => {
-                true
+                1
             }
 
             // No space between this token and the listed tokens.
@@ -325,14 +370,14 @@ impl Token<'_> {
                     | Token::Prime
             ) =>
             {
-                false
+                0
             }
 
             // Newlines are never automatically followed by whitespace.
-            (Token::SourceNewline | Token::Newline, _) => false,
+            (Token::SourceNewline | Token::Newline, _) => 0,
 
             // All other tokens can be delimited by whitespace.
-            _ => true,
+            _ => 1,
         }
     }
 }

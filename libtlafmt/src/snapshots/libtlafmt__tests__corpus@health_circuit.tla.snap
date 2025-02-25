@@ -1,7 +1,7 @@
 ---
 source: libtlafmt/src/lib.rs
 expression: output
-input_file: tests/corpus/health_circuit.tla
+input_file: libtlafmt/tests/corpus/health_circuit.tla
 ---
 This model validates the correctness of the IOx Router's lock-free (fast path)
 circuit breaker / health check primitive under multi-threaded execution.
@@ -91,10 +91,10 @@ CONSTANTS
     \* Number of probe requests to send per probe window.
     NumProbes,
     \* Thread states
-    T_ReadHealth, \* Start of request - next read the circuit health
+    T_ReadHealth,       \* Start of request - next read the circuit health
     T_ReadProbe_health, \* Unhealthy, read probe state - step 1: check health
-    T_ReadProbe_probe, \* Unhealthy, read probe state - step 2: probe candidate?
-    T_MakeRequest \* Submit the request to the upstream
+    T_ReadProbe_probe,  \* Unhealthy, read probe state - step 2: probe candidate?
+    T_MakeRequest       \* Submit the request to the upstream
 
 VARIABLES
     threads,
@@ -254,7 +254,7 @@ ExclusiveProbeState == \A t \in Threads:
 \* Eventually the circuit breaker is always "healthy", within the bounds of the
 \* model.
 EventuallyAlwaysHealthy == <>[](
-        \/ Counter_IsHealthy_Check \* The circuit becomes healthy
+        \/ Counter_IsHealthy_Check         \* The circuit becomes healthy
         \/ probe_windows = MaxProbeWindows \* Or the model deadlocks at state bounds
 )
 

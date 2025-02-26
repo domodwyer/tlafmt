@@ -1,6 +1,6 @@
 [package]
 name = "libtlafmt"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Dom <dom@itsallbroken.com>"]
 description = "A formatter library for TLA+ specs, core of tlafmt"

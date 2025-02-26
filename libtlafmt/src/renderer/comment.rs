@@ -84,17 +84,22 @@ fn process_candidates(
 
     debug_assert!(buf.len() >= candidates.len());
 
-    let mut start = candidates[0].0;
-    debug_assert!(matches!(buf[start].0, Token::Comment(..)));
-
     // Walk backwards from the first candidate index to find the start of the
     // line for the first candidate.
-    for i in (0..start).rev() {
-        if is_newline(&buf[i].0) {
-            start = i;
-            break;
+    let start = candidates[0].0;
+    debug_assert!(matches!(buf[candidates[0].0].0, Token::Comment(..)));
+
+    let start = (0..start).rev().find(|&i| is_newline(&buf[i].0));
+    let start = match start {
+        Some(v) => v,
+        None => {
+            // This can occur if the start of the document is an ERROR node,
+            // followed by a comment on two lines.
+            //
+            // In this case, avoid trying to align an unparsed spec.
+            return;
         }
-    }
+    };
 
     // Define the exclusive upper bound token index - the last comment (which is
     // guaranteed to terminate the line it is on).
@@ -304,5 +309,22 @@ Op == /\ bananas=42         \* This is an important number.
 ====
 "
         );
+    }
+
+    /// A test case discovered through fuzzing where the input string contains a
+    /// NULL byte, but the parser recovers and emits a sequence of nodes that
+    /// have no newline preceding the first comment.
+    ///
+    /// When scanned backwards there would be no newline found, and the line
+    /// length calculation would be fed a buffer that does not start with a
+    /// newline causing it to assert.
+    #[test]
+    fn test_fuzz_input_contains_null() {
+        let s = String::from_utf8(vec![
+            0x71, 0x00, 0x0a, 0x2a, 0x5c, 0x2a, 0x0a, 0x4a, 0x5c, 0x2a, 0x0a, 0x2b, 0x41, 0x7e,
+            0x41,
+        ])
+        .unwrap();
+        assert_rewrite!(&s);
     }
 }

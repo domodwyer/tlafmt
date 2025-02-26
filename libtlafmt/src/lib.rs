@@ -20,10 +20,10 @@ mod renderer;
 mod test_utils;
 mod token;
 
-use std::io::Write;
+use std::{borrow::Cow, io::Write};
 
 use ast_format::format_node;
-use helpers::EmptyLines;
+use helpers::{EmptyLines, INDENT_STR};
 use renderer::Renderer;
 use thiserror::Error;
 use tree_sitter::{Node, Parser, Tree};
@@ -54,7 +54,7 @@ pub enum Error {
 #[derive(Debug)]
 pub struct ParsedFile<'a> {
     t: Tree,
-    input: &'a str,
+    input: Cow<'a, str>,
 }
 
 impl<'a> ParsedFile<'a> {
@@ -65,8 +65,17 @@ impl<'a> ParsedFile<'a> {
             .set_language(&tree_sitter_tlaplus::LANGUAGE.into())
             .expect("error loading TLA+ grammar");
 
+        // Normalise tab characters - if a mixture of tab and space are used,
+        // the AST may produce incorrect nodes. Specifically conj_items using
+        // tabs can become a bound_infix_op instead of conj_list, see
+        // `test_mixed_tabs_spaces`.
+        let input = match input.contains("\t") {
+            true => Cow::Owned(input.replace("\t", INDENT_STR)),
+            false => Cow::Borrowed(input),
+        };
+
         Ok(Self {
-            t: parser.parse(input, None).ok_or(Error::Parse)?,
+            t: parser.parse(input.as_bytes(), None).ok_or(Error::Parse)?,
             input,
         })
     }
@@ -84,7 +93,7 @@ impl<'a> ParsedFile<'a> {
         let mut empty_lines = EmptyLines::default();
 
         // Lower the AST into a series of formatter tokens wrote to `out`.
-        format_node(self.t.root_node(), self.input, &mut empty_lines, &mut out)?;
+        format_node(self.t.root_node(), &self.input, &mut empty_lines, &mut out)?;
 
         out.flush()?;
 
@@ -116,5 +125,81 @@ mod tests {
             let input = fs::read_to_string(path).expect("read test corpus file");
             assert_rewrite!(&input);
         });
+    }
+
+    /// A test where the second conj item uses a tab to position the bullet.
+    /// With tabs=4 these causes the bullets to align, but a conj_list is not
+    /// emitted in the AST.
+    ///
+    /// ```text
+    ///
+    ///             ---- MODULE bananas ----
+    ///             Op == /\ A = 1
+    /// tab ->          /\ B = 2
+    ///             ====
+    ///
+    /// ```
+    ///
+    /// Emits the following AST nodes:
+    ///
+    ///     operator_definition
+    ///     name: identifier
+    ///     def_eq
+    ///     definition: bound_infix_op
+    ///         lhs: conj_list
+    ///         conj_item
+    ///             bullet_conj
+    ///             bound_infix_op
+    ///             lhs: identifier_ref
+    ///             symbol: eq
+    ///             rhs: nat_number
+    ///         symbol: land
+    ///         rhs: bound_infix_op
+    ///         lhs: identifier_ref
+    ///         symbol: eq
+    ///         rhs: nat_number
+    ///
+    /// Note the definition is for bounded_infix_op, with a list of 1 item (the
+    /// lhs) with an op of "land" for the second item.
+    ///
+    /// ```text
+    ///
+    ///             ---- MODULE Bananas ------
+    ///             Op == /\ A = 1
+    ///                 /\ B = 2
+    ///             =====
+    ///
+    /// ```
+    ///
+    /// Compared to the above, that uses only whitespace for alignment:
+    ///
+    ///     operator_definition
+    ///     name: identifier
+    ///     def_eq
+    ///     definition: conj_list
+    ///         conj_item
+    ///         bullet_conj
+    ///         bound_infix_op
+    ///             lhs: identifier_ref
+    ///             symbol: eq
+    ///             rhs: nat_number
+    ///         conj_item
+    ///         bullet_conj
+    ///         bound_infix_op
+    ///             lhs: identifier_ref
+    ///             symbol: eq
+    ///             rhs: nat_number
+    ///
+    /// Where the definition node is correctly labelled as a "conj_list" kind,
+    /// with two conj_item nodes.
+    #[test]
+    fn test_mixed_tabs_spaces() {
+        assert_rewrite!(
+            "\
+---- MODULE Bananas ------
+X == /\\ x = 4
+\t /\\ y = 2
+====="
+        );
     }
 }

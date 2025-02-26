@@ -27,7 +27,12 @@ target/x86_64-unknown-linux-musl/release/tlafmt: $(SRC)
 target/x86_64-pc-windows-gnu/release/tlafmt.exe: $(SRC)
 	cross build --release --target x86_64-pc-windows-gnu
 
-release/tlafmt_v$(VERSION)_%: target/%/release/tlafmt%
+# Windows-specific rule due to the trailing .exe
+release/tlafmt_v$(VERSION)_x86_64-pc-windows-gnu.exe: target/x86_64-pc-windows-gnu/release/tlafmt.exe
+	@-mkdir -p $(dir $@)
+	cp $^ $@
+
+release/tlafmt_v$(VERSION)_%: target/%/release/tlafmt
 	@-mkdir -p $(dir $@)
 	cp $^ $@
 
@@ -44,8 +49,8 @@ release/tlafmt_v$(VERSION)_%: target/%/release/tlafmt%
 .PHONY: release
 release: release/tlafmt_v$(VERSION)_x86_64-unknown-linux-musl.tar.gz \
 	release/tlafmt_v$(VERSION)_x86_64-unknown-linux-musl.tar.gz.sha256sum \
-	release/tlafmt_v$(VERSION)_x86_64-pc-windows-gnu.tar.gz \
-	release/tlafmt_v$(VERSION)_x86_64-pc-windows-gnu.tar.gz.sha256sum \
+	release/tlafmt_v$(VERSION)_x86_64-pc-windows-gnu.exe.tar.gz \
+	release/tlafmt_v$(VERSION)_x86_64-pc-windows-gnu.exe.tar.gz.sha256sum \
 	release/tlafmt_v$(VERSION)_aarch64-apple-darwin.zip \
 	release/tlafmt_v$(VERSION)_aarch64-apple-darwin.zip.sha256sum
 

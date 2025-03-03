@@ -11,7 +11,7 @@ categories = ["command-line-utilities", "development-tools"]
 keywords = ["tla", "plus", "tla+", "formatter"]
 
 [dependencies]
-thiserror = "2.0.11"
+thiserror = "2.0.12"
 tree-sitter = "0.25.2"
 tree-sitter-tlaplus = "1.5.0"
 

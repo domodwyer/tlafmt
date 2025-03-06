@@ -25,7 +25,7 @@ NoVal == \* Choose something to represent the absence of a value.
     CHOOSE v: v \notin Val
 
 Store == \* The set of all key-value stores.
-[Key -> Val \union {NoVal}]
+    [Key -> Val \union {NoVal}]
 
 Init == \* The initial predicate.
     /\ store = [k \in Key |-> NoVal]        \* All store values are initially NoVal.

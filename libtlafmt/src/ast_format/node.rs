@@ -89,6 +89,7 @@ where
         "if_then_else",
         "finite_set_literal",
         "operator_definition",
+        "set_of_functions",
     ];
 
     // Some tokens require processing before they can be emitted, to manage
@@ -191,8 +192,7 @@ where
         | "instance"
         | "domain"
         | "theorem"
-        | "set_map"
-        | "set_of_functions" => {
+        | "set_map" => {
             skip_indent = true;
         }
 

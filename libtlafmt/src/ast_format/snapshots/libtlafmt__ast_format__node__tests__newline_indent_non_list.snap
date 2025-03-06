@@ -11,6 +11,6 @@ NoVal ==
 
 \* Bananas are good
 Store ==
-[Key ->
-        Val \union {NoVal}]
+    [Key ->
+            Val \union {NoVal}]
 ================================================================================

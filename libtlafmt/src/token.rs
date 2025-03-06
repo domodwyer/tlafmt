@@ -309,6 +309,12 @@ impl Token<'_> {
             // the next token.
             (Token::ParenOpen | Token::SquareOpen | Token::CurlyOpen | Token::Dots2, _) => 0,
 
+            // These tokens allow immediate dots, to support <<thing>>.field
+            (
+                Token::ParenClose | Token::SquareClose | Token::CurlyClose | Token::AngleClose,
+                Token::Dot,
+            ) => 0,
+
             // No space between Fn[application].
             (Token::Ident(_), Token::SquareOpen) => 0,
 

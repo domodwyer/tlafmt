@@ -629,7 +629,7 @@ THEOREM Spec => [](TypeInvariant /\ TxLifecycle)
     #[test]
     fn test_newline_indent_non_list() {
         assert_rewrite!(
-            r"
+            r#"
 ---- MODULE Bananas ----
 NoVal ==
     CHOOSE v :
@@ -649,10 +649,12 @@ P(x)  :   x \in S
 }
 
 Record ==
-    [    name   |->"bananas" ,
-    version |-> 0 ]
+[
+  name   |->"bananas" ,
+    version |-> 0
+    ]
 ====
-"
+"#
         );
     }
 }

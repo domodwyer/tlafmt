@@ -1,7 +1,7 @@
 ---
 source: libtlafmt/src/lib.rs
 expression: output
-input_file: tests/corpus/differential_equations.tla
+input_file: libtlafmt/tests/corpus/differential_equations.tla
 ---
 Taken from p178 of Specifying Systems by Leslie Lamport
 ------------------------- MODULE DifferentialEquations -------------------------
@@ -29,13 +29,13 @@ LOCAL IsDeriv(n, df, f) ==
 
 Integrate(D, a, b, InitVals) ==
     LET n == Len(InitVals)
-    gg == CHOOSE g:
-        \E e \in PosReal:
-            /\ g \in [0..n -> [OpenInterval(a - e, b + e) -> Real]]
-            /\ \A i \in 1..n:
-                /\ IsDeriv(i, g[i], g[0])
-                /\ g[i - 1][a] = InitVals[i]
-            /\ \A r \in OpenInterval(a - e, b + e):
-                D[<< r >> \o [i \in 1..(n + 1) |-> g[i - 1][r]]] = 0
+        gg == CHOOSE g:
+            \E e \in PosReal:
+                /\ g \in [0..n -> [OpenInterval(a - e, b + e) -> Real]]
+                /\ \A i \in 1..n:
+                    /\ IsDeriv(i, g[i], g[0])
+                    /\ g[i - 1][a] = InitVals[i]
+                /\ \A r \in OpenInterval(a - e, b + e):
+                    D[<< r >> \o [i \in 1..(n + 1) |-> g[i - 1][r]]] = 0
     IN [i \in 1..n |-> gg[i - 1][b]]
 ================================================================================

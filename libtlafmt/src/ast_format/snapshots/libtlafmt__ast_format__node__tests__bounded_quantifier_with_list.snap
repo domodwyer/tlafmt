@@ -19,9 +19,9 @@ LOCAL IsFirstDeriv(df, f) ==
 
 Integrate(D, a, b, InitVals) ==
     LET n == Len(InitVals)
-    gg == CHOOSE g:
-        \E e \in PosReal:
-            /\ \A r \in OpenInterval(a - e, b + e):
-                D[<< r >> \o [i \in 1..(n + 1) |-> g[i - 1][r]]] = 0
+        gg == CHOOSE g:
+            \E e \in PosReal:
+                /\ \A r \in OpenInterval(a - e, b + e):
+                    D[<< r >> \o [i \in 1..(n + 1) |-> g[i - 1][r]]] = 0
     IN [i \in 1..n |-> gg[i - 1][b]]
 ================================================================================

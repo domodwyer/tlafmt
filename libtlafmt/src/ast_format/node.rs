@@ -90,6 +90,8 @@ where
         "finite_set_literal",
         "operator_definition",
         "set_of_functions",
+        "set_of_records",
+        "set_map",
     ];
 
     // Some tokens require processing before they can be emitted, to manage
@@ -173,7 +175,6 @@ where
         | "except_update_fn_appl"
         | "except_update"
         | "record_value"
-        | "set_of_records"
         | "always"
         | "eventually"
         | "boolean"
@@ -191,8 +192,7 @@ where
         | "infix_op_symbol"
         | "instance"
         | "domain"
-        | "theorem"
-        | "set_map" => {
+        | "theorem" => {
             skip_indent = true;
         }
 
@@ -641,6 +641,16 @@ Val
 Store ==
     [  Key ->
 Val      \cup   {   NoVal}  ]
+
+   \* Set map
+Map ==
+{
+P(x)  :   x \in S
+}
+
+Record ==
+    [    name   |->"bananas" ,
+    version |-> 0 ]
 ====
 "
         );

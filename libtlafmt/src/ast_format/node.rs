@@ -79,6 +79,7 @@ where
         "bound_infix_op",
         "except",
         "extends",
+        "choose",
         "record_literal",
         "constant_declaration",
         "variable_declaration",
@@ -87,6 +88,7 @@ where
         "function_literal",
         "if_then_else",
         "finite_set_literal",
+        "operator_definition",
     ];
 
     // Some tokens require processing before they can be emitted, to manage
@@ -127,6 +129,16 @@ where
         // These are always indented.
         "disj_list" | "conj_list" | "let_in" => skip_indent = false,
 
+        // Operators are not indented if they are the top level definition, and
+        // are indented if they are within a definition (excluding LOCALs).
+        "operator_definition"
+            if def
+                .parent()
+                .is_some_and(|v| matches!(v.kind(), "module" | "local_definition")) =>
+        {
+            skip_indent = true;
+        }
+
         // Node types that have their children indented when rendered, iff the
         // indentation was not already increased on this line.
         v if may_indent.contains(&v) => {
@@ -154,7 +166,6 @@ where
 
         // Nodes that never increase the indentation depth.
         "source_file"
-        | "operator_definition"
         | "function_evaluation"
         | "except_update_record_field"
         | "except_update_specifier"
@@ -171,7 +182,6 @@ where
         | "bullet_disj"
         | "bound_op"
         | "bound_prefix_op"
-        | "choose"
         | "tuple_literal"
         | "parentheses"
         | "local_definition"
@@ -612,6 +622,26 @@ Spec == \* Initialize state with Init and transition with Next.
 ----------------------------------------------------------------------------
 THEOREM Spec => [](TypeInvariant /\ TxLifecycle)
 =============================================================================
+"
+        );
+    }
+
+    #[test]
+    fn test_newline_indent_non_list() {
+        assert_rewrite!(
+            r"
+---- MODULE Bananas ----
+NoVal ==
+    CHOOSE v :
+
+    v \notin
+Val
+
+   \* Bananas are good
+Store ==
+    [  Key ->
+Val      \cup   {   NoVal}  ]
+====
 "
         );
     }

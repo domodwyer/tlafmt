@@ -12,7 +12,10 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-use std::path::PathBuf;
+use std::{
+    io::{BufWriter, Write},
+    path::PathBuf,
+};
 
 use clap::Parser;
 use libtlafmt::ParsedFile;
@@ -48,6 +51,11 @@ enum Error {
     /// Creating a temporary file for --in-place output.
     #[error("failed to create temporary file in current dir: {0}")]
     CreateTempFile(std::io::Error),
+
+    /// Flushing the formatted output through the buffered writer for
+    /// --in-place.
+    #[error("failed to flush formatted output: {0}")]
+    FlushTempFile(std::io::Error),
 
     /// Persisting the formatted output for --in-place.
     #[error("failed to persist formatted output: {0}")]
@@ -86,7 +94,11 @@ fn in_place(args: Args, parsed: &ParsedFile<'_>) -> Result<(), Error> {
         .tempfile_in("./")
         .map_err(Error::CreateTempFile)?;
 
-    parsed.format(&mut file)?;
+    let mut buffered = BufWriter::new(&mut file);
+    parsed.format(&mut buffered)?;
+
+    buffered.flush().map_err(Error::FlushTempFile)?;
+    drop(buffered);
 
     file.persist(args.file)
         .map_err(|v| Error::SaveTempFile(v.error))?;

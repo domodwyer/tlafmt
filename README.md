@@ -50,5 +50,11 @@ To check if a file is formatted and return an error if it isn't, use `--check`:
 
 Check out the `--help` text too.
 
+## Style
+
+Formatting is being iterated on - please [report] any undesirable rendering as
+an issue.
+
 [TLA+]: https://lamport.azurewebsites.net/tla/tla.html
 [releases page]: https://github.com/domodwyer/tlafmt/releases/latest
+[report]: https://github.com/domodwyer/tlafmt/issues/new

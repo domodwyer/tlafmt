@@ -104,7 +104,7 @@ vars == << messages, allLogs, serverVars, candidateVars, leaderVars, logVars >>
 Quorum == {i \in SUBSET(Server): Cardinality(i) * 2 > Cardinality(Server)}
 
 \* The term of the last entry in a log, or 0 if the log is empty.
-LastTerm(xlog) == IF Len(xlog) = 0 THEN 0 ELSE xlog[Len(xlog)] .term
+LastTerm(xlog) == IF Len(xlog) = 0 THEN 0 ELSE xlog[Len(xlog)].term
 
 \* Helper for Send and Reply. Given a message m and bag of messages, return a
 \* new bag of messages with one more m in it.
@@ -217,13 +217,13 @@ AppendEntries(i, j) ==
     /\ i /= j
     /\ state[i] = Leader
     /\ LET prevLogIndex == nextIndex[i][j] - 1
-        prevLogTerm == IF prevLogIndex > 0 THEN
-            log[i][prevLogIndex] .term
+            prevLogTerm == IF prevLogIndex > 0 THEN
+            log[i][prevLogIndex].term
             ELSE
             0
         \* Send up to 1 entry, constrained by the end of the log.
-        lastEntry == Min({Len(log[i]), nextIndex[i][j]})
-        entries == SubSeq(log[i], nextIndex[i][j], lastEntry)
+            lastEntry == Min({Len(log[i]), nextIndex[i][j]})
+            entries == SubSeq(log[i], nextIndex[i][j], lastEntry)
         IN Send([mtype |-> AppendEntriesRequest,
                     mterm |-> currentTerm[i],
                     mprevLogIndex |-> prevLogIndex,
@@ -259,7 +259,7 @@ ClientRequest(i, v) ==
     /\ state[i] = Leader
     /\ LET entry == [term |-> currentTerm[i],
             value |-> v]
-        newLog == Append(log[i], entry)
+            newLog == Append(log[i], entry)
         IN log' = [log EXCEPT ![i] = newLog]
     /\ UNCHANGED << messages, serverVars, candidateVars,
         leaderVars, commitIndex >>
@@ -271,20 +271,20 @@ ClientRequest(i, v) ==
 AdvanceCommitIndex(i) ==
     /\ state[i] = Leader
     /\ LET \* The set of servers that agree up through index.
-        Agree(index) == {i} \union {k \in Server:
+            Agree(index) == {i} \union {k \in Server:
                     matchIndex[i][k] >= index}
         \* The maximum indexes for which a quorum agrees
-        agreeIndexes == {index \in 1..Len(log[i]):
-                Agree(index) \in Quorum}
+            agreeIndexes == {index \in 1..Len(log[i]):
+                    Agree(index) \in Quorum}
         \* New value for commitIndex'[i]
-        newCommitIndex ==
-            IF
-                /\ agreeIndexes /= {}
-                /\ log[i][Max(agreeIndexes)] .term = currentTerm[i]
-            THEN
-            Max(agreeIndexes)
-            ELSE
-            commitIndex[i]
+            newCommitIndex ==
+                IF
+                    /\ agreeIndexes /= {}
+                    /\ log[i][Max(agreeIndexes)].term = currentTerm[i]
+                THEN
+                Max(agreeIndexes)
+                ELSE
+                commitIndex[i]
         IN commitIndex' = [commitIndex EXCEPT ![i] = newCommitIndex]
     /\ UNCHANGED << messages, serverVars, candidateVars, leaderVars, log >>
 
@@ -300,10 +300,10 @@ HandleRequestVoteRequest(i, j, m) ==
         \/
             /\ m.mlastLogTerm = LastTerm(log[i])
             /\ m.mlastLogIndex >= Len(log[i])
-    grant ==
-        /\ m.mterm = currentTerm[i]
-        /\ logOk
-        /\ votedFor[i] \in {Nil, j}
+        grant ==
+            /\ m.mterm = currentTerm[i]
+            /\ logOk
+            /\ votedFor[i] \in {Nil, j}
     IN
         /\ m.mterm <= currentTerm[i]
         /\
@@ -351,7 +351,7 @@ HandleAppendEntriesRequest(i, j, m) ==
         \/
             /\ m.mprevLogIndex > 0
             /\ m.mprevLogIndex <= Len(log[i])
-            /\ m.mprevLogTerm = log[i][m.mprevLogIndex] .term
+            /\ m.mprevLogTerm = log[i][m.mprevLogIndex].term
     IN
         /\ m.mterm <= currentTerm[i]
         /\
@@ -387,7 +387,7 @@ HandleAppendEntriesRequest(i, j, m) ==
                                 \/
                                     /\ m.mentries /= <<>>
                                     /\ Len(log[i]) >= index
-                                    /\ log[i][index] .term = m.mentries[1] .term
+                                    /\ log[i][index].term = m.mentries[1].term
                                     \* This could make our commitIndex decrease (for
                                     \* example if we process an old, duplicated request),
                                     \* but that doesn't really affect anything.
@@ -405,7 +405,7 @@ HandleAppendEntriesRequest(i, j, m) ==
                         \/ \* conflict: remove 1 entry
                             /\ m.mentries /= <<>>
                             /\ Len(log[i]) >= index
-                            /\ log[i][index] .term /= m.mentries[1] .term
+                            /\ log[i][index].term /= m.mentries[1].term
                             /\ LET new == [index2 \in 1..(Len(log[i]) - 1) |->
                                     log[i][index2]]
                                 IN log' = [log EXCEPT ![i] = new]
@@ -453,7 +453,7 @@ DropStaleResponse(i, j, m) ==
 \* Receive a message.
 Receive(m) ==
     LET i == m.mdest
-    j == m.msource
+        j == m.msource
     IN \* Any RPC with a newer term causes the recipient to advance
     \* its term first. Responses with stale terms are ignored.
         \/ UpdateTerm(i, j, m)

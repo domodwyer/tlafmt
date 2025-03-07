@@ -549,6 +549,20 @@ mod tests {
     }
 
     #[test]
+    fn test_record_paren() {
+        let parens = [
+            (Token::ParenClose, ")"),
+            (Token::SquareClose, "]"),
+            (Token::AngleClose, ">>"), // Extra space
+        ];
+
+        for (paren, p_symbol) in parens {
+            let output: String = format([paren.clone(), Token::Dot, Token::Ident("bananas")]);
+            assert_eq!(output, format!("{p_symbol}.bananas"));
+        }
+    }
+
+    #[test]
     fn test_compose_paren() {
         let output: String = format([
             Token::Ident("bananas"),

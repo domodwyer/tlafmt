@@ -22,10 +22,10 @@ VARIABLES store,            \* A data store mapping keys to values.
     missed                  \* The set of writes invisible to each transaction.
 --------------------------------------------------------------------------------
 NoVal == \* Choose something to represent the absence of a value.
-CHOOSE v: v \notin Val
+    CHOOSE v: v \notin Val
 
 Store == \* The set of all key-value stores.
-[Key -> Val \union {NoVal}]
+    [Key -> Val \union {NoVal}]
 
 Init == \* The initial predicate.
     /\ store = [k \in Key |-> NoVal]        \* All store values are initially NoVal.

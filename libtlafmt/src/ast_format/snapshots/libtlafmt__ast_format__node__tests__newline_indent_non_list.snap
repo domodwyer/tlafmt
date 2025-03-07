@@ -1,0 +1,28 @@
+---
+source: libtlafmt/src/ast_format/node.rs
+expression: output
+---
+-------------------------------- MODULE Bananas --------------------------------
+NoVal ==
+    CHOOSE v:
+
+        v \notin
+        Val
+
+\* Bananas are good
+Store ==
+    [Key ->
+            Val \union {NoVal}]
+
+\* Set map
+Map ==
+    {
+        P(x): x \in S
+    }
+
+Record ==
+    [
+        name |-> "bananas",
+        version |-> 0
+    ]
+================================================================================

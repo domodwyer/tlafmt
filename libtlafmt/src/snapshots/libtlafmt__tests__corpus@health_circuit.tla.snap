@@ -247,7 +247,7 @@ TypeOk ==
 --------------------------------------------------------------------------------
 
 ExclusiveProbeState == \A t \in Threads:
-        (ENABLED ProbeContinue(t)) /= (ENABLED ProbeExhausted(t))
+    (ENABLED ProbeContinue(t)) /= (ENABLED ProbeExhausted(t))
 
 (*************************** Temporal Properties ***************************)
 

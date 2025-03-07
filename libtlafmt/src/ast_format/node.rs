@@ -79,6 +79,7 @@ where
         "bound_infix_op",
         "except",
         "extends",
+        "choose",
         "record_literal",
         "constant_declaration",
         "variable_declaration",
@@ -87,6 +88,10 @@ where
         "function_literal",
         "if_then_else",
         "finite_set_literal",
+        "operator_definition",
+        "set_of_functions",
+        "set_of_records",
+        "set_map",
     ];
 
     // Some tokens require processing before they can be emitted, to manage
@@ -127,6 +132,22 @@ where
         // These are always indented.
         "disj_list" | "conj_list" | "let_in" => skip_indent = false,
 
+        // Operators are not indented if they are the top level definition, and
+        // are indented if they are within a definition (excluding LOCALs).
+        "operator_definition"
+            if def
+                .parent()
+                .is_some_and(|v| matches!(v.kind(), "module" | "local_definition")) =>
+        {
+            skip_indent = true;
+        }
+
+        // String literals.
+        "string" => {
+            writer.push(Token::Lit(get_str(&def, input)))?;
+            return Ok(());
+        }
+
         // Node types that have their children indented when rendered, iff the
         // indentation was not already increased on this line.
         v if may_indent.contains(&v) => {
@@ -154,14 +175,12 @@ where
 
         // Nodes that never increase the indentation depth.
         "source_file"
-        | "operator_definition"
         | "function_evaluation"
         | "except_update_record_field"
         | "except_update_specifier"
         | "except_update_fn_appl"
         | "except_update"
         | "record_value"
-        | "set_of_records"
         | "always"
         | "eventually"
         | "boolean"
@@ -171,7 +190,6 @@ where
         | "bullet_disj"
         | "bound_op"
         | "bound_prefix_op"
-        | "choose"
         | "tuple_literal"
         | "parentheses"
         | "local_definition"
@@ -180,9 +198,7 @@ where
         | "infix_op_symbol"
         | "instance"
         | "domain"
-        | "theorem"
-        | "set_map"
-        | "set_of_functions" => {
+        | "theorem" => {
             skip_indent = true;
         }
 
@@ -265,7 +281,7 @@ fn into_output_token<'a>(node: &Node<'_>, input: &'a str) -> Option<Token<'a>> {
         "notin" => Token::SetNotIn,
         "forall" => Token::All,
         "/\\" | "land" => Token::And,
-        "\\/" => Token::Or,
+        "\\/" | "lor" => Token::Or,
         "lnot" => Token::Not,
         "eq" | "=" => Token::Eq,
         "def_eq" => Token::Eq2,
@@ -613,6 +629,60 @@ Spec == \* Initialize state with Init and transition with Next.
 THEOREM Spec => [](TypeInvariant /\ TxLifecycle)
 =============================================================================
 "
+        );
+    }
+
+    #[test]
+    fn test_newline_indent_non_list() {
+        assert_rewrite!(
+            r#"
+---- MODULE Bananas ----
+NoVal ==
+    CHOOSE v :
+
+    v \notin
+Val
+
+   \* Bananas are good
+Store ==
+    [  Key ->
+Val      \cup   {   NoVal}  ]
+
+   \* Set map
+Map ==
+{
+P(x)  :   x \in S
+}
+
+Record ==
+[
+  name   |->"bananas" ,
+    version |-> 0
+    ]
+====
+"#
+        );
+    }
+
+    #[test]
+    fn test_lor() {
+        assert_rewrite!(
+            r"
+---- MODULE B ----
+X == A \/ B
+====
+"
+        );
+    }
+
+    #[test]
+    fn test_string() {
+        assert_rewrite!(
+            r#"
+---- MODULE B ----
+X == "bananas"
+====
+"#
         );
     }
 }

@@ -142,6 +142,12 @@ where
             skip_indent = true;
         }
 
+        // String literals.
+        "string" => {
+            writer.push(Token::Lit(get_str(&def, input)))?;
+            return Ok(());
+        }
+
         // Node types that have their children indented when rendered, iff the
         // indentation was not already increased on this line.
         v if may_indent.contains(&v) => {
@@ -275,7 +281,7 @@ fn into_output_token<'a>(node: &Node<'_>, input: &'a str) -> Option<Token<'a>> {
         "notin" => Token::SetNotIn,
         "forall" => Token::All,
         "/\\" | "land" => Token::And,
-        "\\/" => Token::Or,
+        "\\/" | "lor" => Token::Or,
         "lnot" => Token::Not,
         "eq" | "=" => Token::Eq,
         "def_eq" => Token::Eq2,
@@ -653,6 +659,28 @@ Record ==
   name   |->"bananas" ,
     version |-> 0
     ]
+====
+"#
+        );
+    }
+
+    #[test]
+    fn test_lor() {
+        assert_rewrite!(
+            r"
+---- MODULE B ----
+X == A \/ B
+====
+"
+        );
+    }
+
+    #[test]
+    fn test_string() {
+        assert_rewrite!(
+            r#"
+---- MODULE B ----
+X == "bananas"
 ====
 "#
         );

@@ -129,6 +129,32 @@ fn test_in_place() {
     assert_eq!(control, got);
 }
 
+/// Reject --in-place with --check.
+#[test]
+fn test_in_place_conflicts_check() {
+    let unformatted = std::fs::read_to_string(BAD_PATH).unwrap();
+
+    // Run the formatter reading from --stdin.
+    cmd()
+        .arg("--in-place")
+        .arg("--check")
+        .arg(BAD_PATH)
+        .write_stdin(unformatted)
+        .assert()
+        .failure()
+        .stdout(predicate::eq(""))
+        .stderr(predicate::eq(
+            "\
+error: the argument '--in-place' cannot be used with '--check'
+
+Usage: tlafmt --in-place <FILE>
+
+For more information, try '--help'.
+",
+        ))
+        .code(predicate::eq(2));
+}
+
 /// Support reading from stdin, instead of using a file path.
 #[test]
 fn test_from_stdin() {

@@ -26,13 +26,27 @@ fn dir() -> TempDir {
         .expect("cannot create tempdir for test state")
 }
 
+/// A helper to format `path` and return the stdout (formatted result).
+fn format(path: &str) -> String {
+    String::from_utf8(
+        cmd()
+            .arg(path)
+            .assert()
+            .success()
+            .get_output()
+            .stdout
+            .clone(),
+    )
+    .unwrap()
+}
+
 /// This test asserts what is part of the CLI and the documentation for it.
 ///
 /// As changes are made, this help text will need updating, which helps
 /// highlight any changes to the public interface.
 #[test]
 fn test_help_text() {
-    let stderr = String::from_utf8(
+    let stdout = String::from_utf8(
         cmd()
             .arg("--help")
             .assert()
@@ -47,18 +61,19 @@ fn test_help_text() {
         "\
 A formatter for TLA+ specs
 
-Usage: tlafmt [OPTIONS] <FILE>
+Usage: tlafmt [OPTIONS] [FILE]
 
 Arguments:
-  <FILE>  Path to the TLA+ file to format
+  [FILE]  Path to the TLA+ file to format
 
 Options:
   -c, --check     Check the input file and exit with an error (code 3) if it needs formatting
   -i, --in-place  Overwrite the source file with the formatted output instead of printing it to stdout
+      --stdin     Read the input file from stdin instead of the filesystem
   -h, --help      Print help
   -V, --version   Print version
 ",
-    stderr
+    stdout
     );
 }
 
@@ -106,19 +121,97 @@ fn test_in_place() {
         .code(predicate::eq(0));
 
     // Run the formatter without --in-place to obtain the control output.
-    let control = String::from_utf8(
-        cmd()
-            .arg(BAD_PATH)
-            .assert()
-            .success()
-            .get_output()
-            .stdout
-            .clone(),
-    )
-    .unwrap();
+    let control = format(BAD_PATH);
 
     let got = std::fs::read_to_string(file).unwrap();
 
     // Confirm the file matches the formatted sample file.
     assert_eq!(control, got);
+}
+
+/// Support reading from stdin, instead of using a file path.
+#[test]
+fn test_from_stdin() {
+    let unformatted = std::fs::read_to_string(BAD_PATH).unwrap();
+    let control = format(BAD_PATH);
+
+    // Run the formatter reading from --stdin.
+    cmd()
+        .arg("--stdin")
+        .write_stdin(unformatted.clone())
+        .assert()
+        .success()
+        .stdout(predicate::eq(control.clone()))
+        .stderr(predicate::eq(""))
+        .code(predicate::eq(0));
+
+    // Run a check reading from --stdin.
+    cmd() // Unformatted
+        .arg("--stdin")
+        .arg("--check")
+        .write_stdin(unformatted)
+        .assert()
+        .failure()
+        .stdout(predicate::eq(""))
+        .stderr(predicate::eq("input file needs formatting\n"))
+        .code(predicate::eq(3));
+    cmd() // Already formatted
+        .arg("--stdin")
+        .arg("--check")
+        .write_stdin(control)
+        .assert()
+        .success()
+        .stdout(predicate::eq(""))
+        .stderr(predicate::eq(""))
+        .code(predicate::eq(0));
+}
+
+/// Reject --stdin with a file path.
+#[test]
+fn test_from_stdin_conflicts_path() {
+    let unformatted = std::fs::read_to_string(BAD_PATH).unwrap();
+
+    // Run the formatter reading from --stdin.
+    cmd()
+        .arg("--stdin")
+        .arg(BAD_PATH)
+        .write_stdin(unformatted)
+        .assert()
+        .failure()
+        .stdout(predicate::eq(""))
+        .stderr(predicate::eq(
+            "\
+error: the argument '--stdin' cannot be used with '[FILE]'
+
+Usage: tlafmt --stdin [FILE]
+
+For more information, try '--help'.
+",
+        ))
+        .code(predicate::eq(2));
+}
+
+/// Reject --stdin with --in-place.
+#[test]
+fn test_from_stdin_conflicts_in_place() {
+    let unformatted = std::fs::read_to_string(BAD_PATH).unwrap();
+
+    // Run the formatter reading from --stdin.
+    cmd()
+        .arg("--stdin")
+        .arg("--in-place")
+        .write_stdin(unformatted)
+        .assert()
+        .failure()
+        .stdout(predicate::eq(""))
+        .stderr(predicate::eq(
+            "\
+error: the argument '--stdin' cannot be used with '--in-place'
+
+Usage: tlafmt --stdin [FILE]
+
+For more information, try '--help'.
+",
+        ))
+        .code(predicate::eq(2));
 }

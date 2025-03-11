@@ -26,8 +26,8 @@ use thiserror::Error;
 #[command(version, about)]
 struct Args {
     /// Path to the TLA+ file to format.
-    #[arg()]
-    file: PathBuf,
+    #[arg(required_unless_present = "stdin", conflicts_with = "stdin")]
+    file: Option<PathBuf>,
 
     /// Check the input file and exit with an error (code 3) if it needs
     /// formatting.
@@ -36,8 +36,12 @@ struct Args {
 
     /// Overwrite the source file with the formatted output instead of printing
     /// it to stdout.
-    #[arg(short, long, conflicts_with = "check")]
+    #[arg(short, long, conflicts_with = "check", conflicts_with = "stdin")]
     in_place: bool,
+
+    /// Read the input file from stdin instead of the filesystem.
+    #[arg(long)]
+    stdin: bool,
 }
 
 #[derive(Debug, Error)]
@@ -65,7 +69,12 @@ enum Error {
 fn main() -> Result<(), Error> {
     let args = Args::parse();
 
-    let input = std::fs::read_to_string(&args.file).map_err(Error::ReadFile)?;
+    let input = match args.file.as_ref() {
+        Some(v) => std::fs::read_to_string(v),
+        None => std::io::read_to_string(std::io::stdin().lock()),
+    }
+    .map_err(Error::ReadFile)?;
+
     let parsed = ParsedFile::new(input.as_str())?;
 
     if args.check {
@@ -75,6 +84,7 @@ fn main() -> Result<(), Error> {
 
     if args.in_place {
         assert!(!args.check);
+        assert!(args.file.is_some()); // Not --stdin
         return in_place(args, &parsed);
     }
 
@@ -100,7 +110,7 @@ fn in_place(args: Args, parsed: &ParsedFile<'_>) -> Result<(), Error> {
     buffered.flush().map_err(Error::FlushTempFile)?;
     drop(buffered);
 
-    file.persist(args.file)
+    file.persist(args.file.unwrap())
         .map_err(|v| Error::SaveTempFile(v.error))?;
 
     Ok(())

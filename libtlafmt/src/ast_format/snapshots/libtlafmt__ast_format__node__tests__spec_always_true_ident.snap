@@ -3,6 +3,6 @@ source: libtlafmt/src/ast_format/node.rs
 expression: output
 ---
 ----------------------------------- MODULE B -----------------------------------
-LEMMA TypeCorrect == Spec => [] TypeInv
-THEOREM DeadlockFreedom == Spec => [] Invariant
+LEMMA TypeCorrect == Spec => []TypeInv
+THEOREM DeadlockFreedom == Spec => []Invariant
 ================================================================================

@@ -93,7 +93,7 @@ Spec == Init /\ [][Next]_vars
 \* though, that TypeInv itself won't imply Invariant though!  TypeInv alone
 \* does not help us prove Invariant.
 \* Luckily, TLAPS does not require us to decompose the proof into substeps.
-LEMMA TypeCorrect == Spec => [] TypeInv
+LEMMA TypeCorrect == Spec => []TypeInv
 <1> USE Assumption DEF TypeInv
 <1>1. Init => TypeInv BY SMT DEF Init
 <1>2. TypeInv /\ [Next]_vars => TypeInv' BY SMT DEF Next, Put, Get, Wait, NotifyOther, vars
@@ -113,7 +113,7 @@ IInv ==
     \* but at least one consumer won't be in waitSet.
     /\ Len(buffer) = BufCapacity => \E c \in Consumers: c \notin waitSet
 
-THEOREM DeadlockFreedom == Spec => [] Invariant
+THEOREM DeadlockFreedom == Spec => []Invariant
 <1> USE Assumption, TypeCorrect DEF IInv, Invariant
 <1>1. Init => IInv BY DEF Init
 <1>2. TypeInv /\ IInv /\ [Next]_vars => IInv' BY DEF TypeInv, Next, Put, Get, Wait, NotifyOther, vars

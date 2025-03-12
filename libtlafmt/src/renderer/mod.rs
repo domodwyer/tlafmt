@@ -600,6 +600,12 @@ mod tests {
 
         let output: String = format([Token::Raw("!!!"), Token::SourceNewline]);
         assert_eq!(output, "!!!\n");
+
+        let output: String = format([Token::Raw("!!!\n"), Token::Ident("bananas")]);
+        assert_eq!(output, "!!!\nbananas");
+
+        let output: String = format([Token::Raw("!!!\n"), Token::Ident("bananas")]);
+        assert_eq!(output, "!!!\nbananas");
     }
 
     /// An unhandled node that follows a newline should not be space delimited -

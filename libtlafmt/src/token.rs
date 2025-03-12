@@ -301,6 +301,7 @@ impl Token<'_> {
             (Token::Newline | Token::SourceNewline, _) => 0,
 
             (Token::Raw(_), Token::Newline | Token::SourceNewline) => 0,
+            (Token::Raw(s), _) if s.ends_with("\n") => 0,
             (Token::Raw(_), _) => 1,
             (_, Token::Raw(_)) => 1,
 

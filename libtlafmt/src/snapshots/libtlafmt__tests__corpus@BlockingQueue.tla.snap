@@ -16,7 +16,7 @@ ASSUME Assumption ==
        /\ Producers \intersect Consumers = {} (* no thread is both consumer and producer *)
        /\ BufCapacity \in (Nat \ {0})         (* buffer capacity is at least 1 *)
 
- --------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 VARIABLES buffer, waitSet
 vars == << buffer, waitSet >>

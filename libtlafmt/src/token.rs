@@ -347,9 +347,12 @@ impl Token<'_> {
 
             // Chained liveness tokens are not space delimited, nor should there
             // be a space before the [Next] portion in `<>[][Next]_vars`.
+            //
+            // Likewise a THEOREM == Spec => []Op should not be space delimited
+            // between [] and the ident.
             (
                 Token::Eventually | Token::Always,
-                Token::Eventually | Token::Always | Token::StepOrStutter(_),
+                Token::Eventually | Token::Always | Token::StepOrStutter(_) | Token::Ident(_),
             ) => 0,
 
             // Fairness bounds must not be space delimited.

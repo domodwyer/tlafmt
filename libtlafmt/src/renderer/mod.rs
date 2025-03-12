@@ -584,4 +584,15 @@ mod tests {
         let output: String = format([Token::Ident("bananas"), Token::Raw("!!!"), Token::Lit("42")]);
         assert_eq!(output, "bananas !!! 42");
     }
+
+    /// An unhandled node that follows a newline should not be space delimited -
+    /// it leads to an unexpected space before the content of a line.
+    #[test]
+    fn test_raw_tokens_after_newlines() {
+        let output: String = format([Token::Newline, Token::Raw("!!!"), Token::Lit("42")]);
+        assert_eq!(output, "\n!!! 42");
+
+        let output: String = format([Token::SourceNewline, Token::Raw("!!!"), Token::Lit("42")]);
+        assert_eq!(output, "\n!!! 42");
+    }
 }

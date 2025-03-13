@@ -39,7 +39,7 @@ jobs:
 
       - name: Install cargo-fuzz
         if: steps.cache-cargo-fuzz.outputs.cache-hit != 'true'
-        run: cargo install -f cargo-fuzz --all-features
+        run: cargo install cargo-fuzz --all-features
 
       - name: Seed fuzzing corpus from test corpus
         run: >

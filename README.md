@@ -52,6 +52,10 @@ Check out the `--help` text too.
 
 ## Style
 
+This formatter doesn't aim to enforce a prescriptive, universal style across the
+whole spec. Instead it aims to improve consistency by making small changes,
+respecting the general style of the input spec.
+
 Formatting is being iterated on - please [report] any undesirable rendering as
 an issue.
 

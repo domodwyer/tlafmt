@@ -1,13 +1,34 @@
 mod comment;
+mod indent;
 
-use std::io::Write;
+use std::{
+    io::Write,
+    ops::{Add, Sub},
+};
 
 use comment::align_comments;
+use indent::limit_indents;
 
 use crate::{helpers::IndentDecorator, token::Token, LINE_WIDTH};
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Ord, Eq)]
 struct Indent(u8);
+
+impl Add<u8> for Indent {
+    type Output = Self;
+
+    fn add(self, rhs: u8) -> Self::Output {
+        Self(self.0 + rhs)
+    }
+}
+
+impl Sub for Indent {
+    type Output = Self;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        Self(self.0 - rhs.0)
+    }
+}
 
 /// A renderer of [`Token`] instances, writing the resulting output to `W`.
 pub(crate) struct Renderer<'a, W> {
@@ -78,6 +99,10 @@ where
         // aligned vertically and rewrite them to preserve their alignment after
         // their respective lines are formatted.
         align_comments(&mut self.buf);
+
+        // Rewrite indentation levels if necessary, to prevent blocks from being
+        // excessively indented.
+        limit_indents(&mut self.buf);
 
         let mut iter = self.buf.drain(..).peekable();
 

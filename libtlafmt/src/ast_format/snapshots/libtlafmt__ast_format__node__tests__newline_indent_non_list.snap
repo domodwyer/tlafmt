@@ -6,13 +6,13 @@ expression: output
 NoVal ==
     CHOOSE v:
 
-        v \notin
-        Val
+    v \notin
+    Val
 
 \* Bananas are good
 Store ==
     [Key ->
-            Val \union {NoVal}]
+        Val \union {NoVal}]
 
 \* Set map
 Map ==

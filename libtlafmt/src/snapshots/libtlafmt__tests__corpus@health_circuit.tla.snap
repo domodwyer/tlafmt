@@ -254,8 +254,8 @@ ExclusiveProbeState == \A t \in Threads:
 \* Eventually the circuit breaker is always "healthy", within the bounds of the
 \* model.
 EventuallyAlwaysHealthy == <>[](
-        \/ Counter_IsHealthy_Check         \* The circuit becomes healthy
-        \/ probe_windows = MaxProbeWindows \* Or the model deadlocks at state bounds
+    \/ Counter_IsHealthy_Check         \* The circuit becomes healthy
+    \/ probe_windows = MaxProbeWindows \* Or the model deadlocks at state bounds
 )
 
 ================================================================================

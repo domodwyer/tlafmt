@@ -21,7 +21,7 @@ ASSUME Assumption ==
 VARIABLES buffer, waitSet
 vars == << buffer, waitSet >>
 
-RunningThreads ==(Producers \union Consumers) \ waitSet
+RunningThreads == (Producers \union Consumers) \ waitSet
 
 NotifyOther(Others) ==
     IF waitSet \intersect Others /= {}

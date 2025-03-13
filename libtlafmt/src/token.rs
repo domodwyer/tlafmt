@@ -1,7 +1,7 @@
 use tree_sitter::Node;
 
 /// Positional metadata for a token.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub(crate) enum Position {
     /// The absolute position where this token appears in the source / input
     /// spec.
@@ -39,7 +39,7 @@ impl From<&Node<'_>> for Position {
 }
 
 /// The formatter token to be rendered.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub(crate) enum Token<'a> {
     /// A raw string to print.
     ///

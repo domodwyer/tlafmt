@@ -74,8 +74,8 @@ where
         "disj_item",
         "conj_item",
         "let_in",
-        // ---
         "bounded_quantification",
+        // ---
         "bound_infix_op",
         "except",
         "extends",
@@ -130,7 +130,7 @@ where
         }
 
         // These are always indented.
-        "disj_list" | "conj_list" | "let_in" => skip_indent = false,
+        "disj_list" | "conj_list" | "let_in" | "bounded_quantification" => skip_indent = false,
 
         // Operators are not indented if they are the top level definition, and
         // are indented if they are within a definition (excluding LOCALs).

@@ -364,9 +364,10 @@ impl Token<'_> {
             (Token::StepOrStutter(_), _) => 0,
 
             // Eq followed by parens.
-            (Token::Eq | Token::NotEq, Token::ParenOpen | Token::SquareOpen | Token::AngleOpen) => {
-                1
-            }
+            (
+                Token::Eq | Token::Eq2 | Token::NotEq,
+                Token::ParenOpen | Token::SquareOpen | Token::AngleOpen,
+            ) => 1,
 
             // No space between this token and the listed tokens.
             _ if matches!(

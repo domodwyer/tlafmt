@@ -557,7 +557,7 @@ mod tests {
             (Token::AngleOpen, "<< "), // Extra space
         ];
 
-        let eq = [(Token::Eq, "="), (Token::NotEq, "/=")];
+        let eq = [(Token::Eq, "="), (Token::NotEq, "/="), (Token::Eq2, "==")];
 
         for (paren, p_symbol) in parens {
             for (eq, e_symbol) in &eq {

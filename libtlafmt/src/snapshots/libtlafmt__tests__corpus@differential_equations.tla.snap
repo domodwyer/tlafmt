@@ -23,8 +23,8 @@ LOCAL IsDeriv(n, df, f) ==
         IF k = 0
         THEN g = f
         ELSE \E gg \in [DOMAIN f -> Real]:
-                /\ IsFirstDeriv(g, gg)
-                /\ IsD[k - 1, gg]
+            /\ IsFirstDeriv(g, gg)
+            /\ IsD[k - 1, gg]
     IN IsD[n, df]
 
 Integrate(D, a, b, InitVals) ==

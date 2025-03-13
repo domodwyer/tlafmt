@@ -74,8 +74,8 @@ where
         "disj_item",
         "conj_item",
         "let_in",
-        // ---
         "bounded_quantification",
+        // ---
         "bound_infix_op",
         "except",
         "extends",
@@ -130,7 +130,7 @@ where
         }
 
         // These are always indented.
-        "disj_list" | "conj_list" | "let_in" => skip_indent = false,
+        "disj_list" | "conj_list" | "let_in" | "bounded_quantification" => skip_indent = false,
 
         // Operators are not indented if they are the top level definition, and
         // are indented if they are within a definition (excluding LOCALs).
@@ -681,6 +681,55 @@ X == A \/ B
             r#"
 ---- MODULE B ----
 X == "bananas"
+====
+"#
+        );
+    }
+
+    #[test]
+    fn test_spec_always_true_ident() {
+        assert_rewrite!(
+            r#"
+---- MODULE B ----
+LEMMA TypeCorrect == Spec => []TypeInv
+THEOREM DeadlockFreedom == Spec => [] Invariant
+====
+"#
+        );
+    }
+
+    /// Reproducer for https://github.com/domodwyer/tlafmt/issues/25.
+    #[test]
+    fn test_bounded_quantification() {
+        assert_rewrite!(
+            r#"
+---- MODULE B ----
+FairSpec ==
+    /\ Spec
+
+    \* Assert that producers take steps should their  Put  action be (continuously)
+    \* enabled. This is the basic case of fairness that rules out stuttering, i.e.,
+    \* assert global progress.
+    /\ \A t \in Producers:
+            WF_vars(Put(t,t))
+    \* Stipulates that  Get  actions (consumers!) will eventually notify *all*
+    \* waiting producers. In other words, given repeated  Get  actions (we don't
+    \* care which consumer, thus, existential quantification), all waiting
+    \* producers will eventually be notified.  Because  Get  actions are not
+    \* continuously enabled (the buffer might be empty), weak fairness is not
+    \* strong enough. Obviously, no real system scheduler implements such an
+    \* inefficient "policy".
+    \* This fairness constraint was initially proposed by Leslie Lamport, although
+    \* with the minor typo "in" instead of "notin", which happens to hold for
+    \* configurations with at most two producers.
+    /\ \A t \in Producers:
+            SF_vars(\E self \in Consumers: Get(self) /\ t \notin waitSet')
+
+    \* See notes above (except swap "producer" with "consumer").
+    /\ \A t \in Consumers:
+            WF_vars(Get(t))
+    /\ \A t \in Consumers:
+            SF_vars(\E self \in Producers: Put(self, self) /\ t \notin waitSet')
 ====
 "#
         );

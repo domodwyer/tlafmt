@@ -1,7 +1,7 @@
 use tree_sitter::Node;
 
 /// Positional metadata for a token.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub(crate) enum Position {
     /// The absolute position where this token appears in the source / input
     /// spec.
@@ -39,7 +39,7 @@ impl From<&Node<'_>> for Position {
 }
 
 /// The formatter token to be rendered.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub(crate) enum Token<'a> {
     /// A raw string to print.
     ///
@@ -297,12 +297,16 @@ impl Token<'_> {
         match (self, next) {
             (_, Token::ModuleHeader(_)) => 0,
 
+            // Newlines are never automatically followed by whitespace.
+            (Token::Newline | Token::SourceNewline, _) => 0,
+
+            (Token::Raw(_), Token::Newline | Token::SourceNewline) => 0,
+            (Token::Raw(s), _) if s.ends_with("\n") => 0,
             (Token::Raw(_), _) => 1,
             (_, Token::Raw(_)) => 1,
 
             // Comments with explicit whitespace padding render the provided
-            // amount of space, but never after newlines.
-            (Token::Newline | Token::SourceNewline, Token::Comment(..)) => 0,
+            // amount of space.
             (_, Token::Comment(_, Position::Padding(v))) => *v,
 
             // These tokens can never be followed by a space, irrespective of
@@ -345,9 +349,12 @@ impl Token<'_> {
 
             // Chained liveness tokens are not space delimited, nor should there
             // be a space before the [Next] portion in `<>[][Next]_vars`.
+            //
+            // Likewise a THEOREM == Spec => []Op should not be space delimited
+            // between [] and the ident.
             (
                 Token::Eventually | Token::Always,
-                Token::Eventually | Token::Always | Token::StepOrStutter(_),
+                Token::Eventually | Token::Always | Token::StepOrStutter(_) | Token::Ident(_),
             ) => 0,
 
             // Fairness bounds must not be space delimited.
@@ -378,9 +385,6 @@ impl Token<'_> {
             {
                 0
             }
-
-            // Newlines are never automatically followed by whitespace.
-            (Token::SourceNewline | Token::Newline, _) => 0,
 
             // All other tokens can be delimited by whitespace.
             _ => 1,

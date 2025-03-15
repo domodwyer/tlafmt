@@ -125,14 +125,12 @@ where
                     self.indent.write_all(s.as_bytes())?;
                     continue;
                 }
-
                 Token::Newline if self.last_token_was_newline => {
                     // Prevent the formatter from unintentionally inserting a
                     // forced newline in addition to a newline that was in the
                     // source spec.
                     continue;
                 }
-
                 Token::ModuleHeader(name) => {
                     let s = render_module_header(name);
                     debug_assert_eq!(s.len(), token_len(&t));
@@ -141,7 +139,6 @@ where
 
                     continue;
                 }
-
                 Token::LineDivider(c) => {
                     let s = std::iter::repeat(c).take(LINE_WIDTH).collect::<String>();
                     debug_assert_eq!(s.len(), token_len(&t));
@@ -149,7 +146,6 @@ where
                     self.indent.write_all(s.as_bytes())?;
                     continue;
                 }
-
                 Token::Comment(s, _) => {
                     self.last_token_was_newline = false;
 
@@ -194,6 +190,7 @@ where
                 Token::KeywordIf => "IF",
                 Token::KeywordThen => "THEN",
                 Token::KeywordElse => "ELSE",
+                Token::KeywordCase => "CASE",
                 Token::KeywordExtends => "EXTENDS",
                 Token::KeywordConstant => "CONSTANT",
                 Token::KeywordConstants => "CONSTANTS",
@@ -203,6 +200,7 @@ where
                 Token::KeywordUnchanged => "UNCHANGED",
                 Token::KeywordEnabled => "ENABLED",
                 Token::KeywordSubset => "SUBSET",
+                Token::CaseBox => "[]",
                 Token::MapTo => ":>",
                 Token::MapsTo => "->",
                 Token::AllMapsTo => "|->",
@@ -253,6 +251,7 @@ where
                 Token::StrongFairness => "SF_",
                 Token::Implies => "=>",
                 Token::KeywordTheorem => "THEOREM",
+                Token::CaseArrow => "->",
             };
 
             // Invariant: the rendered text must match the reported token
@@ -330,6 +329,7 @@ fn token_len(t: &Token<'_>) -> usize {
         Token::KeywordIf => 2,
         Token::KeywordThen => 4,
         Token::KeywordElse => 4,
+        Token::KeywordCase => 4,
         Token::Exists => 2,
         Token::All => 2,
         Token::SetIn => 3,
@@ -384,6 +384,8 @@ fn token_len(t: &Token<'_>) -> usize {
         Token::Intersect => 10,
         Token::Compose => 2,
         Token::StepOrStutter(s) => s.len() + 3,
+        Token::CaseBox => 2,
+        Token::CaseArrow => 2,
     }
 }
 

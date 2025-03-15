@@ -1,0 +1,10 @@
+---
+source: libtlafmt/src/ast_format/comment.rs
+expression: output
+---
+-------------------------------- MODULE Bananas --------------------------------
+X ==
+    /\ A = 42
+    (* There's a block comment here *)
+    /\ B = A
+================================================================================

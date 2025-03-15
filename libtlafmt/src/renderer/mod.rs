@@ -150,7 +150,37 @@ where
                     continue;
                 }
 
-                Token::Raw(s) | Token::Comment(s, _) => s,
+                Token::Comment(s, _) => {
+                    self.last_token_was_newline = false;
+
+                    // Indentation must be removed from lines that follow the
+                    // first (only applicable in a block comment).
+                    //
+                    // If this does not happen, indentation will be added each
+                    // time the document is formatted.
+
+                    let mut comment_parts = s.split("\n");
+
+                    // Write the first line with whatever indentation is set.
+                    self.indent
+                        .write_all(comment_parts.next().unwrap().as_bytes())?;
+
+                    // Write the rest of the lines without indentation.
+                    let orig = self.indent_depth.0;
+                    self.indent.set(0);
+                    for v in comment_parts {
+                        self.indent.write_all(b"\n")?;
+                        self.indent.write_all(v.as_bytes())?;
+                    }
+                    self.indent.set(orig);
+
+                    // Optionally add a space delimiter.
+                    if let Some(n) = iter.peek().map(|(v, _)| t.delimiting_space_len(v)) {
+                        self.indent.write_all(&b" ".repeat(n))?;
+                    }
+                    continue;
+                }
+                Token::Raw(s) => s,
                 Token::Prime => "'",
                 Token::Always => "[]",
                 Token::Eventually => "<>",

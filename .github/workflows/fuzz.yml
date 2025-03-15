@@ -37,7 +37,7 @@ jobs:
       - name: Seed fuzzing corpus from test corpus
         run: >
           mkdir -p libtlafmt/fuzz/corpus/e2e;
-          cp libtlafmt/tests/corpus/* libtlafmt/fuzz/corpus
+          cp libtlafmt/tests/corpus/* libtlafmt/fuzz/corpus/e2e
 
       - name: Cache corpus
         id: cache-fuzz-corpus

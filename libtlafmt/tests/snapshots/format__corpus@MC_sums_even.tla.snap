@@ -1,0 +1,12 @@
+---
+source: libtlafmt/tests/format.rs
+expression: output
+input_file: libtlafmt/tests/corpus/MC_sums_even.tla
+---
+----------------------------- MODULE MC_sums_even ------------------------------
+EXTENDS sums_even
+CONSTANT MaxNat
+ASSUME MaxNat \in Nat
+NatOverride == 0..MaxNat
+ASSUME T1
+================================================================================

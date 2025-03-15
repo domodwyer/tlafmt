@@ -1,0 +1,12 @@
+---
+source: libtlafmt/tests/format.rs
+expression: output
+input_file: libtlafmt/tests/corpus/Integers.tla
+---
+------------------------------- MODULE Integers --------------------------------
+EXTENDS Naturals
+LOCAL R == INSTANCE ProtoReals
+
+Int == R!Int
+-. a == 0 - a
+================================================================================

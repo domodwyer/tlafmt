@@ -1,5 +1,3 @@
-#![cfg(test)]
-
 /// Parse and format the macro string argument and generate a insta snapshot
 /// assertion against it in the name of the caller.
 #[macro_export]

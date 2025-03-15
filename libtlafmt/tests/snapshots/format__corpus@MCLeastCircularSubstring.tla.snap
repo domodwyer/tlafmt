@@ -1,0 +1,15 @@
+---
+source: libtlafmt/tests/format.rs
+expression: output
+input_file: libtlafmt/tests/corpus/MCLeastCircularSubstring.tla
+---
+----------------------- MODULE MCLeastCircularSubstring ------------------------
+EXTENDS Naturals, LeastCircularSubstring
+
+CONSTANTS CharSetSize, MaxStringLength
+
+ZSeqNat == 0..MaxStringLength
+
+MCCharacterSet == 0..(CharSetSize - 1)
+
+================================================================================

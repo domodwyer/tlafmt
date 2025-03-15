@@ -1,0 +1,9 @@
+---
+source: libtlafmt/tests/format.rs
+expression: output
+input_file: libtlafmt/tests/corpus/MC_spanning.tla
+---
+------------------------------ MODULE MC_spanning ------------------------------
+EXTENDS spanning
+Neighbors == {<< 1, 2 >>, << 1, 3 >>}
+================================================================================

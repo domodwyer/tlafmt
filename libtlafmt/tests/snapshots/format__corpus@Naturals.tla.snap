@@ -1,0 +1,22 @@
+---
+source: libtlafmt/tests/format.rs
+expression: output
+input_file: libtlafmt/tests/corpus/Naturals.tla
+---
+------------------------------- MODULE Naturals --------------------------------
+LOCAL R == INSTANCE ProtoReals
+
+Nat == R!Nat
+
+a + b == R!+(a, b)
+a - b == R!-(a, b)
+a * b == R!*(a, b)
+a ^ b == R!^(a, b)
+a <= b == R!\leq(a, b)
+a >= b == b <= a
+a < b == (a <= b) /\(a /= b)
+a > b == b < a
+a..b == {i \in R!Int :(a <= i) /\(i <= b)}
+a \div b == CHOOSE n \in R!Int : \E r \in 0..(b - 1): a = b * n + r
+a % b == a - b *(a \div b)
+================================================================================

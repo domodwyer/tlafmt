@@ -282,7 +282,7 @@ AdvanceCommitIndex(i) ==
                     /\ agreeIndexes /= {}
                     /\ log[i][Max(agreeIndexes)].term = currentTerm[i]
                 THEN
-                Max(agreeIndexes)
+                    Max(agreeIndexes)
                 ELSE
                 commitIndex[i]
         IN commitIndex' = [commitIndex EXCEPT ![i] = newCommitIndex]

@@ -34,11 +34,6 @@ jobs:
         if: steps.cargo-dir.outputs.cache-hit != 'true'
         run: cargo install cargo-fuzz --all-features
 
-      - name: Seed fuzzing corpus from test corpus
-        run: >
-          mkdir -p libtlafmt/fuzz/corpus/e2e;
-          cp libtlafmt/tests/corpus/* libtlafmt/fuzz/corpus/e2e
-
       - name: Cache corpus
         id: cache-fuzz-corpus
         uses: actions/cache@v4
@@ -46,6 +41,11 @@ jobs:
           enableCrossOsArchive: true
           key: fuzz-corpus-e2e
           path: libtlafmt/fuzz/corpus/e2e
+
+      - name: Seed fuzzing corpus from test corpus
+        run: >
+          mkdir -p libtlafmt/fuzz/corpus/e2e;
+          cp libtlafmt/tests/corpus/* libtlafmt/fuzz/corpus/e2e
 
       - name: Cache fuzz target dir
         id: target-dir

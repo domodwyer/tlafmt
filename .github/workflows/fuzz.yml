@@ -30,13 +30,6 @@ jobs:
           key: ${{ runner.os }}-cargo-nightly
           path: /cargo
 
-      - name: Cache cargo-fuzz
-        id: cache-cargo-fuzz
-        uses: actions/cache@v4
-        with:
-          key: ${{ runner.os }}-cargo-fuzz
-          path: /usr/local/cargo/bin/cargo-fuzz
-
       - name: Install cargo-fuzz
         if: steps.cache-cargo-fuzz.outputs.cache-hit != 'true'
         run: cargo install cargo-fuzz --all-features

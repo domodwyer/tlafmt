@@ -40,4 +40,11 @@ impl EmptyLines {
 
         Ok(true)
     }
+
+    /// Observe `node` and do not allow it or any lines prior to it to insert a
+    /// linebreak if when observed later a node would have caused a line break
+    /// to be inserted.
+    pub(crate) fn suppress(&mut self, node: &Node<'_>) {
+        self.0 = node.end_position().row;
+    }
 }

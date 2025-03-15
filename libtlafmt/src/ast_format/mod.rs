@@ -3,6 +3,7 @@
 //! [`Token`]: crate::token::Token
 //! [`Node`]: tree_sitter::Node
 
+mod case;
 mod comment;
 mod module;
 mod node;

@@ -1,0 +1,9 @@
+---
+source: libtlafmt/tests/format.rs
+expression: output
+input_file: libtlafmt/tests/corpus/MCKVS.tla
+---
+--------------------------------- MODULE MCKVS ---------------------------------
+EXTENDS KeyValueStore, TLC
+TxIdSymmetric == Permutations(TxId)
+================================================================================

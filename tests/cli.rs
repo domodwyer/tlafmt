@@ -12,8 +12,7 @@ const BAD_PATH: &str = "libtlafmt/tests/corpus/differential_equations.tla";
 ///
 /// NOTE: this file includes a YAML header that does not appear in the input
 /// file.
-const GOOD_PATH: &str =
-    "libtlafmt/src/snapshots/libtlafmt__tests__corpus@differential_equations.tla.snap";
+const GOOD_PATH: &str = "libtlafmt/tests/snapshots/format__corpus@differential_equations.tla.snap";
 
 fn cmd() -> Command {
     Command::cargo_bin("tlafmt").unwrap()

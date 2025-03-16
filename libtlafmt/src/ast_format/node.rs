@@ -77,6 +77,7 @@ where
         "bounded_quantification",
         // ---
         "bound_infix_op",
+        "bound_op",
         "except",
         "extends",
         "choose",

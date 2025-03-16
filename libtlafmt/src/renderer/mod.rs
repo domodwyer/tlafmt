@@ -681,4 +681,19 @@ mod tests {
             "!!!\n================================================================================"
         );
     }
+
+    /// Raw tokens followed by relatively spaced comments should respect the
+    /// relative spacing.
+    #[test]
+    fn test_raw_token_relative_comment_positioning() {
+        let output: String = format([
+            Token::Newline,
+            Token::Raw("!!!"),
+            Token::Comment(r"(* 42 *)", crate::token::Position::Relative(42)),
+        ]);
+        assert_eq!(
+            output,
+            "\n!!!                                          (* 42 *)"
+        );
+    }
 }

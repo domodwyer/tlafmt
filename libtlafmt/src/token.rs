@@ -9,7 +9,7 @@ pub(crate) enum Position {
 
     /// The amount of padding whitespace to precede to this token (relative
     /// positioning w.r.t previous token).
-    Padding(usize),
+    Relative(usize),
 }
 
 impl Position {
@@ -310,13 +310,14 @@ impl Token<'_> {
             (Token::Newline | Token::SourceNewline, _) => 0,
 
             (Token::Raw(_), Token::Newline | Token::SourceNewline) => 0,
+            (Token::Raw(_), Token::Comment(_, Position::Relative(v))) => *v,
             (Token::Raw(s), _) if s.ends_with("\n") => 0,
             (Token::Raw(_), _) => 1,
             (_, Token::Raw(_)) => 1,
 
             // Comments with explicit whitespace padding render the provided
             // amount of space.
-            (_, Token::Comment(_, Position::Padding(v))) => *v,
+            (_, Token::Comment(_, Position::Relative(v))) => *v,
 
             // These tokens can never be followed by a space, irrespective of
             // the next token.

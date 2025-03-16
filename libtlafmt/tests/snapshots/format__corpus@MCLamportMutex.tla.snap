@@ -1,0 +1,11 @@
+---
+source: libtlafmt/tests/format.rs
+expression: output
+input_file: libtlafmt/tests/corpus/MCLamportMutex.tla
+---
+---------------------------- MODULE MCLamportMutex -----------------------------
+EXTENDS LamportMutex
+CONSTANT MaxNat
+ASSUME MaxNat \in Nat
+NatOverride == 0..MaxNat
+================================================================================

@@ -1,0 +1,11 @@
+---
+source: libtlafmt/tests/format.rs
+expression: output
+input_file: libtlafmt/tests/corpus/MCBakery.tla
+---
+------------------------------- MODULE MCBakery --------------------------------
+EXTENDS Bakery
+CONSTANT MaxNat
+ASSUME MaxNat \in Nat
+NatOverride == 0..MaxNat
+================================================================================

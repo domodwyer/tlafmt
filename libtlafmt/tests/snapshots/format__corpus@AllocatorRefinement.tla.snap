@@ -1,0 +1,18 @@
+---
+source: libtlafmt/tests/format.rs
+expression: output
+input_file: libtlafmt/tests/corpus/AllocatorRefinement.tla
+---
+-------------------------- MODULE AllocatorRefinement --------------------------
+(*********************************************************************)
+(* The scheduling allocator is a refinement of the simple allocator. *)
+(*********************************************************************)
+
+EXTENDS SchedulingAllocator
+
+Simple == INSTANCE SimpleAllocator
+SimpleAllocator == Simple!SimpleAllocator
+
+THEOREM
+    Allocator => SimpleAllocator
+================================================================================

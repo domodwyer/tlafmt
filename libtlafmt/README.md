@@ -34,6 +34,6 @@ to cause future tests runs to pass.
 
 [tlafmt]: https://github.com/domodwyer/tlafmt
 [cargo-insta]: https://crates.io/crates/cargo-insta
-[^corpus]: A small subset of the official TLA examples repo - see
+[^corpus]: A majority sample of the official TLA examples repo - see
     `libtlafmt/tests/corpus/` in the code repo.
-[^snapshots]: See `libtlafmt/src/snapshots/` in the code repo.
+[^snapshots]: See `libtlafmt/tests/snapshots/` in the code repo.

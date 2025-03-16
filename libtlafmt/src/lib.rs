@@ -17,8 +17,10 @@
 mod ast_format;
 mod helpers;
 mod renderer;
-mod test_utils;
 mod token;
+
+#[cfg(test)]
+mod test_utils;
 
 use std::{borrow::Cow, io::Write};
 
@@ -108,24 +110,7 @@ fn get_str<'a>(node: &Node<'_>, input: &'a str) -> &'a str {
 
 #[cfg(test)]
 mod tests {
-    use insta::glob;
-
     use super::*;
-
-    /// Execute the formatter against each file in the TLA spec corpus, and
-    /// compare the output against a reference copy.
-    ///
-    /// If this test fails, use "cargo insta review" to inspect any output
-    /// changes.
-    #[test]
-    fn test_corpus() {
-        use std::fs;
-
-        glob!("../", "tests/corpus/*.tla", |path| {
-            let input = fs::read_to_string(path).expect("read test corpus file");
-            assert_rewrite!(&input);
-        });
-    }
 
     /// A test where the second conj item uses a tab to position the bullet.
     /// With tabs=4 these causes the bullets to align, but a conj_list is not

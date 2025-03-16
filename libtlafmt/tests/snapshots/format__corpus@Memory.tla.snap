@@ -1,0 +1,10 @@
+---
+source: libtlafmt/tests/format.rs
+expression: output
+input_file: libtlafmt/tests/corpus/Memory.tla
+---
+-------------------------------- MODULE Memory ---------------------------------
+EXTENDS MemoryInterface
+Inner(mem, ctl, buf) == INSTANCE InternalMemory
+Spec == \EE mem, ctl, buf : Inner(mem, ctl, buf)!ISpec
+================================================================================

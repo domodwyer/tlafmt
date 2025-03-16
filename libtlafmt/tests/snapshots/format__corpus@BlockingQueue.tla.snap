@@ -105,12 +105,12 @@ IInv ==
     /\ TypeInv!2
     /\ TypeInv!3
     /\ Invariant
-    \* When the buffer is empty, a consumer will be added to the waitSet.
-    \* However, this does not crate a deadlock, because at least one producer
-    \* will not be in the waitSet.
+        \* When the buffer is empty, a consumer will be added to the waitSet.
+        \* However, this does not crate a deadlock, because at least one producer
+        \* will not be in the waitSet.
     /\ buffer = <<>> => \E p \in Producers: p \notin waitSet
-    \* Vice versa, when buffer is full, a producer will be added to waitSet,
-    \* but at least one consumer won't be in waitSet.
+        \* Vice versa, when buffer is full, a producer will be added to waitSet,
+        \* but at least one consumer won't be in waitSet.
     /\ Len(buffer) = BufCapacity => \E c \in Consumers: c \notin waitSet
 
 THEOREM DeadlockFreedom == Spec => []Invariant

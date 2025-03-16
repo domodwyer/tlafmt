@@ -95,14 +95,14 @@ where
 
     /// Flush the queue of [`Token`], rendering them to the output sink.
     pub(crate) fn flush(mut self) -> Result<(), std::io::Error> {
+        // Rewrite indentation levels if necessary, to prevent blocks from being
+        // excessively indented.
+        limit_indents(&mut self.buf);
+
         // Find consecutive lines that contain end-of-line comments that are
         // aligned vertically and rewrite them to preserve their alignment after
         // their respective lines are formatted.
         align_comments(&mut self.buf);
-
-        // Rewrite indentation levels if necessary, to prevent blocks from being
-        // excessively indented.
-        limit_indents(&mut self.buf);
 
         let mut iter = self.buf.drain(..).peekable();
 
@@ -717,6 +717,6 @@ mod tests {
                 Indent(1),
             ),
         ]);
-        assert_eq!(output, "\n    (* 42 *)");
+        assert_eq!(output, "\n     (* 42 *)");
     }
 }

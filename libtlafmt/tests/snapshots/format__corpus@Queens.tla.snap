@@ -57,7 +57,7 @@ PlaceQueen == \E queens \in todo:
     \** extend some partial solution by placing the next queen
         LET nxtQ == Len(queens) + 1 \** number of queen to place
             cols == \** set of columns on which queen can be placed without any
-            \** conflict with some queen already placed
+                    \** conflict with some queen already placed
             {c \in 1..N: ~\E i \in 1..Len(queens):
                 Attacks(Append(queens, c), i, nxtQ)}
             exts == {Append(queens, c): c \in cols} \** possible extensions

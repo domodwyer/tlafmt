@@ -11,8 +11,8 @@ StatelessCrookedCoin ==
     /\ IF RandomElement(1..8) \in 1..3
     THEN
         /\ flip' = "T"
-        \* Multiplying these probabilities quickly overflows TLC's dyadic rationals.
-        \* /\ p' = Reduce([ num |-> p.num * 3, den |-> p.den * 8 ])
+            \* Multiplying these probabilities quickly overflows TLC's dyadic rationals.
+            \* /\ p' = Reduce([ num |-> p.num * 3, den |-> p.den * 8 ])
     ELSE
         /\ flip' = "H"
         \* /\ p' = Reduce([ num |-> p.num * 5, den |-> p.den * 8 ])

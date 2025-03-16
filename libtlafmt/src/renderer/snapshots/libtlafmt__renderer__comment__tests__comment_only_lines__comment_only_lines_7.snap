@@ -1,0 +1,15 @@
+---
+source: libtlafmt/src/renderer/comment.rs
+expression: output
+---
+-------------------------------- MODULE bananas --------------------------------
+AlwaysResponds ==
+    (*************************************************************************)
+  (* Some simple liveness properties, implied by the fact that every       *)
+  (* request eventually generates a response.                              *)
+  (*************************************************************************)
+    /\ \A p \in Proc, r \in Reg:
+        X = 42
+    /\ \A oi \in [proc: Proc, idx: Nat ]:
+        Y = 24
+================================================================================

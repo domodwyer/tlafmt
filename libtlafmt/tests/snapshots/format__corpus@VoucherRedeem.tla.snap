@@ -39,12 +39,12 @@ CONSTANT
 VARIABLES
     vState,        \* vState[v] is the state of voucher v.
     vlcState,      \* vlcState[v] is the state of the voucher life cycle
-    \* machine.
+                   \* machine.
     hState,        \* hState[h] is the state of voucher holder h.
     cState,        \* cState[c] is the state of voucher collector c.
     vtpState,      \* The state of the voucher transaction provider.
     vtpRPrepared,  \* The set of Hs and Cs from which the VTP has received
-    \* "Prepared for Voucher Redeem" messages.
+                   \* "Prepared for Voucher Redeem" messages.
     msgs
 (***********************************************************************)
     (* In the protocol, processes communicate with one another by sending  *)

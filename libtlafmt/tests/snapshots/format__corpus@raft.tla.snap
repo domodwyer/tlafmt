@@ -190,8 +190,8 @@ Timeout(i) ==
     /\ state[i] \in {Follower, Candidate}
     /\ state' = [state EXCEPT ![i] = Candidate]
     /\ currentTerm' = [currentTerm EXCEPT ![i] = currentTerm[i] + 1]
-    \* Most implementations would probably just set the local vote
-    \* atomically, but messaging localhost for it is weaker.
+              \* Most implementations would probably just set the local vote
+              \* atomically, but messaging localhost for it is weaker.
     /\ votedFor' = [votedFor EXCEPT ![i] = Nil]
     /\ votesResponded' = [votesResponded EXCEPT ![i] = {}]
     /\ votesGranted' = [votesGranted EXCEPT ![i] = {}]
@@ -229,8 +229,8 @@ AppendEntries(i, j) ==
         mprevLogIndex |-> prevLogIndex,
         mprevLogTerm |-> prevLogTerm,
         mentries |-> entries,
-        \* mlog is used as a history variable for the proof.
-        \* It would not exist in a real implementation.
+                \* mlog is used as a history variable for the proof.
+                \* It would not exist in a real implementation.
         mlog |-> log[i],
         mcommitIndex |-> Min({commitIndex[i], lastEntry}),
         msource |-> i,
@@ -312,8 +312,8 @@ HandleRequestVoteRequest(i, j, m) ==
         /\ Reply([mtype |-> RequestVoteResponse,
                 mterm |-> currentTerm[i],
                 mvoteGranted |-> grant,
-                \* mlog is used just for the `elections' history variable for
-                \* the proof. It would not exist in a real implementation.
+                 \* mlog is used just for the `elections' history variable for
+                 \* the proof. It would not exist in a real implementation.
                 mlog |-> log[i],
                 msource |-> i,
                 mdest |-> j],
@@ -455,7 +455,7 @@ Receive(m) ==
     LET i == m.mdest
         j == m.msource
     IN \* Any RPC with a newer term causes the recipient to advance
-    \* its term first. Responses with stale terms are ignored.
+       \* its term first. Responses with stale terms are ignored.
         \/ UpdateTerm(i, j, m)
         \/
             /\ m.mtype = RequestVoteRequest

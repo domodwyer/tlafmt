@@ -147,11 +147,11 @@ AllocatorInvariant == \** a lower-level invariant
     /\ \** all clients that need to be scheduled have outstanding requests
         \A c \in toSchedule: unsat[c] /= {}
     /\ \** clients never hold a resource requested by a process earlier
-    \** in the schedule
+       \** in the schedule
         \A i \in DOMAIN sched: \A j \in 1..i - 1:
             alloc[sched[i]] \intersect unsat[sched[j]] = {}
     /\ \** the allocator can satisfy the requests of any scheduled client
-    \** assuming that the clients scheduled earlier release their resources
+       \** assuming that the clients scheduled earlier release their resources
         \A i \in DOMAIN sched: unsat[sched[i]] \subseteq PrevResources(i)
 
 ClientsWillReturn ==

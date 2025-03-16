@@ -30,7 +30,7 @@ EXTENDS EWD998ChanID, TLC, TLCExt, Json
 \* Init  except that  active  and  color  are restricted to TRUE and "white" to
 \* not waste time generating initial states nobody needs.
 MCInit ==
-(* Each node maintains a (local) vector clock *)
+    (* Each node maintains a (local) vector clock *)
   (* https://en.wikipedia.org/wiki/Vector_clock *)
     /\ clock = [n \in Node |-> IF n = Initiator
         THEN [m \in Node |-> IF m = Initiator THEN 1 ELSE 0]
@@ -46,9 +46,9 @@ MCInit ==
     /\ color \in [Node -> {"white"}]
 
 Inv ==
-\* TODO Choose some upper length or a invariant that produces a more
-\* TODO interesting behavior.  If you increase the length, don't forget
-\* TODO to also update TLC's depth parameter.
+    \* TODO Choose some upper length or a invariant that produces a more
+    \* TODO interesting behavior.  If you increase the length, don't forget
+    \* TODO to also update TLC's depth parameter.
     TLCGet("level") < 666
 \* A trace ending with  terminationDetected = TRUE  that is longer than 22
 \* steps.

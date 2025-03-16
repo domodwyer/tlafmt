@@ -76,7 +76,7 @@ ELSE CHOOSE x \in S: \A y \in S: x >= y
    (*************************************************************************)
 
 RecordCombine(S, T) ==
-(*************************************************************************)
+    (*************************************************************************)
    (* If S and T are sets of records, then this equals the set of all       *)
    (* records rc(s,t) with s in S and t in T, where rc(s,t) is the record   *)
    (* obtained by "merging" s and t--that is, forming the record whose set  *)
@@ -290,7 +290,7 @@ LevelConstraint == [param: ConstantDeclNodeId, level: LevelValue]
    (*************************************************************************)
 
 ArgLevelConstraint ==
-(*************************************************************************)
+    (*************************************************************************)
    (* An arg-level constraint alc indicates that the operator parameter     *)
    (* with id alc.param can be instantiated with an operator op only if the *)
    (* alc.idx-th argument of op can have level at least alc.level.  This    *)
@@ -299,7 +299,7 @@ ArgLevelConstraint ==
     [param: ConstantDeclNodeId, idx: Nat \ {0}, level: LevelValue]
 
 ArgLevelParam ==
-(*************************************************************************)
+    (*************************************************************************)
    (* An arg-level parameter alp indicates that the parameter with id       *)
    (* alp.param appears in the alp.idx-th argument of the operator with id  *)
    (* alp.op.                                                               *)
@@ -312,7 +312,7 @@ ArgLevelParam ==
  (***************************************************************************)
 
 MinLevelConstraint(id, LC) ==
-(*************************************************************************)
+    (*************************************************************************)
    (* If LC is a set of level constraints and id a ConstantDeclNodeId, then *)
    (* this equals the minimum level constraint on id implied by the         *)
    (* elements of LC. (This is 3 if there is none.)                         *)
@@ -326,7 +326,7 @@ MinLevelConstraint(id, LC) ==
     ELSE 3
 
 MaxArgLevelConstraints(id, ALC) ==
-(*************************************************************************)
+    (*************************************************************************)
    (* If ALC is a set of arg-level constraints and id a ConstantDeclNodeId, *)
    (* then this equals the tuple <<lev_1, ..., lev_n>>, where n is the      *)
    (* number of arguments taken by the operator parameter op represented by *)
@@ -347,7 +347,7 @@ MaxArgLevelConstraints(id, ALC) ==
     IN [i \in 1..n |-> minALC(i)]
 
 LevelConstraintFields ==
-(*************************************************************************)
+    (*************************************************************************)
    (* A record whose fields consist of fields used for level computations.  *)
    (* These fields are common to all semantic nodes of type Expr that       *)
    (* represent expressions, as well as to all OpDef nodes, which represent *)
@@ -427,7 +427,7 @@ LevelConstraintFields ==
  (***************************************************************************)
 
 ModuleNode ==
-(*************************************************************************)
+    (*************************************************************************)
    (* A semantic node representing a module.                                *)
    (*************************************************************************)
     [kind: {"ModuleNode"},
@@ -507,7 +507,7 @@ ModuleNode ==
       (**********************************************************************)
 
 OpDefOrDeclNodeFields ==
-(*************************************************************************)
+    (*************************************************************************)
    (* This defines the fields that are common to the OpDeclNode and         *)
    (* OpDefNode types.                                                      *)
    (*************************************************************************)
@@ -536,14 +536,14 @@ OpDefOrDeclNodeFields ==
       (**********************************************************************)
 
 OpDeclNode ==
-(*************************************************************************)
+    (*************************************************************************)
    (* Represents a declared constant or variable.                           *)
    (*************************************************************************)
     RecordCombine([kind: {"ConstantDeclNode", "VariableDeclNode"}],
         OpDefOrDeclNodeFields)
 
 OpDefNode ==
-(*************************************************************************)
+    (*************************************************************************)
    (* Represents a definition, for example the definition of the symbol Foo *)
    (* in Foo(A, B) == expr.  We also assume imaginary definitions of        *)
    (* built-in symbols.  Unlike in the actual SANY api, we represent a      *)
@@ -644,7 +644,7 @@ OpDefNode ==
             RecordCombine(OpDefOrDeclNodeFields, LevelConstraintFields))
 
 InstanceNode ==
-(*************************************************************************)
+    (*************************************************************************)
    (* Represents a statement of the form                                    *)
    (*                                                                       *)
    (*   I(param[1], ... , param[p]) ==                                      *)
@@ -685,7 +685,7 @@ InstanceNode ==
 OpDefOrDeclNode == OpDefNode \union OpDeclNode
 
 OpApplNode ==
-(*************************************************************************)
+    (*************************************************************************)
    (* An OppApplNode represents an operator application.  Examples of       *)
    (* expressions that such a node can represent are:                       *)
    (*                                                                       *)
@@ -721,7 +721,7 @@ OpApplNode ==
         LevelConstraintFields)
 
 SubstitutionNode ==
-(*************************************************************************)
+    (*************************************************************************)
    (* The Substitution object s that represents the WITH clause             *)
    (*                                                                       *)
    (*    A <- x+1, B <- x*r                                                 *)
@@ -744,7 +744,7 @@ SubstitutionNode ==
         subWith: Seq(ExprNodeId)]
 
 IdentifierNode ==
-(************************************************************************)
+    (************************************************************************)
     (* An IdentifierNode is an ExprNode with a ref field.  It represents an *)
     (* expression that consists of a single symbol.  For example, the       *)
     (* OppApplNode that represents the expression A * (b + c) will have as  *)
@@ -759,7 +759,7 @@ IdentifierNode ==
         LevelConstraintFields)
 
 BoundSymbolNode ==
-(*************************************************************************)
+    (*************************************************************************)
    (* Represents a bounded identifier, like the x in {x \in S : x > 0}.  It *)
    (* has level 0 except for the bounded symbols introduced by \EE and \AA, *)
    (* which have level 1.                                                   *)
@@ -769,7 +769,7 @@ BoundSymbolNode ==
         level: {0, 1}]
 
 LetInNode ==
-(*************************************************************************)
+    (*************************************************************************)
    (* This node represents a LET expression, for example                    *)
    (*                                                                       *)
    (*    LET Foo(a) == a + x                                                *)
@@ -799,7 +799,7 @@ ValueNode == RecordCombine(
 ExprNode == OpApplNode \union LetInNode \union ValueNode \union IdentifierNode
 
 SemNode ==
-(*************************************************************************)
+    (*************************************************************************)
    (* The type (set of all possible) semantic nodes.                        *)
    (*************************************************************************)
     ModuleNode \union OpDefOrDeclNode \union InstanceNode \union
@@ -810,7 +810,7 @@ SemNode ==
  (*                            "Type Correctness"                           *)
  (***************************************************************************)
 TypeOK ==
-(*************************************************************************)
+    (*************************************************************************)
    (* This expresses the basic type of Node, and also some relations among  *)
    (* the various fields of semantic nodes that aren't implied by the       *)
    (* simple data type definitions.                                         *)
@@ -883,7 +883,7 @@ IsOpArg(op, k) == Node[op.params[k]].numberOfArgs > 0
    (*************************************************************************)
 
 SubstituteInLevelConstraint(rcd, subst) ==
-(*************************************************************************)
+    (*************************************************************************)
    (* If rcd is a record containing level-constraint fields and subst is a  *)
    (* substitution, then this is the record consisting of the               *)
    (* level-constraint fields inferred from those of rcd by the             *)
@@ -1082,7 +1082,7 @@ SubstituteInLevelConstraint(rcd, subst) ==
                 IN UNION {Sub(alp): alp \in rcd.argLevelParams}]
 
 ReducedLevelConstraint(rcd, paramSet) ==
-(*************************************************************************)
+    (*************************************************************************)
    (* If rcd is a record with level-constraint fields, then this is the     *)
    (* record obtained by removing from those level-constraint fields all    *)
    (* constraints on the parameters in paramSet.                            *)
@@ -1106,7 +1106,7 @@ ReducedLevelConstraint(rcd, paramSet) ==
  (* level-correctness of a node.                                            *)
  (***************************************************************************)
 ModuleNodeLevelCorrect(n) ==
-(*************************************************************************)
+    (*************************************************************************)
    (* We assume n is a ModuleNode.  It is level-correct iff all the         *)
    (* definitions, instances, theorems, and assumes are, and all the        *)
    (* assumes have level 0.                                                 *)
@@ -1154,7 +1154,7 @@ ModuleNodeLevelCorrect(n) ==
             UNION {Node[opid].argLevelParams: opid \in nonDefs}
 
 InstanceNodeLevelCorrect(n) ==
-(*************************************************************************)
+    (*************************************************************************)
    (* We assume n is an InstanceNode representing                           *)
    (*                                                                       *)
    (*   I(param[1], ... , param[p]) ==                                      *)
@@ -1288,7 +1288,7 @@ InstanceNodeLevelCorrect(n) ==
             UNION {redMexp[i].argLevelParams: i \in 1..r}
 
 OpDefNodeLevelCorrect(n) ==
-(*************************************************************************)
+    (*************************************************************************)
    (* We assume that n is an OpDefNode that is represents the definition of *)
    (*   Op(param[1], ... , param[p]) == exp                                 *)
    (*                                                                       *)
@@ -1478,7 +1478,7 @@ OpDefNodeLevelCorrect(n) ==
  (* DeclaredOpApplNodeLevelCorrect and DefinedOpApplNodeLevelCorrect.       *)
  (***************************************************************************)
 DeclaredOpApplNodeLevelCorrect(n) ==
-(*************************************************************************)
+    (*************************************************************************)
    (* This definition assumes that n is an OpApplNode representing the      *)
    (* expression Op(arg[1], ...  , arg[p]), where Op is a declared          *)
    (* operator represented by a Node op with NodeId opid.  We let the       *)
@@ -1557,7 +1557,7 @@ DeclaredOpApplNodeLevelCorrect(n) ==
             UNION {arg[i].argLevelParams: i \in 1..p}
 
 DefinedOpApplNodeLevelCorrect(n) ==
-(*************************************************************************)
+    (*************************************************************************)
    (* This definition assumes that n is an OpApplNode representing the      *)
    (* expression Op(arg[1], ...  , arg[p]), where Op is a defined operator. *)
    (* We let the formal parameters of the definition of Op be               *)
@@ -1919,7 +1919,7 @@ OpApplNodeLevelCorrect(n) ==
     ELSE DefinedOpApplNodeLevelCorrect(n)
 
 LetInNodeLevelCorrect(n) ==
-(*************************************************************************)
+    (*************************************************************************)
    (* We assume n is a LetInNode.                                           *)
    (*                                                                       *)
    (* A LetInNode is level-correct iff its children are.                    *)
@@ -1957,7 +1957,7 @@ LetInNodeLevelCorrect(n) ==
             UNION {Node[opid].argLevelParams: opid \in n.instances}
 
 IdentifierNodeLevelCorrect(n) ==
-(*************************************************************************)
+    (*************************************************************************)
    (* An IdentifierNode represents an expression that consists of a single  *)
    (* symbol, or else an operator argument appearing as the argument in the *)
    (* application of a higher-order operator.                               *)
@@ -1994,7 +1994,7 @@ IdentifierNodeLevelCorrect(n) ==
         /\ n.argLevelParams = Node[n.ref].argLevelParams
 
 LevelCorrect ==
-(*************************************************************************)
+    (*************************************************************************)
    (* The following kinds of nodes are always level-correct, and any level  *)
    (* information they contain is specified by their types.                 *)
    (*   OpDeclNode                                                          *)

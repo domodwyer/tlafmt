@@ -16,10 +16,10 @@ k ==
 \* to randomly select a subset of the defined initial states in cases when the
 \* set of all initial states is too expensive to generate during smoke testing.
 SmokeInit ==
-\* First disjunct guarantees that there is always at least one initial state
-\* (Inv!P0 conjunct in second disjunct might exclude all initial states "defined"
-\* with RandomSubset).  Randomly choosing initial states from a large set of
-\* states could be provide by TLC's simulator.
+    \* First disjunct guarantees that there is always at least one initial state
+    \* (Inv!P0 conjunct in second disjunct might exclude all initial states "defined"
+    \* with RandomSubset).  Randomly choosing initial states from a large set of
+    \* states could be provide by TLC's simulator.
     \/
         /\ active = [n \in Node |-> TRUE]
         /\ color = [n \in Node |-> "black"]

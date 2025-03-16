@@ -39,7 +39,7 @@ TypeOK ==
 --------------------------------------------------------------------------------
 
 Init ==
-\* All processes except the leader are idle.
+    \* All processes except the leader are idle.
     /\ active = [p \in Procs |-> IF p = Leader THEN TRUE ELSE FALSE]
     \* No weights have been "thrown" yet.
     /\ weight = [p \in Procs |-> IF p = Leader THEN One ELSE Zero]
@@ -55,7 +55,7 @@ SendMsg(p) ==
     /\ UNCHANGED << active >>
 
 RcvMsg(p) ==
-\* The order in which messages are received does not matter.
+    \* The order in which messages are received does not matter.
     \E i \in 1..Len(msgs[p]):
         /\ active' = [active EXCEPT ![p] = TRUE]
         /\ weight' = [weight EXCEPT ![p] = Add(@, msgs[p][i])]
@@ -76,7 +76,7 @@ IdleLdr ==
     /\ UNCHANGED << weight, msgs >>
 
 RcvLdr ==
-\* The order in which messages are received does not matter.
+    \* The order in which messages are received does not matter.
     \E i \in 1..Len(msgs[Leader]):
         /\ weight' = [weight EXCEPT ![Leader] = Add(@, msgs[Leader][i])]
         /\ msgs' = [msgs EXCEPT ![Leader] = RemoveAt(@, i)]
@@ -118,7 +118,7 @@ THEOREM Spec => Live
 --------------------------------------------------------------------------------
 
 StateConstraint ==
-\* Prevent the weights from halving towards infinity.
+    \* Prevent the weights from halving towards infinity.
     \A p \in Procs: weight[p].den <= 8
 
 Alias ==

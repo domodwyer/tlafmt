@@ -71,8 +71,8 @@ DiskF(i) == \* denoted disk(f)[i] in .java file
 BufferedIndexes == lo..(Min(lo + BuffSz, length) - 1)
 
 Inv1 ==
-\* /\ f.closed == closed(f) \* close() not described in this spec
-\* /\ f.curr == curr(f)     \* by definition; see `file_pointer <- curr` in refinement mapping below
+    \* /\ f.closed == closed(f) \* close() not described in this spec
+    \* /\ f.curr == curr(f)     \* by definition; see `file_pointer <- curr` in refinement mapping below
     /\ length = ArrayLen(LogicalFileContent)
     /\ diskPos = file_pointer
 

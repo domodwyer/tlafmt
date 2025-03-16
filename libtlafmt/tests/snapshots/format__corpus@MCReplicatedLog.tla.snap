@@ -14,7 +14,7 @@ EXTENDS ReplicatedLog, FiniteSetsExt, TLC
 ASSUME TLCGet("-Dtlc2.tool.impl.Tool.cdot") = "true"
 
 Constraint ==
-\* The bounds are educated guesses.
+    \* The bounds are educated guesses.
     /\ Len(log) < 5
     /\ \A n \in Node: Len(log) - executed[n] < 5
 

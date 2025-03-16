@@ -15,7 +15,7 @@ $ tlc -generate -noTE EWD998ChanID_export
 EXTENDS EWD998ChanID, TLCExt, TLC, IOUtils, Json
 
 MCInit ==
-(* Rule 0 *)
+    (* Rule 0 *)
     /\ counter = [n \in Node |-> 0] \* c properly initialized
     /\ inbox = [n \in Node |-> IF n = Initiator
         THEN << [type |-> "tok", q |-> 0, color |-> "black"] >>
@@ -31,8 +31,8 @@ MCInit ==
 --------------------------------------------------------------------------------
 
 RealInv ==
-\* Some read-world invariant (here terminationDetected occurs within N steps
-\* where N has been chosen arbitrarily).
+    \* Some read-world invariant (here terminationDetected occurs within N steps
+    \* where N has been chosen arbitrarily).
     EWD998Chan!EWD998!terminationDetected => TLCGet("level") < 23
 
 --------------------------------------------------------------------------------

@@ -136,7 +136,7 @@ UnscheduledClients == \** clients that do not appear in the schedule
     Clients \ Range(sched)
 
 PrevResources(i) ==
-\** resources that will be available when client i has to be satisfied
+    \** resources that will be available when client i has to be satisfied
     available
     \union( UNION {unsat[sched[j]] \union alloc[sched[j]]: j \in 1..i - 1})
     \union( UNION {alloc[c]: c \in UnscheduledClients})

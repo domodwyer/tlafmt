@@ -10,7 +10,7 @@ CONSTANT MaxQLen
 Constraint == \A p \in Proc: Len(opQ[p]) <= MaxQLen
 
 AlwaysResponds ==
-(*************************************************************************)
+    (*************************************************************************)
   (* A simple liveness property, implied by the fact that every request    *)
   (* eventually generates a response.                                      *)
   (*************************************************************************)

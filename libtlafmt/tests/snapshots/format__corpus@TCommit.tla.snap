@@ -8,7 +8,7 @@ CONSTANT RM       \* The set of participating resource managers
 VARIABLE rmState  \* `rmState[rm]' is the state of resource manager rm.
 --------------------------------------------------------------------------------
 TCTypeOK ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The type-correctness invariant                                        *)
   (*************************************************************************)
     rmState \in [RM -> {"working", "prepared", "committed", "aborted"}]
@@ -61,7 +61,7 @@ TCSpec == TCInit /\ [][TCNext]_rmState
 (* We now assert invariance properties of the specification.               *)
 (***************************************************************************)
 TCConsistent ==
-(*************************************************************************)
+    (*************************************************************************)
   (* A state predicate asserting that two RMs have not arrived at          *)
   (* conflicting decisions.                                                *)
   (*************************************************************************)

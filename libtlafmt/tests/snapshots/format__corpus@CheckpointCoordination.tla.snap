@@ -220,7 +220,7 @@ SafetyInvariant ==
 (* Expectations about system capabilities.                                 *)
 (***************************************************************************)
 TemporalInvariant ==
-\* Eventually, a checkpoint can be taken
+    \* Eventually, a checkpoint can be taken
     /\ <>(\E n \in Node: CanTakeCheckpoint[n])
     \* If a node can take a checkpoint, eventually it will take a checkpoint
     /\ \A n \in Node:
@@ -344,7 +344,7 @@ ElectLeader(n) ==
 (* Critical logic determining whether we should replace the current lease. *)
 (***************************************************************************)
 ShouldReplaceLease(currentLease) ==
-\* Current lease has timed out
+    \* Current lease has timed out
     \/ currentLease.counter < TimeoutCounter
     \* Snapshot has been completed & reported to leader by node
     \/

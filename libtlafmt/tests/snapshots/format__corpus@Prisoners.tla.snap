@@ -86,7 +86,7 @@ vars == << switchAUp, switchBUp, timesSwitched, count >>
 (* We first define three state predicates.                                 *)
 (***************************************************************************)
 TypeOK ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The type-correctness invariant.  This is not actually part of the     *)
   (* specification.  It is added to help the reader understand the         *)
   (* specification and also because letting TLC (the model checker) check  *)
@@ -100,7 +100,7 @@ TypeOK ==
     /\ count \in 0..(2 * Cardinality(Prisoner) - 1)
 
 Init ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The initial predicate.                                                *)
   (*************************************************************************)
     /\ switchAUp \in BOOLEAN
@@ -109,7 +109,7 @@ Init ==
     /\ count = 0
 
 Done ==
-(*************************************************************************)
+    (*************************************************************************)
   (* This is the condition that tells the counter that every other         *)
   (* prisoner has been in the room at least once.  (He will trivially know *)
   (* that he's already been in the room when this condition is true.)      *)
@@ -121,7 +121,7 @@ Done ==
 (* brought into the room with the switches.                                *)
 (***************************************************************************)
 NonCounterStep(i) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* A prisoner other than the counter moves switch A up if it is down and *)
   (* if (s)he has not already moved it up two times.  Otherwise, (s)he     *)
   (* flips switch B.                                                       *)
@@ -137,7 +137,7 @@ NonCounterStep(i) ==
     /\ UNCHANGED count
 
 CounterStep ==
-(*************************************************************************)
+    (*************************************************************************)
   (* If switch A is up, the counter moves it down and increments his (or   *)
   (* her) count.  Otherwise, (s)he flips switch B.                         *)
   (*************************************************************************)
@@ -152,14 +152,14 @@ CounterStep ==
     /\ UNCHANGED timesSwitched
 
 Next ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The next-state relation                                               *)
   (*************************************************************************)
     \/ CounterStep
     \/ \E i \in OtherPrisoner: NonCounterStep(i)
 
 Fairness ==
-(*************************************************************************)
+    (*************************************************************************)
   (* This asserts that every prisoner is brought into the room infinitely  *)
   (* often.                                                                *)
   (*************************************************************************)
@@ -169,7 +169,7 @@ Fairness ==
 Spec == Init /\ [][Next]_vars /\ Fairness
 --------------------------------------------------------------------------------
 Safety ==
-(*************************************************************************)
+    (*************************************************************************)
   (* This formula asserts that safety condition: that Done true implies    *)
   (* that every prisoner other than the counter has flipped switch A at    *)
   (* least once--and hence has been in the room at least once.  Since the  *)
@@ -193,7 +193,7 @@ THEOREM Spec => Safety /\ Liveness
   (*************************************************************************)
 
 CountInvariant ==
-(*************************************************************************)
+    (*************************************************************************)
   (* This is an invariant of Spec.  From its invariance, one can easily    *)
   (* prove that Spec satisfies its safety property.                        *)
   (*************************************************************************)

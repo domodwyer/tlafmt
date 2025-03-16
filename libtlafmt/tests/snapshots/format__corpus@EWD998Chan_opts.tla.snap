@@ -52,10 +52,10 @@ ASSUME F \subseteq FeatureFlags
 --------------------------------------------------------------------------------
 
 InitSim ==
-\* Constraint the set of initial states defined in EWD998!Init to
-\* those that correspond to what an implementation is likely to start with.
-\* In other words, when collecting statistics, we don't want to start in a
-\* state where the system has e.g. already terminated.
+    \* Constraint the set of initial states defined in EWD998!Init to
+    \* those that correspond to what an implementation is likely to start with.
+    \* In other words, when collecting statistics, we don't want to start in a
+    \* state where the system has e.g. already terminated.
     /\ active = [n \in Node |-> TRUE]
     /\ color = [n \in Node |-> "white"]
 
@@ -104,11 +104,11 @@ AtTermination ==
     ELSE TRUE
 
 AtTerminationDetected ==
-\* This is just an ordinary state constraint (could have been an invariant 
-\* too).  The disadvantage of a constraint (or inv) is that the antecedent
-\* is evaluated for *every* generated state, instead of just after the last
-\* state when we actually want the consequent to be evalauted.
-\* A constraint's advantage is that it works with old versions of TLC.
+    \* This is just an ordinary state constraint (could have been an invariant 
+    \* too).  The disadvantage of a constraint (or inv) is that the antecedent
+    \* is evaluated for *every* generated state, instead of just after the last
+    \* state when we actually want the consequent to be evalauted.
+    \* A constraint's advantage is that it works with old versions of TLC.
     EWD998!terminationDetected =>
         /\ LET o == TLCGet("stats").behavior.actions
             IN \* Append record to CSV file on disk.

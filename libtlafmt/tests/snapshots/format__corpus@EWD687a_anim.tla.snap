@@ -7,7 +7,7 @@ input_file: libtlafmt/tests/corpus/EWD687a_anim.tla
 EXTENDS EWD687a, Integers, Sequences, SVG, TLC, IOUtils
 
 Repeat(str, n) ==
-(* Concatenates the given string str n times. The empty string is *)
+    (* Concatenates the given string str n times. The empty string is *)
     (* returned if n is less than 1. *)
     (* "m", 0 -> ""  *)
     (* "m", 1 -> "m"  *)
@@ -22,14 +22,14 @@ Repeat(str, n) ==
 --------------------------------------------------------------------------------
 
 SVGDefs ==
-(* Defines an arrow with plain SVG that is referenced in the def of E below. *)
-\* Increasing refX moves the arrowhead to the middle of the line away from the tip.
+    (* Defines an arrow with plain SVG that is referenced in the def of E below. *)
+    \* Increasing refX moves the arrowhead to the middle of the line away from the tip.
 "<defs><marker id='arrow' markerWidth='35' markerHeight='35' refX='14' refY='3' orient='auto' markerUnits='strokeWidth' viewBox='0 0 20 20'><path d='M0,0 L0,6 L9,3 z' fill='black' /></marker></defs>"
 
 --------------------------------------------------------------------------------
 
 Legend ==
-(* 
+    (* 
        Legend with four rows of labels (text) whose top-left point is located at BasePos:
        1: The current state ordinal.
        2: The action from the predecessor state to the current state.
@@ -51,11 +51,11 @@ NodeDimension ==
 32
 
 ArrowPosOffset ==
-\* NodeDimension ought to be divisible by 2 for proper alignment of nodes and edges.
+    \* NodeDimension ought to be divisible by 2 for proper alignment of nodes and edges.
     NodeDimension \div 2
 
 GraphNodePos ==
-(* A function from processes to x,y coordinates: [ Procs -> [x: Nat, y: Nat] *)
+    (* A function from processes to x,y coordinates: [ Procs -> [x: Nat, y: Nat] *)
     (* The coordinates are chosen according to the given layout algorithm parameterized *)
     (* by the given "options" record. *)
     NodesOfDirectedMultiGraph(Procs, Edges,
@@ -66,7 +66,7 @@ GraphNodePos ==
 --------------------------------------------------------------------------------
 
 N ==
-(* An SVG group containing rectangles denoting the graph of processes. Approximately at *)
+    (* An SVG group containing rectangles denoting the graph of processes. Approximately at *)
     (* the center of each node, a text indicates the processes name (Procs). *)
     (* A black square denotes an idle process, a red circle an active one. *)
     LET NS[p \in Procs] ==
@@ -81,7 +81,7 @@ N ==
     IN Group(NS, <<>>)
 
 E ==
-(* An SVG group containing lines denoting the (graph) edges. An line, *)
+    (* An SVG group containing lines denoting the (graph) edges. An line, *)
     (* connecting a from and to node, is annotated with three labels: *)
     LET ES[e \in Edges] ==
         LET from == GraphNodePos[e[1]] to == GraphNodePos[e[2]]
@@ -114,7 +114,7 @@ E ==
     IN Group(ES, <<>>)
 
 U ==
-(* An SVG group containing the lines visualizing the upEdges of the overlay tree. *)
+    (* An SVG group containing the lines visualizing the upEdges of the overlay tree. *)
     LET UE[u \in {upEdge[p]: p \in DOMAIN upEdge} \ {NotAnEdge}] ==
         LET from == GraphNodePos[u[1]] to == GraphNodePos[u[2]]
             line == Line(from.x + ArrowPosOffset, from.y + ArrowPosOffset,
@@ -125,14 +125,14 @@ U ==
     IN Group(UE, <<>>)
 
 Frame ==
-(* Combine the (SVG) definitions, legend, processes, edges, and upEdges into a single *) 
+    (* Combine the (SVG) definitions, legend, processes, edges, and upEdges into a single *) 
     (* (SVG) frame as a visualization of the current TLA+ state. *)
     SVGDefs \o SVGElemToString(Group(<< Legend, E, U, N >>, <<>>))
 
 --------------------------------------------------------------------------------
 
 ToFile(str, prefix, n, padding, suffix) ==
-(* Writes the given string str to a file whose name contains the number n. *)
+    (* Writes the given string str to a file whose name contains the number n. *)
     IOExecTemplate(
         \* %%03d to escape %03d in Java format strings.
         << "bash", "-c", "echo \"%1$s\" > %2$s$(printf %%0%4$sd %3$s)%5$s" >>,
@@ -161,13 +161,13 @@ Alias == [
 --------------------------------------------------------------------------------
 
 InterestingBehavior ==
-\* A counter-example that is a violation of this property is a prefix of a behavior of at least
-\* 30 states with the Leader neutral in the final state.
+    \* A counter-example that is a violation of this property is a prefix of a behavior of at least
+    \* 30 states with the Leader neutral in the final state.
     TLCGet("level") > 20 => ~neutral(Leader)
 
 NoSuperfluousIdleSteps ==
-\* Disable Idle steps that leave the variables unchange (an idle process becoming idle)
-\* to prevent finite stuttering when simulating.
+    \* Disable Idle steps that leave the variables unchange (an idle process becoming idle)
+    \* to prevent finite stuttering when simulating.
 ~UNCHANGED vars
 
 --------------------------------------------------------------------------------

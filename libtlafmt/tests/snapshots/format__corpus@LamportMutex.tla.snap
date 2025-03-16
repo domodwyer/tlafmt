@@ -50,7 +50,7 @@ Message == {AckMessage, RelMessage} \union {ReqMessage(c): c \in Clock}
 (* The type correctness predicate.                                         *)
 (***************************************************************************)
 TypeOK ==
-(* clock[p] is the local clock of process p *)
+    (* clock[p] is the local clock of process p *)
     /\ clock \in [Proc -> Clock]
     (* req[p][q] stores the clock associated with request from q received by p, 0 if none *)
     /\ req \in [Proc -> [Proc -> Nat ]]

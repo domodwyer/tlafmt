@@ -146,7 +146,7 @@ fn process_candidates(
 
 // Consume one line from newline to line-ending comment from `iter` and return
 // the line length up to, but not including the comment or its preceding space.
-fn line_len<'a, T>(iter: T) -> impl Iterator<Item = usize>
+fn line_len<'a, T>(iter: T) -> impl Iterator<Item = usize> + use<'a, T>
 where
     T: Iterator<Item = &'a (Token<'a>, Indent)>,
 {
@@ -157,6 +157,7 @@ where
     debug_assert!(iter.peek().is_some_and(|v| is_newline(&v.0)));
 
     let mut len = 0;
+    let mut line_tokens = 0;
     std::iter::from_fn(move || {
         loop {
             let (t, _) = iter.next()?;
@@ -166,6 +167,7 @@ where
             // first can set the line indentation).
             if is_newline(t) {
                 len = iter.peek().unwrap().1 .0 as usize * INDENT_STR.len();
+                line_tokens = 0;
                 continue;
             }
 
@@ -173,7 +175,14 @@ where
             if matches!(t, Token::Comment(..)) && iter.peek().is_some_and(|v| is_newline(&v.0))
                 || iter.peek().is_none()
             {
-                return Some(len.saturating_sub(1)); // -1 because spaces are inserted before comments or it was a newline.
+                // If this line contains only a comment, it should not have a -1
+                // applied as the only length is the initial indent.
+                if line_tokens == 0 {
+                    return Some(len);
+                }
+
+                // -1 because spaces are inserted before comments or it was a newline.
+                return Some(len.saturating_sub(1));
             }
 
             // Apply the same filtering as when rendering occurs.
@@ -185,6 +194,7 @@ where
             }
 
             len += token_len(t);
+            line_tokens += 1;
 
             // Account for any whitespace.
             if let Some(n) = next.map(|(v, _)| t.delimiting_space_len(v)) {
@@ -236,6 +246,23 @@ mod tests {
 
         let got = line_len(tokens).next().unwrap();
         assert_eq!(got, 18);
+    }
+
+    #[test]
+    fn test_line_len_only_comment() {
+        let tokens = [
+            (Token::SourceNewline, Indent(255)),
+            (
+                Token::Comment("(* bananas *)", Position::Source { row: 2, col: 40 }),
+                Indent(1),
+            ),
+            (Token::SourceNewline, Indent(255)),
+        ]
+        .iter()
+        .peekable();
+
+        let got = line_len(tokens).next().unwrap();
+        assert_eq!(got, 4);
     }
 
     #[test]

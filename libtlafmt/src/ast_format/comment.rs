@@ -21,7 +21,7 @@ where
     //
     // If a comment was not indented, it should be rendered without
     // formatter-added indentation below this branch.
-    if def.kind() != "block_comment" && def.start_position().column != 0 {
+    if def.start_position().column != 0 {
         writer.push(Token::Comment(get_str(&def, input), Position::from(&def)))?;
         return Ok(());
     }
@@ -87,6 +87,19 @@ S (* are great
     dont
     you think*)
 ) == 42
+====="
+        );
+    }
+
+    #[test]
+    fn test_block() {
+        assert_rewrite!(
+            r"
+---- MODULE Bananas ------
+X ==
+    /\ A = 42
+    (* There's a block comment here *)
+    /\ B = A
 ====="
         );
     }

@@ -1,0 +1,11 @@
+---
+source: libtlafmt/src/renderer/comment.rs
+expression: output
+---
+-------------------------------- MODULE bananas --------------------------------
+TypeOK ==
+    /\ X = 42
+              \* Platanos
+              \* Platanos
+    /\ Y = 24
+================================================================================

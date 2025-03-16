@@ -1,0 +1,12 @@
+---
+source: libtlafmt/src/ast_format/case.rs
+expression: output
+---
+----------------------------------- MODULE B -----------------------------------
+X == CASE self \in RM -> "RS"
+    \* Something
+    [] self = 0 -> "TS"
+    (* bananas *)
+    [] self = 10 -> "BTS" \* platanos
+    [] self = 10 -> "BTS"
+================================================================================

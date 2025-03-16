@@ -1,7 +1,7 @@
 use tree_sitter::Node;
 
 use crate::{
-    ast_format::{format_comment, format_module},
+    ast_format::{case::format_case, format_comment, format_module},
     get_str,
     helpers::EmptyLines,
     token::Token,
@@ -111,6 +111,10 @@ where
             return format_comment(def, input, writer);
         }
 
+        "case" => {
+            return format_case(def, input, empty_lines, writer);
+        }
+
         // A `[ident]_vars` sequence.
         "]_" => return Ok(()), // Part of the AST that is emitted below.
         "step_expr_or_stutter" => {
@@ -176,6 +180,8 @@ where
 
         // Nodes that never increase the indentation depth.
         "source_file"
+        | "case_arm"
+        | "case_box"
         | "function_evaluation"
         | "except_update_record_field"
         | "except_update_specifier"
@@ -261,6 +267,7 @@ fn into_output_token<'a>(node: &Node<'_>, input: &'a str) -> Option<Token<'a>> {
         "IF" => Token::KeywordIf,
         "THEN" => Token::KeywordThen,
         "ELSE" => Token::KeywordElse,
+        "CASE" => Token::KeywordCase,
         "INSTANCE" => Token::KeywordInstance,
         "EXTENDS" => Token::KeywordExtends,
         "CONSTANT" => Token::KeywordConstant,
@@ -278,6 +285,7 @@ fn into_output_token<'a>(node: &Node<'_>, input: &'a str) -> Option<Token<'a>> {
         "TRUE" => Token::True,
         "FALSE" => Token::False,
         "exists" => Token::Exists,
+        "case_arrow" => Token::CaseArrow,
         "in" | "set_in" => Token::SetIn,
         "notin" => Token::SetNotIn,
         "forall" => Token::All,

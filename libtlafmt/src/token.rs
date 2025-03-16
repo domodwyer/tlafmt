@@ -93,6 +93,9 @@ pub(crate) enum Token<'a> {
     /// A `ELSE`.
     KeywordElse,
 
+    /// A `CASE`.
+    KeywordCase,
+
     /// A "EXTENDS" sequence.
     KeywordExtends,
 
@@ -119,6 +122,12 @@ pub(crate) enum Token<'a> {
 
     /// A `\E` sequence.
     Exists,
+
+    /// A `[]` sequence for a CASE statement.
+    CaseBox,
+
+    /// A `->` sequence for a CASE statement.
+    CaseArrow,
 
     /// A `\A` sequence.
     All,

@@ -102,11 +102,11 @@ Min(m, n) == IF m < n THEN m ELSE n
 (***************************************************************************)
 SmallToBig ==
     /\ big' = Min(big + small, 5)
-    /\ small' = small -(big' - big)
+    /\ small' = small - (big' - big)
 
 BigToSmall ==
     /\ small' = Min(big + small, 3)
-    /\ big' = big -(small' - small)
+    /\ big' = big - (small' - small)
 
 (***************************************************************************)
 (* We define the next-state relation, which I like to call Next.  A Next   *)

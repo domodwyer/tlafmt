@@ -29,7 +29,7 @@ CONSTANT Values
 ASSUME ValAssump == Values \subseteq Int
 
 SortedSeqs == {ss \in Seq(Values):
-    \A i, j \in 1..Len(ss):(i < j) =>(ss[i] <= ss[j])}
+    \A i, j \in 1..Len(ss): (i < j) => (ss[i] <= ss[j])}
 
 LEMMA SortedLess ==
 ASSUME NEW s \in SortedSeqs, NEW i \in 1 .. Len(s), NEW j \in 1 .. Len(s),
@@ -133,12 +133,12 @@ TypeOK ==
 
 Inv ==
     /\ TypeOK
-    /\(result /= 0) =>(Len(seq) > 0) /\(seq[result] = val)
-    /\(pc = "a") =>
+    /\ (result /= 0) => (Len(seq) > 0) /\ (seq[result] = val)
+    /\ (pc = "a") =>
         IF \E i \in 1..Len(seq): seq[i] = val
         THEN \E i \in low..high: seq[i] = val
         ELSE result = 0
-    /\(pc = "Done") =>(result /= 0) \/(\A i \in 1..Len(seq): seq[i] /= val)
+    /\ (pc = "Done") => (result /= 0) \/ (\A i \in 1..Len(seq): seq[i] /= val)
 
 (***************************************************************************)
 (* Here is the invariance proof.                                           *)

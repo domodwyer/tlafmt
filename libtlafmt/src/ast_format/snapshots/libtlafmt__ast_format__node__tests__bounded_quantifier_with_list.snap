@@ -15,7 +15,7 @@ LOCAL IsFirstDeriv(df, f) ==
         \A e \in PosReal:
             \E d \in PosReal:
                 \A s \in Nbhd(r, d) \ {r}:
-                    (f[s] - f[r]) /(s - r) \in Nbhd(df[r], e)
+                    (f[s] - f[r]) / (s - r) \in Nbhd(df[r], e)
 
 Integrate(D, a, b, InitVals) ==
     LET n == Len(InitVals)

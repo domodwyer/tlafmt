@@ -78,8 +78,8 @@ Min(S) == CHOOSE x \in S: \A y \in S: x <= y
 (***************************************************************************)
 Partitions(I, p, s) ==
 {t \in PermsOf(s):
-    /\ \A i \in(1..Len(s)) \ I: t[i] = s[i]
-    /\ \A i, j \in I:(i <= p) /\(p < j) =>(t[i] <= t[j])}
+    /\ \A i \in (1..Len(s)) \ I: t[i] = s[i]
+    /\ \A i, j \in I: (i <= p) /\ (p < j) => (t[i] <= t[j])}
 
 (***************************************************************************)
 (* Our algorithm has three variables:                                      *)
@@ -197,26 +197,26 @@ PCorrect == (pc = "Done") =>
 (***************************************************************************)
 UV == U \union {{i}: i \in 1..Len(seq) \ UNION U}
 
-DomainPartitions == {DP \in SUBSET SUBSET(1..Len(seq0)):
-    /\( UNION DP) = 1..Len(seq0)
+DomainPartitions == {DP \in SUBSET SUBSET (1..Len(seq0)):
+    /\ ( UNION DP) = 1..Len(seq0)
     /\ \A I \in DP: I = Min(I)..Max(I)
-    /\ \A I, J \in DP:(I /= J) =>(I \intersect J = {})}
+    /\ \A I, J \in DP: (I /= J) => (I \intersect J = {})}
 
-RelSorted(I, J) == \A i \in I, j \in J:(i < j) =>(seq[i] <= seq[j])
+RelSorted(I, J) == \A i \in I, j \in J: (i < j) => (seq[i] <= seq[j])
 
 TypeOK ==
     /\ seq \in Seq(Values) \ {<<>>}
     /\ seq0 \in Seq(Values) \ {<<>>}
-    /\ U \in SUBSET((SUBSET(1..Len(seq0))) \ {{}})
+    /\ U \in SUBSET ((SUBSET (1..Len(seq0))) \ {{}})
     /\ pc \in {"a", "Done"}
 
 Inv ==
     /\ TypeOK
-    /\(pc = "Done") =>(U = {})
+    /\ (pc = "Done") => (U = {})
     /\ UV \in DomainPartitions
     /\ seq \in PermsOf(seq0)
     /\ UNION UV = 1..Len(seq0)
-    /\ \A I, J \in UV:(I /= J) => RelSorted(I, J)
+    /\ \A I, J \in UV: (I /= J) => RelSorted(I, J)
 
 THEOREM Spec => []PCorrect
 <1>1. Init => Inv

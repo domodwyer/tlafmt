@@ -15,14 +15,14 @@ Init ==
     /\ rpt = [i \in Proc |-> FALSE]
     /\ msg = {}
 
-CanSend(i, j) == (<< i, j >> \in nbrs) /\(i = root \/ prnt[i] /= NoPrnt)
+CanSend(i, j) == (<< i, j >> \in nbrs) /\ (i = root \/ prnt[i] /= NoPrnt)
 
 Update(i, j) ==
     /\ prnt' = [prnt EXCEPT ![i] = j]
     /\ UNCHANGED << rpt, msg >>
 
 Send(i) == \E k \in Proc:
-    /\ CanSend(i, k) /\(<< i, k >> \notin msg)
+    /\ CanSend(i, k) /\ (<< i, k >> \notin msg)
     /\ msg' = msg \union {<< i, k >>}
     /\ UNCHANGED << prnt, rpt >>
 
@@ -50,11 +50,11 @@ TypeOK ==
     /\ rpt \in [Proc -> BOOLEAN ]
     /\ msg \subseteq Proc \times Proc
 
-Termination == <>(\A i \in Proc: i = root \/(prnt[i] /= NoPrnt /\ << i, prnt[i] >> \in nbrs))
+Termination == <>(\A i \in Proc: i = root \/ (prnt[i] /= NoPrnt /\ << i, prnt[i] >> \in nbrs))
 
 OneParent == [][\A i \in Proc : prnt[i] # NoPrnt => prnt[i] = prnt'[i]]_vars
 
-SntMsg == \A i \in Proc:(i /= root /\ prnt[i] = NoPrnt => \A j \in Proc: << i, j >> \notin msg)
+SntMsg == \A i \in Proc: (i /= root /\ prnt[i] = NoPrnt => \A j \in Proc: << i, j >> \notin msg)
 
 ================================================================================
 \* Modification History

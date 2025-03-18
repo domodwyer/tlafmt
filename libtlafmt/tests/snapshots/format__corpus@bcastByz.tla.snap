@@ -92,7 +92,7 @@ InitNoBcast == pc \in [Proc -> {"V0"}] /\ Init
    processes are not included.
  *)
 Receive(self, includeByz) ==
-    \E newMessages \in SUBSET(sent \union(IF includeByz THEN ByzMsgs ELSE {})):
+    \E newMessages \in SUBSET (sent \union (IF includeByz THEN ByzMsgs ELSE {})):
         rcvd' = [i \in Proc |-> IF i /= self THEN rcvd[i] ELSE rcvd[self] \union newMessages]
 
 ReceiveFromCorrectSender(self) == Receive(self, FALSE)
@@ -192,7 +192,7 @@ TypeOK ==
     /\ Corr \subseteq Proc
     /\ Faulty \subseteq Proc
     /\ sent \subseteq Proc \times M
-    /\ rcvd \in [Proc -> SUBSET(sent \union ByzMsgs)]
+    /\ rcvd \in [Proc -> SUBSET (sent \union ByzMsgs)]
 
 (* Constraints about the cardinalities of Faulty and Corr, their elements, and the upper bound  
    of the set of possible Byzantine messages. The FCConstraints is an invariant. One can probably
@@ -226,7 +226,7 @@ UnforgLtl == (\A i \in Corr: pc[i] = "V0") => [](\A i \in Corr: pc[i] /= "AC")
 (* The special case of the unforgeability property. When our algorithms start with InitNoBcast,
    we can rewrite UnforgLtl as a first-order formula.     
  *)
-Unforg == (\A i \in Proc: i \in Corr =>(pc[i] /= "AC"))
+Unforg == (\A i \in Proc: i \in Corr => (pc[i] /= "AC"))
 
 (* A typical proof for proving a safety property in TLA+ is to show inductive invariance:
       1/ Init => IndInv
@@ -276,7 +276,7 @@ IndInv_Unforg_NoBcast_TLC ==
 (******************************* TLAPS PROOFS ******************************)
 
 (* The constraints between N, T, and F*)
-THEOREM NTFRel == N \in Nat /\ T \in Nat /\ F \in Nat /\(N > 3 * T) /\(T >= F) /\(F >= 0) /\ N - 2 * T >= T + 1
+THEOREM NTFRel == N \in Nat /\ T \in Nat /\ F \in Nat /\ (N > 3 * T) /\ (T >= F) /\ (F >= 0) /\ N - 2 * T >= T + 1
 BY NTF
 
 (* Proc is always a finite set and its cardinality is N*)

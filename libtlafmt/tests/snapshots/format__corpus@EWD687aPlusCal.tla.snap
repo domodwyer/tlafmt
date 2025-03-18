@@ -114,7 +114,7 @@ Init == (* Global variables *)
     /\ terminationDetected = FALSE
     /\ network = [n \in Node |-> [msg |-> [snd \in Node |-> 0], ack |-> 0]]
     (* Process node *)
-    /\ active = [self \in Node |->(self = initiator)]
+    /\ active = [self \in Node |-> (self = initiator)]
     /\ parent = [self \in Node |-> IF self = initiator THEN self ELSE none]
     /\ activeSons = [self \in Node |-> 0]
 
@@ -148,7 +148,7 @@ node(self) ==
         /\ activeSons' = [activeSons EXCEPT ![self] = activeSons[self] - 1]
         /\ UNCHANGED << terminationDetected, active, parent >>
     \/
-        /\(~active[self] /\ activeSons[self] = 0 /\ parent[self] /= none)
+        /\ (~active[self] /\ activeSons[self] = 0 /\ parent[self] /= none)
         /\ IF parent[self] = self
         THEN
             /\ terminationDetected' = TRUE

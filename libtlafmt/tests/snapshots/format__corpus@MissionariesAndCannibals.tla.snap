@@ -100,7 +100,7 @@ VARIABLES bank_of_boat, who_is_on_bank
 TypeOK ==
     /\ bank_of_boat \in {"E", "W"}
     /\ who_is_on_bank \in
-        [{"E", "W"} -> SUBSET(Cannibals \union Missionaries)]
+        [{"E", "W"} -> SUBSET (Cannibals \union Missionaries)]
 
 (***************************************************************************)
 (* The possible executions of the system are specified by two formulas: an *)

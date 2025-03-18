@@ -61,7 +61,7 @@ rcvd1(self) == Cardinality({m \in rcvd' [self]: m[2] = "ECHO1"})
 (* Since a byzantine process can send two msgs ECHO0 and ECHO1, we need to count the 
    number of processes from which process self received a message.                                          
  *)
-rcvd01(self) == Cardinality({p \in P:(\E m \in rcvd' [self]: m[1] = p)})
+rcvd01(self) == Cardinality({p \in P: (\E m \in rcvd' [self]: m[1] = p)})
 
 (* All messages in sent are by correct processes.         
    A faulty process can send (two) arbitrary ECHO0 and ECHO1 messages.          
@@ -71,8 +71,8 @@ rcvd01(self) == Cardinality({p \in P:(\E m \in rcvd' [self]: m[1] = p)})
    Line 69: update rcvd[self]                                               
  *)
 Receive(self) ==
-    \E r \in SUBSET(P \times M):
-        /\ r \subseteq(sent \union {<< p, "ECHO0" >>: p \in Faulty}
+    \E r \in SUBSET (P \times M):
+        /\ r \subseteq (sent \union {<< p, "ECHO0" >>: p \in Faulty}
             \union {<< p, "ECHO1" >>: p \in Faulty})
         /\ rcvd[self] \subseteq r
         /\ rcvd' = [rcvd EXCEPT ![self] = r]
@@ -207,13 +207,13 @@ Spec == Init /\ [][Next]_vars
 TypeOK ==
     /\ sent \subseteq P \times M
     /\ pc \in [Corr -> {"V0", "V1", "S0", "S1", "D0", "D1", "U0", "U1"}]
-    /\ rcvd \in [Corr -> SUBSET(P \times M)]
+    /\ rcvd \in [Corr -> SUBSET (P \times M)]
 
-Lemma3_0 == (\E self \in Corr:(pc[self] = "D0")) =>(\A self \in Corr:(pc[self] /= "D1"))
-Lemma3_1 == (\E self \in Corr:(pc[self] = "D1")) =>(\A self \in Corr:(pc[self] /= "D0"))
+Lemma3_0 == (\E self \in Corr: (pc[self] = "D0")) => (\A self \in Corr: (pc[self] /= "D1"))
+Lemma3_1 == (\E self \in Corr: (pc[self] = "D1")) => (\A self \in Corr: (pc[self] /= "D0"))
 
-Lemma4_0 == (\E self \in Corr:(pc[self] = "D0")) =>(\A self \in Corr:(pc[self] /= "U1"))
-Lemma4_1 == (\E self \in Corr:(pc[self] = "D1")) =>(\A self \in Corr:(pc[self] /= "U0"))
+Lemma4_0 == (\E self \in Corr: (pc[self] = "D0")) => (\A self \in Corr: (pc[self] /= "U1"))
+Lemma4_1 == (\E self \in Corr: (pc[self] = "D1")) => (\A self \in Corr: (pc[self] /= "U0"))
 
 (* If there are at most 7 * T processes, these properties OneStep0 and  *)
 (* OneStep1 do not hold.                                                *)

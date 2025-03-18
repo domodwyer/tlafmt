@@ -62,7 +62,7 @@ InitNoBcast ==
 
 Receive(self) == (* a correct process self receives new messages *)
     /\ pc[self] /= "CR"
-    /\ \E msgs \in SUBSET(Proc \times M): (* msgs is a set of messages which has been received  *)
+    /\ \E msgs \in SUBSET (Proc \times M): (* msgs is a set of messages which has been received  *)
             /\ msgs \subseteq sent
             /\ rcvd[self] \subseteq msgs
             /\ rcvd' = [rcvd EXCEPT ![self] = msgs]
@@ -80,7 +80,7 @@ UponV1(self) ==
 (* If a correct process received an ECHO messageaccepts, it accepts and then 
    broadcasts ECHO to all.  *)
 UponAccept(self) ==
-    /\(pc[self] = "V0" \/ pc[self] = "V1")
+    /\ (pc[self] = "V0" \/ pc[self] = "V1")
     /\ rcvd' [self] /= {}
     /\ pc' = [pc EXCEPT ![self] = "AC"]
     /\ sent' = sent \union {<< self, "ECHO" >>}
@@ -131,9 +131,9 @@ SpecNoBcast == InitNoBcast /\ [][Next]_vars
    CR - a process is crashed 
  *)
 TypeOK ==
-    /\ sent \in SUBSET(Proc \times M)
+    /\ sent \in SUBSET (Proc \times M)
     /\ pc \in [Proc -> {"V0", "V1", "AC", "CR"}]
-    /\ rcvd \in [Proc -> SUBSET(Proc \times M)]
+    /\ rcvd \in [Proc -> SUBSET (Proc \times M)]
     /\ nCrashed \in 0..N
     /\ Corr \in SUBSET Proc
 
@@ -141,7 +141,7 @@ TypeOK ==
 UnforgLtl == (\A i \in Corr: pc[i] = "V0") => [](\A i \in Corr: pc[i] /= "AC")
 
 (* Unforg is correct iff the initial state is InitNoBcast. *)
-Unforg == (\A self \in Corr:(pc[self] /= "AC"))
+Unforg == (\A self \in Corr: (pc[self] /= "AC"))
 
 (* If a correct process broadcasts, then every correct process eventually accepts. *)
 CorrLtl == (\A i \in Corr: pc[i] = "V1") => <>(\E i \in Corr: pc[i] = "AC")
@@ -152,7 +152,7 @@ RelayLtl == []((\E i \in Corr: pc[i] = "AC") => <>(\A i \in Corr: pc[i] = "AC"))
 (* If a message is sent by a correct process, then every correct processes eventually
    receives this message. *)
 ReliableChan ==
-[](\E sndr \in 1..N:(<< sndr, "ECHO" >> \in sent
+[](\E sndr \in 1..N: (<< sndr, "ECHO" >> \in sent
     => <>[](\A p \in Corr: << sndr, "ECHO" >> \in rcvd[p])))
 
 ================================================================================

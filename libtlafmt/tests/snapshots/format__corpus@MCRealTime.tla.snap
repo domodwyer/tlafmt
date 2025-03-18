@@ -25,7 +25,7 @@ TimerInit(t) == t = 0
 TimerNext(t, A, v, D, E) ==
     /\ t' = IF <<A>>_v \/ ~(ENABLED <<A>>_v) ' \* [ ]_<<now, v, t>> removed
     THEN 0
-    ELSE t +(now' - now)
+    ELSE t + (now' - now)
 
     /\ t' <= E \* MaxTime constraint
 

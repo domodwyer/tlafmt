@@ -14,8 +14,8 @@ ASSUME /\ \A p \in Proc : /\ Ballot(p) \subseteq {n \in Nat : n > 0}
        /\ \A S, T \in SUBSET Disk :
               IsMajority(S) /\ IsMajority(T) => (S \cup T # {})
 
-DiskBlock == [mbal:( UNION {Ballot(p): p \in Proc}) \union {0},
-    bal:( UNION {Ballot(p): p \in Proc}) \union {0},
+DiskBlock == [mbal: ( UNION {Ballot(p): p \in Proc}) \union {0},
+    bal: ( UNION {Ballot(p): p \in Proc}) \union {0},
     inp: Inputs \union {NotAnInput}]
 
 InitDB == [mbal |-> 0, bal |-> 0, inp |-> NotAnInput]

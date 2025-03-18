@@ -70,7 +70,7 @@ SafetyInvariant == \* Some more comprehensive checks beyond the type invariant
                 /\ PersonState[p].destination = f
     /\ \A p \in Person: \* A person is in an elevator only if the elevator is moving toward their destination floor
         /\ \A e \in Elevator:
-            /\(PersonState[p].location = e /\ ElevatorState[e].floor /= PersonState[p].destination) =>
+            /\ (PersonState[p].location = e /\ ElevatorState[e].floor /= PersonState[p].destination) =>
                 /\ ElevatorState[e].direction = GetDirection[ElevatorState[e].floor, PersonState[p].destination]
     /\ \A c \in ActiveElevatorCalls: PeopleWaiting[c.floor, c.direction] /= {} \* No ghost calls
 

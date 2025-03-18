@@ -80,11 +80,11 @@ BecomeByzantine(i) ==
 (* correct processes are considered.                                                  *)
 Receive(i, includeByz) ==
     \/
-        /\ nRcvdE[i] < nSntE +(IF includeByz THEN nByz ELSE 0)
+        /\ nRcvdE[i] < nSntE + (IF includeByz THEN nByz ELSE 0)
         /\ nRcvdE' = [nRcvdE EXCEPT ![i] = nRcvdE[i] + 1]
         /\ UNCHANGED << nSntE, nSntR, nRcvdR, nByz, pc >>
     \/
-        /\ nRcvdR[i] < nSntR +(IF includeByz THEN nByz ELSE 0)
+        /\ nRcvdR[i] < nSntR + (IF includeByz THEN nByz ELSE 0)
         /\ nRcvdR' = [nRcvdR EXCEPT ![i] = nRcvdR[i] + 1]
         /\ UNCHANGED << nSntE, nSntR, nRcvdE, nByz, pc >>
     \/

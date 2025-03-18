@@ -7,8 +7,8 @@ input_file: libtlafmt/tests/corpus/Util.tla
 EXTENDS Sequences, Functions, Naturals, TLC
 \* Simple utility functions
 intersects(a, b) == a \intersect b /= {}
-max(s) == CHOOSE i \in s:(~\E j \in s: j > i)
-min(s) == CHOOSE i \in s:(~\E j \in s: j < i)
+max(s) == CHOOSE i \in s: (~\E j \in s: j > i)
+min(s) == CHOOSE i \in s: (~\E j \in s: j < i)
 
 ReduceSet( op(_, _) , set, base) ==
     LET iter[s \in SUBSET set] ==

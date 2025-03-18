@@ -193,8 +193,8 @@ Inv ==
     /\ toVroot \in [Procs -> SUBSET Nodes]
     /\ pc \in [Procs -> {"a", "b", "c", "Done"}]
     /\ \A q \in Procs:
-            /\(pc[q] \in {"a", "b", "Done"}) =>(toVroot[q] = {})
-            /\(pc[q] = "b") =>(u[q] \in vroot \union marked)
+            /\ (pc[q] \in {"a", "b", "Done"}) => (toVroot[q] = {})
+            /\ (pc[q] = "b") => (u[q] \in vroot \union marked)
         
 (***************************************************************************)
 (* To define a refinement mapping from states of the parallel algorithm to *)

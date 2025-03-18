@@ -68,7 +68,7 @@ ELSE LET x == CHOOSE x \in S: TRUE
 (* subset of T.  \A and \E are the universal and existential quantifiers.  *)
 (***************************************************************************)
 Break == {B \in [1..P -> 1..N]: Sum(B, 1..P) = N
-    /\ \A i \in 1..P: \A j \in(i + 1)..P: B[i] <= B[j]}
+    /\ \A i \in 1..P: \A j \in (i + 1)..P: B[i] <= B[j]}
 
 (***************************************************************************)
 (* To weigh a quantity of corn, we can put some of the weights on the same *)
@@ -88,7 +88,7 @@ IsRepresentation(w, B, S, T) == S \intersect T = {}
 (* SUBSET S is the set of all subsets of S (the power set of S).           *)
 (***************************************************************************)
 IsSolution(B) == \A w \in 1..N:
-    \E S, T \in SUBSET(1..P): IsRepresentation(w, B, S, T)
+    \E S, T \in SUBSET (1..P): IsRepresentation(w, B, S, T)
 
 (***************************************************************************)
 (* I define AllSolutions to be the set of all breaks B that solve the      *)

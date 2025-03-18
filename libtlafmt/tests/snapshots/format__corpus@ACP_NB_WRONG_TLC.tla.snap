@@ -121,8 +121,8 @@ parProgNNB == \E i, j \in participants: parDie(i) \/ parProgNB(i, j)
 progNNB == parProgNNB \/ coordProgN
 
 fairnessNB ==
-    /\ \A i \in participants: WF_<< coordinator, participant >>(\E j \in participants: parProgNB(i, j))
-    /\ WF_<< coordinator, participant >>(coordProgB)
+    /\ \A i \in participants: WF_<< coordinator, participant >> (\E j \in participants: parProgNB(i, j))
+    /\ WF_<< coordinator, participant >> (coordProgB)
 
 SpecNB == InitNB /\ [][progNNB]_<< coordinator, participant >> /\ fairnessNB
 

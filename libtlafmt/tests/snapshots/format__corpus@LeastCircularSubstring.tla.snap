@@ -182,7 +182,7 @@ IsLeastMinimalRotation(s, r) ==
     LET rotation == Rotation(s, r) IN
         /\ \A other \in Rotations(s):
             /\ rotation \preceq other.seq
-            /\ rotation = other.seq =>(r <= other.shift)
+            /\ rotation = other.seq => (r <= other.shift)
 
 Correctness ==
     pc = "Done" => IsLeastMinimalRotation(b, k)

@@ -148,7 +148,7 @@ Boxes == [content: Messages, age: Int ]
       word, this constant should be a maximum age of above boxes.
     - maxDelta is also an estimated upper bound of delta[i][j] for all i and j. *)
 K == ((SendPoint * PredictPoint * PHI) \div DELTA) + 1
-maxAge == K *(SendPoint * PredictPoint * PHI)
+maxAge == K * (SendPoint * PredictPoint * PHI)
 maxDelta == maxAge
 
 CommChan == INSTANCE Age_Channel (* The communication system *)
@@ -278,19 +278,19 @@ ProcTick ==
        real-time steps. In other words, the maximum ages of associated boxes in transit 
        are DELTA. *)
 PHIConstraint ==
-    \A i \in Proc:(failed' [i] = FALSE => procPause' [i] <= PHI) (* No errors happen *)
+    \A i \in Proc: (failed' [i] = FALSE => procPause' [i] <= PHI) (* No errors happen *)
 
 (* I believe that PHIConstraint and PHIConstraint1 are equivalent. However, whenever I 
    check this specification with PHIConstraing1, TLC shows an error: "Too many possible 
    next states for the last state in the trace." I guess that the reasons are from 
    optimizations for disjunctions. *)
 PHIConstraint1 ==
-    \A i \in Proc:(failed' [i] = TRUE \/ procPause' [i] <= PHI)
+    \A i \in Proc: (failed' [i] = TRUE \/ procPause' [i] <= PHI)
 
 DELTAConstraint ==
     \A i \in Proc:
-        /\((failed' [i] = FALSE /\ moved' [i] = "RECEIVE")
-            =>(\A m \in inTransit':
+        /\ ((failed' [i] = FALSE /\ moved' [i] = "RECEIVE")
+            => (\A m \in inTransit':
                 \/ m.content.to /= i
                 \/ m.age <= DELTA))
         (*
@@ -338,12 +338,12 @@ TypeOK ==
     - Eventually Strong Accuracy: There is a time after which correct processes 
       are not suspected by any correct process. *)
 StrongCompleteness ==
-<>[](\A j \in Proc: failed[j] = TRUE =>(\A i \in Proc:
+<>[](\A j \in Proc: failed[j] = TRUE => (\A i \in Proc:
     \/ failed[i] = TRUE
     \/ j \in suspected[i]))
 
 EventuallyStrongAccuracy ==
-<>[](\A i, j \in Proc:(failed[i] = FALSE /\ failed[j] = FALSE)
+<>[](\A i, j \in Proc: (failed[i] = FALSE /\ failed[j] = FALSE)
     => j \notin suspected[i])
 
 ================================================================================

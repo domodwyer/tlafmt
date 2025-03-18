@@ -83,7 +83,7 @@ RecordCombine(S, T) ==
    (* of fields is the union of the sets of fields of the two records.      *)
    (*************************************************************************)
     LET rc(s, t) ==
-        [i \in(DOMAIN s) \union(DOMAIN t) |-> IF i \in DOMAIN s THEN s[i]
+        [i \in (DOMAIN s) \union (DOMAIN t) |-> IF i \in DOMAIN s THEN s[i]
             ELSE t[i]]
     IN {rc(s, t): s \in S, t \in T}
 --------------------------------------------------------------------------------
@@ -321,7 +321,7 @@ MinLevelConstraint(id, LC) ==
     THEN LET minLC == CHOOSE lc \in LC:
             /\ lc.param = id
             /\ \A olc \in LC:
-                (olc.param = id) =>(olc.level >= lc.level)
+                (olc.param = id) => (olc.level >= lc.level)
         IN minLC.level
     ELSE 3
 
@@ -336,12 +336,12 @@ MaxArgLevelConstraints(id, ALC) ==
    (*************************************************************************)
     LET n == Node[id].numberOfArgs
         minALC(i) ==
-            LET isALC(lc) == (lc.param = id) /\(lc.idx = i)
+            LET isALC(lc) == (lc.param = id) /\ (lc.idx = i)
             IN IF \E lc \in ALC: isALC(lc)
                 THEN LET max == CHOOSE lc \in ALC:
                         /\ isALC(lc)
                         /\ \A olc \in ALC:
-                            isALC(olc) =>(olc.level <= lc.level)
+                            isALC(olc) => (olc.level <= lc.level)
                     IN max.level
                 ELSE 0
     IN [i \in 1..n |-> minALC(i)]
@@ -819,7 +819,7 @@ TypeOK ==
     /\ \A id \in NodeId:
         LET n == Node[id]
         IN
-            /\(n \in OpDefNode) =>
+            /\ (n \in OpDefNode) =>
                 /\ Len(n.maxLevels) = n.numberOfArgs
                 /\ Len(n.weights) = n.numberOfArgs
                 /\ Len(n.params) = n.numberOfArgs
@@ -832,18 +832,18 @@ TypeOK ==
                         Len(n.opLevelCond[i][j]) =
                         Node[n.params[i]].numberOfArgs
         
-            /\(n \in OpDeclNode) =>
-                /\(n.kind = "ConstantDeclNode") =>(n.level = 0)
-                /\(n.kind = "VariableDeclNode") =>
+            /\ (n \in OpDeclNode) =>
+                /\ (n.kind = "ConstantDeclNode") => (n.level = 0)
+                /\ (n.kind = "VariableDeclNode") =>
                     /\ n.level = 1
                     /\ n.numberOfArgs = 0
         
-            /\(n \in OpApplNode) =>
+            /\ (n \in OpApplNode) =>
             (Len(n.args) = Node[n.operator].numberOfArgs)
         
-            /\(n \in SubstitutionNode) =>(Len(n.subFor) = Len(n.subWith))
+            /\ (n \in SubstitutionNode) => (Len(n.subFor) = Len(n.subWith))
         
-            /\(n \in InstanceNode) =>
+            /\ (n \in InstanceNode) =>
                 /\ n.numberOfArgs = Len(n.params)
                 /\ (********************************************************)
                     (* There is a WITH substitution for every parameter of  *)
@@ -1269,7 +1269,7 @@ InstanceNodeLevelCorrect(n) ==
                         /\ alp.op = mparamId[i]
                         /\ alp.param = mparamId[j]
                         /\ mOpArg(i) \in OpDefNode
-                    =>(mexp[j].level <= mOpArg(i).maxLevels[alp.idx])
+                    => (mexp[j].level <= mOpArg(i).maxLevels[alp.idx])
     
         (*********************************************************************)
        (* The level constraints for InstanceNode n are the ones that come   *)
@@ -1588,13 +1588,13 @@ DefinedOpApplNodeLevelCorrect(n) ==
          (* The set of i such that param[i] is an operator argument and     *)
          (* arg[i] is a defined operator.                                   *)
          (*******************************************************************)
-        {i \in 1..p: IsOpArg(op, i) /\(arg[i].ref \in OpDefNodeId)}
+        {i \in 1..p: IsOpArg(op, i) /\ (arg[i].ref \in OpDefNodeId)}
         declOpArgs ==
         (*******************************************************************)
          (* The set of i such that param[i] is an operator argument and     *)
          (* arg[i] is an operator parameter.                                *)
          (*******************************************************************)
-        {i \in 1..p: IsOpArg(op, i) /\(arg[i].ref \in OpDeclNodeId)}
+        {i \in 1..p: IsOpArg(op, i) /\ (arg[i].ref \in OpDeclNodeId)}
         OpLevelCondIdx(i, j) ==
         (*******************************************************************)
          (* The set of k such that op.opLevelCond[i][j][k] is defined and   *)
@@ -1845,7 +1845,7 @@ DefinedOpApplNodeLevelCorrect(n) ==
             (*    alp.param a formal parameter of the definition of op.     *)
             (****************************************************************)
             {alp \in op.argLevelParams:
-                \A i \in 1..p:(alp.op /= param[i]) /\(alp.param /= param[i])}
+                \A i \in 1..p: (alp.op /= param[i]) /\ (alp.param /= param[i])}
             \union
             
             (****************************************************************)
@@ -2011,11 +2011,11 @@ LevelCorrect ==
     \A id \in NodeId:
         LET n == Node[id]
         IN
-            /\(n \in IdentifierNode) => IdentifierNodeLevelCorrect(n)
-            /\(n \in OpApplNode) => OpApplNodeLevelCorrect(n)
+            /\ (n \in IdentifierNode) => IdentifierNodeLevelCorrect(n)
+            /\ (n \in OpApplNode) => OpApplNodeLevelCorrect(n)
             /\ n \in LetInNode => LetInNodeLevelCorrect(n)
             /\ n \in InstanceNode => InstanceNodeLevelCorrect(n)
             /\ n \in ModuleNode => ModuleNodeLevelCorrect(n)
-            /\(n \in OpDefNode) /\(n.body /= Null) => OpDefNodeLevelCorrect(n)
+            /\ (n \in OpDefNode) /\ (n.body /= Null) => OpDefNodeLevelCorrect(n)
 
 ================================================================================

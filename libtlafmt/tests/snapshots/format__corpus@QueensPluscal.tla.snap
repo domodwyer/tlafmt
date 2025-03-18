@@ -89,7 +89,7 @@ nxtQ ==
                 LET cols == {c \in 1..N: ~\E i \in 1..Len(queens):
                             Attacks(Append(queens, c), i, nxtQ)} IN
                     LET exts == {Append(queens, c): c \in cols} IN
-                    IF(nxtQ = N)
+                    IF (nxtQ = N)
                     THEN
                         /\ todo' = todo \ {queens}
                         /\ sols' = (sols \union exts)

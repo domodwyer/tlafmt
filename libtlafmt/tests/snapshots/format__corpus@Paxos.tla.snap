@@ -200,7 +200,7 @@ PaxosNext ==
 PaxosSpec ==
     /\ PaxosInit
     /\ [][PaxosNext]_<< messages, decision, maxBallot, maxVBallot, maxValue >>
-    /\ SF_<< messages, decision, maxBallot, maxVBallot, maxValue >>(PaxosDecide)
+    /\ SF_<< messages, decision, maxBallot, maxVBallot, maxValue >> (PaxosDecide)
 
 \* Non-triviality safety property: Only proposed values can be learnt.
 PaxosNontriviality ==

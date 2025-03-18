@@ -343,16 +343,6 @@ impl Token<'_> {
             // A `EXCEPT !.ok` sequence or `EXCEPT ![x]`.
             (Token::Bang, Token::Dot | Token::SquareOpen) => 0,
 
-            // A `something > (n + 1)` sequence.
-            (
-                Token::GreaterThan
-                | Token::GreaterThanEqual
-                | Token::LessThan
-                | Token::LessThanEqual
-                | Token::Compose,
-                Token::ParenOpen,
-            ) => 1,
-
             // Any "not" sequence such as `~(thing)`.
             (Token::Not, _) => 0,
 
@@ -372,29 +362,30 @@ impl Token<'_> {
             // Unchanged vars `[Next]_vars`.
             (Token::StepOrStutter(_), _) => 0,
 
-            // Eq followed by parens.
+            // No space between these tokens and an opening paren.
             (
-                Token::Eq | Token::Eq2 | Token::NotEq,
-                Token::ParenOpen | Token::SquareOpen | Token::AngleOpen,
-            ) => 1,
+                Token::Ident(_)
+                | Token::ParenClose
+                | Token::SquareClose
+                | Token::CurlyClose
+                | Token::Always
+                | Token::Eventually,
+                Token::ParenOpen,
+            ) => 0,
 
-            // No space between this token and the listed tokens.
-            _ if matches!(
-                next,
+            // No space between any token and the listed tokens.
+            (
+                _,
                 Token::SourceNewline
-                    | Token::Newline
-                    | Token::ParenOpen
-                    | Token::ParenClose
-                    | Token::SquareClose
-                    | Token::CurlyClose
-                    | Token::Comma
-                    | Token::Dots2
-                    | Token::SemiColon
-                    | Token::Prime
-            ) =>
-            {
-                0
-            }
+                | Token::Newline
+                | Token::ParenClose
+                | Token::SquareClose
+                | Token::CurlyClose
+                | Token::Comma
+                | Token::Dots2
+                | Token::SemiColon
+                | Token::Prime,
+            ) => 0,
 
             // All other tokens can be delimited by whitespace.
             _ => 1,

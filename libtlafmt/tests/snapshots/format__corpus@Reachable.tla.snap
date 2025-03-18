@@ -137,7 +137,7 @@ TypeOK ==
     /\ marked \in SUBSET Nodes
     /\ vroot \in SUBSET Nodes
     /\ pc \in {"a", "Done"}
-    /\(pc = "Done") =>(vroot = {})
+    /\ (pc = "Done") => (vroot = {})
     (*************************************************************************)
   (* The invariance of TypeOK is obvious.  (I decided to make the obvious  *)
   (* fact that pc equals "Done" only if vroot is empty part of the         *)
@@ -146,7 +146,7 @@ TypeOK ==
 
 Inv1 ==
     /\ TypeOK
-    /\ \A n \in marked: Succ[n] \subseteq(marked \union vroot)
+    /\ \A n \in marked: Succ[n] \subseteq (marked \union vroot)
     (*************************************************************************)
   (* The second conjunct of Inv1 is invariant because each element of      *)
   (* Succ[n] is added to vroot when n is added to `marked', and it remains *)
@@ -204,7 +204,7 @@ Inv3 == Reachable = marked \union ReachableFrom(vroot)
 (* then `marked' equals Reachable.  The algorithm has terminated when pc   *)
 (* equals "Done", so this theorem asserts partial correctness.             *)
 (***************************************************************************)
-PartialCorrectness == (pc = "Done") =>(marked = Reachable)
+PartialCorrectness == (pc = "Done") => (marked = Reachable)
 THEOREM Spec => []PartialCorrectness
 (*************************************************************************)
   (* TypeOK implies (pc = "Done") => (vroot = {}).  Since,                 *)

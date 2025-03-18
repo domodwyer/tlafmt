@@ -61,7 +61,7 @@ VARIABLES votes, maxBal
 (* the value of maxBal[a] is either a ballot number or -1.                 *)
 (***************************************************************************)
 TypeOK ==
-    /\ votes \in [Acceptor -> SUBSET(Ballot \X Value)]
+    /\ votes \in [Acceptor -> SUBSET (Ballot \X Value)]
     /\ maxBal \in [Acceptor -> Ballot \union { - 1}]
 
 (***************************************************************************)
@@ -144,7 +144,7 @@ THEOREM ChoosableThm ==
 (***************************************************************************)
 OneValuePerBallot ==
     \A a1, a2 \in Acceptor, b \in Ballot, v1, v2 \in Value:
-        VotedFor(a1, b, v1) /\ VotedFor(a2, b, v2) =>(v1 = v2)
+        VotedFor(a1, b, v1) /\ VotedFor(a2, b, v2) => (v1 = v2)
 (************************************************************************)
    (* This formula asserts that if any acceptors a1 and a2 have voted in a *)
    (* ballot b, then they voted for the same value in ballot b.  For       *)
@@ -172,8 +172,8 @@ Inv == TypeOK /\ VotesSafe /\ OneValuePerBallot
 ShowsSafeAt(Q, b, v) ==
     /\ \A a \in Q: maxBal[a] >= b
     /\ \E c \in - 1..(b - 1):
-            /\(c /= - 1) => \E a \in Q: VotedFor(a, c, v)
-            /\ \A d \in(c + 1)..(b - 1), a \in Q: DidNotVoteAt(a, d)
+            /\ (c /= - 1) => \E a \in Q: VotedFor(a, c, v)
+            /\ \A d \in (c + 1)..(b - 1), a \in Q: DidNotVoteAt(a, d)
         
 (***************************************************************************)
 (* This is the theorem that's at the heart of the algorithm.  It shows     *)
@@ -225,7 +225,7 @@ VoteFor(a, b, v) ==
     /\ maxBal[a] <= b
     /\ \A vt \in votes[a]: vt[1] /= b
     /\ \A c \in Acceptor \ {a}:
-        \A vt \in votes[c]:(vt[1] = b) =>(vt[2] = v)
+        \A vt \in votes[c]: (vt[1] = b) => (vt[2] = v)
     /\ \E Q \in Quorum: ShowsSafeAt(Q, b, v)
     /\ votes' = [votes EXCEPT ![a] = votes[a] \union {<< b, v >>}]
     /\ maxBal' = [maxBal EXCEPT ![a] = b]

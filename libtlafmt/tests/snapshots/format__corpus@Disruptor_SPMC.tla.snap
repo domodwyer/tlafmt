@@ -64,7 +64,7 @@ Transition(t, from, to) ==
 Buffer == INSTANCE RingBuffer WITH Values <- Int
 
 Range(f) ==
-    {f[x]: x \in DOMAIN(f)}
+    {f[x]: x \in DOMAIN (f)}
 
 MinReadSequence ==
     CHOOSE min \in Range(read): \A r \in Readers: min <= read[r]

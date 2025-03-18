@@ -75,7 +75,7 @@ Next ==
 TypeInv ==
     /\ buffer \in Seq(Producers)
     /\ Len(buffer) \in 0..BufCapacity
-    /\ waitSet \in SUBSET(Producers \union Consumers)
+    /\ waitSet \in SUBSET (Producers \union Consumers)
 
 (* No Deadlock *)
 Invariant == waitSet /= (Producers \union Consumers)

@@ -37,8 +37,8 @@ EXTENDS NaturalsInduction
 (* R and S \X S are disjoint sets.                                         *)
 (***************************************************************************)
 IsTransitivelyClosedOn(R, S) ==
-    \A i, j, k \in S:(<< i, j >> \in R) /\(<< j, k >> \in R)
-    =>(<< i, k >> \in R)
+    \A i, j, k \in S: (<< i, j >> \in R) /\ (<< j, k >> \in R)
+    => (<< i, k >> \in R)
 (***************************************************************************)
 (* If we think of R as a less-than relation, then R is well founded on S   *)
 (* iff there is no "infinitely descending" sequence of elements of S.  The *)
@@ -170,7 +170,7 @@ ASSUME NEW Def(_,_), NEW R, NEW S, NEW f,
 (***************************************************************************)
 TransitiveClosureOn(R, S) ==
 {ss \in S \X S:
-    \A U \in SUBSET(S \X S):
+    \A U \in SUBSET (S \X S):
             /\ R \intersect S \X S \subseteq U
             /\ IsTransitivelyClosedOn(U, S)
         => ss \in U}
@@ -275,7 +275,7 @@ ASSUME NEW S, NEW T, NEW R, NEW f(_),
 (* of two well-ordered sets is well-ordered.                               *)
 (***************************************************************************)
 LexPairOrdering(R1, R2, S1, S2) ==
-{ss \in(S1 \X S2) \X (S1 \X S2):
+{ss \in (S1 \X S2) \X (S1 \X S2):
     \/ << ss[1][1], ss[2][1] >> \in R1
     \/
         /\ ss[1][1] = ss[2][1]

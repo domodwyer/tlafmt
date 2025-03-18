@@ -215,6 +215,8 @@ where
                 Token::Multiply => "*",
                 Token::AppendShort => r"\o",
                 Token::Real => r"Real",
+                Token::Int => r"Int",
+                Token::Nat => r"Nat",
                 Token::GreaterThan => ">",
                 Token::GreaterThanEqual => ">=",
                 Token::LessThan => "<",
@@ -368,6 +370,8 @@ pub(super) fn token_len(t: &Token<'_>) -> usize {
         Token::StepOrStutter(s) => s.len() + 3,
         Token::CaseBox => 2,
         Token::CaseArrow => 2,
+        Token::Int => 3,
+        Token::Nat => 3,
     }
 }
 

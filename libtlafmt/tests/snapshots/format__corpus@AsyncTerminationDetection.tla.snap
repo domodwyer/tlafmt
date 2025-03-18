@@ -26,7 +26,7 @@ VARIABLES
 
 TypeOK ==
     /\ active \in [Node -> BOOLEAN ]
-    /\ pending \in [Node -> Nat ]
+    /\ pending \in [Node -> Nat]
     /\ terminationDetected \in BOOLEAN
 
 terminated == \A n \in Node: ~active[n] /\ pending[n] = 0

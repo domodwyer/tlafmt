@@ -47,7 +47,7 @@ THEOREM TypeInvariant == Spec => []TypeOK
     BY DEF TypeOK, Next
   <1> QED BY PTL, <1>a, <1>b, <1>c DEF Spec
 
-a | b == \E c \in Nat : a * c = b
+a | b == \E c \in Nat: a * c = b
 
 Even == 2 | x
 

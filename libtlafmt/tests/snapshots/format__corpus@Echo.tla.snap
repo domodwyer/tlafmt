@@ -179,7 +179,7 @@ Termination == <>(\A self \in ProcSet: pc[self] = "Done")
 TypeOK ==
     /\ parent \in [Node -> (Node \union {NoNode})]
     /\ children \in [Node -> SUBSET Node]
-    /\ rcvd \in [Node -> Nat ]
+    /\ rcvd \in [Node -> Nat]
     /\ nbrs \in [Node -> SUBSET Node]
     /\ \A n \in Node: nbrs[n] = neighbors(n) /\ rcvd[n] <= Cardinality(nbrs[n])
     /\ inbox \in [Node -> SUBSET [kind: {"m", "c"}, sndr: Node]]

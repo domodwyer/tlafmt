@@ -48,7 +48,7 @@ IsTransitivelyClosedOn(R, S) ==
 (* A S with a well-founded ordering is often called well-ordered.          *)
 (***************************************************************************)
 IsWellFoundedOn(R, S) ==
-~\E f \in [ Nat -> S]: \A n \in Nat : << f[n + 1], f[n] >> \in R
+~\E f \in [Nat -> S]: \A n \in Nat: << f[n + 1], f[n] >> \in R
 
 LEMMA EmptyIsWellFounded == \A S : IsWellFoundedOn({}, S)
 
@@ -254,7 +254,7 @@ OpToRel( _\prec_ , S) == {ss \in S \X S: ss[1] \prec ss[2]}
 (* To construct well-founded relations from the less-than relation on the  *)
 (* natural numbers, we first prove that it is well-founded.                *)
 (***************************************************************************)
-THEOREM NatLessThanWellFounded == IsWellFoundedOn(OpToRel(<, Nat ), Nat )
+THEOREM NatLessThanWellFounded == IsWellFoundedOn(OpToRel(<, Nat), Nat)
 
 (***************************************************************************)
 (* The next definition would be easier to read if we used the TLA+         *)

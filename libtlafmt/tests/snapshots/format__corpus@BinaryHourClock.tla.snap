@@ -11,7 +11,7 @@ VARIABLE bits
 H(hr) == INSTANCE HourClock
 
 BitArrayVal(b) ==
-    LET n == CHOOSE i \in Nat : DOMAIN b = 0..i
+    LET n == CHOOSE i \in Nat: DOMAIN b = 0..i
 
         val[i \in 0..n] ==
             IF i = 0 THEN b[0] * 2 ^ 0 ELSE (b[i] * 2 ^ i) + val[i - 1]

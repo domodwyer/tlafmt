@@ -110,12 +110,12 @@ LEMMA NodeIsFinite == IsFiniteSet(Node)
 BY FS_Interval DEF Node
 
 LEMMA PlusACI ==
-    /\ IsAssociativeOn(+, Nat )
-    /\ IsCommutativeOn(+, Nat )
-    /\ IsIdentityOn(+, 0, Nat )
-    /\ IsAssociativeOn(+, Int )
-    /\ IsCommutativeOn(+, Int )
-    /\ IsIdentityOn(+, 0, Int )
+    /\ IsAssociativeOn(+, Nat)
+    /\ IsCommutativeOn(+, Nat)
+    /\ IsIdentityOn(+, 0, Nat)
+    /\ IsAssociativeOn(+, Int)
+    /\ IsCommutativeOn(+, Int)
+    /\ IsIdentityOn(+, 0, Int)
 BY DEF IsAssociativeOn, IsCommutativeOn, IsIdentityOn
 
 LEMMA SumEmpty ==

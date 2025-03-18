@@ -26,12 +26,12 @@ VARIABLES
 
 vars == << active, color, counter, inbox >>
 
-TokenMsg == [type: {"tok"}, q: Int , color: Color]
+TokenMsg == [type: {"tok"}, q: Int, color: Color]
 BasicMsg == [type: {"pl"}]
 Message == TokenMsg \union BasicMsg
 
 TypeOK ==
-    /\ counter \in [Node -> Int ]
+    /\ counter \in [Node -> Int]
     /\ active \in [Node -> BOOLEAN ]
     /\ color \in [Node -> Color]
     /\ inbox \in [Node -> Seq(Message)]

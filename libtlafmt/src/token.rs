@@ -225,6 +225,12 @@ pub(crate) enum Token<'a> {
     /// A `Real` sequence.
     Real,
 
+    /// An `Int` sequence.
+    Int,
+
+    /// A `Nat` sequence.
+    Nat,
+
     /// A `<`.
     GreaterThan,
 

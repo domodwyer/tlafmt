@@ -173,10 +173,10 @@ StateConstraint ==
 
 TypeOK ==
     /\ terminationDetected \in BOOLEAN
-    /\ network \in [Node -> [msg: [Node -> Nat ], ack: Nat ]]
+    /\ network \in [Node -> [msg: [Node -> Nat], ack: Nat]]
     /\ active \in [Node -> BOOLEAN ]
     /\ parent \in [Node -> Node \union {none}]
-    /\ activeSons \in [Node -> Nat ]
+    /\ activeSons \in [Node -> Nat]
 
 Quiescence ==
     /\ \A n \in Node: ~active[n]

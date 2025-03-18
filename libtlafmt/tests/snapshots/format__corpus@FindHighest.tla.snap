@@ -37,7 +37,7 @@ max(a, b) == IF a >= b THEN a ELSE b
 vars == << f, h, i, pc >>
 
 Init == (* Global variables *)
-    /\ f \in Seq( Nat )
+    /\ f \in Seq(Nat)
     /\ h = - 1
     /\ i = 1
     /\ pc = "lb"
@@ -71,7 +71,7 @@ Termination == <>(pc = "Done")
 \* trying to prove them. To quote Leslie Lamport, it's very difficult to
 \* prove something that isn't true!
 TypeOK ==
-    /\ f \in Seq( Nat )
+    /\ f \in Seq(Nat)
     /\ i \in 1..(Len(f) + 1)
     /\ i \in Nat
     /\ h \in Nat \union { - 1}

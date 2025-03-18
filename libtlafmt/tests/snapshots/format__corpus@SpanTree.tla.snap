@@ -67,7 +67,7 @@ vars == << mom, dist >>
 
 TypeOK ==
     /\ mom \in [Nodes -> Nodes]
-    /\ dist \in [Nodes -> Nat ]
+    /\ dist \in [Nodes -> Nat]
 
 Init ==
     /\ mom = [n \in Nodes |-> n]

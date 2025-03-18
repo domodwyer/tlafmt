@@ -323,6 +323,8 @@ fn into_output_token<'a>(node: &Node<'_>, input: &'a str) -> Option<Token<'a>> {
         "lt" => Token::LessThan,
         "leq" => Token::LessThanEqual,
         "real_number_set" => Token::Real,
+        "int_number_set" => Token::Int,
+        "nat_number_set" => Token::Nat,
         "setminus" => Token::SetMinus,
         "slash" => Token::Divide,
         "single_line" => Token::LineDivider('-'),
@@ -758,6 +760,20 @@ Send ==
     /\ UNCHANGED << i, INPUT, OUTPUT, got, ack, complete >>
 ====
 "#
+        );
+    }
+
+    #[test]
+    fn test_number_sets() {
+        assert_rewrite!(
+            r"
+---- MODULE B ----
+EXTENDS Integers
+X == [version: Int]
+X == [version: Real]
+X == [version: Nat]
+====
+"
         );
     }
 }

@@ -53,7 +53,7 @@ TypeOK ==
     (* clock[p] is the local clock of process p *)
     /\ clock \in [Proc -> Clock]
     (* req[p][q] stores the clock associated with request from q received by p, 0 if none *)
-    /\ req \in [Proc -> [Proc -> Nat ]]
+    /\ req \in [Proc -> [Proc -> Nat]]
     (* ack[p] stores the processes that have ack'ed p's request *)
     /\ ack \in [Proc -> SUBSET Proc]
     (* network[p][q]: queue of messages from p to q -- pairwise FIFO communication *)

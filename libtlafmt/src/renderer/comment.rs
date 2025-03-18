@@ -1,12 +1,12 @@
 use std::cmp::max;
 
 use crate::{
-    helpers::INDENT_STR,
+    helpers::{Indent, INDENT_STR},
     renderer::token_len,
     token::{Position, Token},
 };
 
-use super::{is_newline, Indent};
+use super::is_newline;
 
 /// Scan `buf`, searching for comments that appear vertically aligned (same
 /// column index) in the input source file and compute the appropriate amount of
@@ -184,7 +184,7 @@ where
             // the indentation level from the first token on the next line (only the
             // first can set the line indentation).
             if is_newline(t) {
-                len = iter.peek().unwrap().1 .0 as usize * INDENT_STR.len();
+                len = iter.peek().unwrap().1.get() as usize * INDENT_STR.len();
                 line_tokens = 0;
                 continue;
             }
@@ -231,56 +231,56 @@ mod tests {
     #[test]
     fn test_line_len_1() {
         let tokens = [
-            (Token::Newline, Indent(255)),
+            (Token::Newline, Indent::new(255)),
             // The first token, which sets the indent level
-            (Token::And, Indent(1)), // 4 + 2 + space
+            (Token::And, Indent::new(1)), // 4 + 2 + space
             // The rest, which do not affect indent.
-            (Token::Ident("bananas"), Indent(255)), // 7 + space
-            (Token::Eq, Indent(255)),               // 1 + space
-            (Token::Lit("42"), Indent(255)),        // 2
-        ]
-        .iter()
-        .peekable();
+            (Token::Ident("bananas"), Indent::new(255)), // 7 + space
+            (Token::Eq, Indent::new(255)),               // 1 + space
+            (Token::Lit("42"), Indent::new(255)),        // 2
+        ];
 
-        let got = line_len(tokens).next().unwrap();
+        let iter = tokens.iter().peekable();
+
+        let got = line_len(iter).next().unwrap();
         assert_eq!(got, 16);
     }
 
     #[test]
     fn test_line_len_2() {
         let tokens = [
-            (Token::SourceNewline, Indent(255)),
+            (Token::SourceNewline, Indent::new(255)),
             // Immediately followed by second newline
-            (Token::Newline, Indent(255)),
+            (Token::Newline, Indent::new(255)),
             // The first token, which sets the indent level
-            (Token::And, Indent(1)), // 4 + 2 + space
+            (Token::And, Indent::new(1)), // 4 + 2 + space
             // The rest, which do not affect indent.
-            (Token::Ident("platanos"), Indent(255)), // 8
-            (Token::Prime, Indent(255)),             // 1 + space
-            (Token::Eq, Indent(255)),                // 1 + space
-            (Token::Lit("42"), Indent(255)),         // 2
-        ]
-        .iter()
-        .peekable();
+            (Token::Ident("platanos"), Indent::new(255)), // 8
+            (Token::Prime, Indent::new(255)),             // 1 + space
+            (Token::Eq, Indent::new(255)),                // 1 + space
+            (Token::Lit("42"), Indent::new(255)),         // 2
+        ];
 
-        let got = line_len(tokens).next().unwrap();
+        let iter = tokens.iter().peekable();
+
+        let got = line_len(iter).next().unwrap();
         assert_eq!(got, 18);
     }
 
     #[test]
     fn test_line_len_only_comment() {
         let tokens = [
-            (Token::SourceNewline, Indent(255)),
+            (Token::SourceNewline, Indent::new(255)),
             (
                 Token::Comment("(* bananas *)", Position::Source { row: 2, col: 40 }),
-                Indent(1),
+                Indent::new(1),
             ),
-            (Token::SourceNewline, Indent(255)),
-        ]
-        .iter()
-        .peekable();
+            (Token::SourceNewline, Indent::new(255)),
+        ];
 
-        let got = line_len(tokens).next().unwrap();
+        let iter = tokens.iter().peekable();
+
+        let got = line_len(iter).next().unwrap();
         assert_eq!(got, 4);
     }
 

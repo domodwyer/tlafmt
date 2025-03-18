@@ -1,6 +1,4 @@
-use crate::token::Token;
-
-use super::Indent;
+use crate::{helpers::Indent, token::Token};
 
 /// Process the token buffer, reducing the indentation of excessively indented
 /// blocks relative to the previous line.
@@ -192,7 +190,7 @@ fn recurse(buf: &mut [(Token<'_>, Indent)]) -> usize {
                 // And begin reducing the indentation by the specified amount.
                 state = State::Rewriting {
                     start_index,
-                    delta: min - current_depth - Indent(1),
+                    delta: min - current_depth - Indent::new(1),
                 };
                 continue;
             }
@@ -247,12 +245,12 @@ mod tests {
     #[test]
     fn test_no_op() {
         let tokens = [
-            (Token::Newline, Indent(1)),
-            (Token::Bang, Indent(1)),
-            (Token::Newline, Indent(1)),
-            (Token::Bang, Indent(1)),
-            (Token::Newline, Indent(1)),
-            (Token::Bang, Indent(1)),
+            (Token::Newline, Indent::new(1)),
+            (Token::Bang, Indent::new(1)),
+            (Token::Newline, Indent::new(1)),
+            (Token::Bang, Indent::new(1)),
+            (Token::Newline, Indent::new(1)),
+            (Token::Bang, Indent::new(1)),
         ];
 
         let mut got = tokens.clone();
@@ -263,32 +261,32 @@ mod tests {
     #[test]
     fn test_dedent_many() {
         let mut tokens = [
-            (Token::Newline, Indent(1)),
-            (Token::Bang, Indent(1)),
-            (Token::Newline, Indent(3)),
-            (Token::Bang, Indent(3)),
-            (Token::Newline, Indent(5)),
-            (Token::Bang, Indent(5)),
-            (Token::Newline, Indent(3)),
-            (Token::Bang, Indent(3)),
-            (Token::Newline, Indent(1)),
-            (Token::Bang, Indent(1)),
+            (Token::Newline, Indent::new(1)),
+            (Token::Bang, Indent::new(1)),
+            (Token::Newline, Indent::new(3)),
+            (Token::Bang, Indent::new(3)),
+            (Token::Newline, Indent::new(5)),
+            (Token::Bang, Indent::new(5)),
+            (Token::Newline, Indent::new(3)),
+            (Token::Bang, Indent::new(3)),
+            (Token::Newline, Indent::new(1)),
+            (Token::Bang, Indent::new(1)),
         ];
 
         limit_indents(&mut tokens);
         assert_eq!(
             tokens,
             [
-                (Token::Newline, Indent(1)),
-                (Token::Bang, Indent(1)),
-                (Token::Newline, Indent(3)), // Newline tokens are not rewrote
-                (Token::Bang, Indent(2)),
-                (Token::Newline, Indent(5)),
-                (Token::Bang, Indent(3)),
-                (Token::Newline, Indent(3)),
-                (Token::Bang, Indent(2)),
-                (Token::Newline, Indent(1)),
-                (Token::Bang, Indent(1)),
+                (Token::Newline, Indent::new(1)),
+                (Token::Bang, Indent::new(1)),
+                (Token::Newline, Indent::new(3)), // Newline tokens are not rewrote
+                (Token::Bang, Indent::new(2)),
+                (Token::Newline, Indent::new(5)),
+                (Token::Bang, Indent::new(3)),
+                (Token::Newline, Indent::new(3)),
+                (Token::Bang, Indent::new(2)),
+                (Token::Newline, Indent::new(1)),
+                (Token::Bang, Indent::new(1)),
             ]
         );
     }
@@ -296,24 +294,24 @@ mod tests {
     #[test]
     fn test_dedent_one() {
         let mut tokens = [
-            (Token::Newline, Indent(1)),
-            (Token::Bang, Indent(1)),
-            (Token::Newline, Indent(3)),
-            (Token::Bang, Indent(3)),
-            (Token::Newline, Indent(1)),
-            (Token::Bang, Indent(1)),
+            (Token::Newline, Indent::new(1)),
+            (Token::Bang, Indent::new(1)),
+            (Token::Newline, Indent::new(3)),
+            (Token::Bang, Indent::new(3)),
+            (Token::Newline, Indent::new(1)),
+            (Token::Bang, Indent::new(1)),
         ];
 
         limit_indents(&mut tokens);
         assert_eq!(
             tokens,
             [
-                (Token::Newline, Indent(1)),
-                (Token::Bang, Indent(1)),
-                (Token::Newline, Indent(3)),
-                (Token::Bang, Indent(2)),
-                (Token::Newline, Indent(1)),
-                (Token::Bang, Indent(1)),
+                (Token::Newline, Indent::new(1)),
+                (Token::Bang, Indent::new(1)),
+                (Token::Newline, Indent::new(3)),
+                (Token::Bang, Indent::new(2)),
+                (Token::Newline, Indent::new(1)),
+                (Token::Bang, Indent::new(1)),
             ]
         );
     }
@@ -321,32 +319,32 @@ mod tests {
     #[test]
     fn test_step_jump() {
         let mut tokens = [
-            (Token::Newline, Indent(1)),
-            (Token::Bang, Indent(1)),
-            (Token::Newline, Indent(2)),
-            (Token::Bang, Indent(2)),
-            (Token::Newline, Indent(5)),
-            (Token::Bang, Indent(5)),
-            (Token::Newline, Indent(5)),
-            (Token::Bang, Indent(5)),
-            (Token::Newline, Indent(1)),
-            (Token::Bang, Indent(1)),
+            (Token::Newline, Indent::new(1)),
+            (Token::Bang, Indent::new(1)),
+            (Token::Newline, Indent::new(2)),
+            (Token::Bang, Indent::new(2)),
+            (Token::Newline, Indent::new(5)),
+            (Token::Bang, Indent::new(5)),
+            (Token::Newline, Indent::new(5)),
+            (Token::Bang, Indent::new(5)),
+            (Token::Newline, Indent::new(1)),
+            (Token::Bang, Indent::new(1)),
         ];
 
         limit_indents(&mut tokens);
         assert_eq!(
             tokens,
             [
-                (Token::Newline, Indent(1)),
-                (Token::Bang, Indent(1)),
-                (Token::Newline, Indent(2)),
-                (Token::Bang, Indent(2)),
-                (Token::Newline, Indent(5)),
-                (Token::Bang, Indent(3)),
-                (Token::Newline, Indent(5)),
-                (Token::Bang, Indent(3)),
-                (Token::Newline, Indent(1)),
-                (Token::Bang, Indent(1)),
+                (Token::Newline, Indent::new(1)),
+                (Token::Bang, Indent::new(1)),
+                (Token::Newline, Indent::new(2)),
+                (Token::Bang, Indent::new(2)),
+                (Token::Newline, Indent::new(5)),
+                (Token::Bang, Indent::new(3)),
+                (Token::Newline, Indent::new(5)),
+                (Token::Bang, Indent::new(3)),
+                (Token::Newline, Indent::new(1)),
+                (Token::Bang, Indent::new(1)),
             ]
         );
     }
@@ -354,12 +352,12 @@ mod tests {
     #[test]
     fn test_deferred_indent_use() {
         let tokens = [
-            (Token::Newline, Indent(1)),
-            (Token::Bang, Indent(1)),
-            (Token::Newline, Indent(3)),
-            (Token::Bang, Indent(3)),
-            (Token::Newline, Indent(2)),
-            (Token::Bang, Indent(2)),
+            (Token::Newline, Indent::new(1)),
+            (Token::Bang, Indent::new(1)),
+            (Token::Newline, Indent::new(3)),
+            (Token::Bang, Indent::new(3)),
+            (Token::Newline, Indent::new(2)),
+            (Token::Bang, Indent::new(2)),
         ];
 
         let mut got = tokens.clone();

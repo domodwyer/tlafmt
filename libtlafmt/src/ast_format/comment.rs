@@ -2,6 +2,7 @@ use tree_sitter::Node;
 
 use crate::{
     get_str,
+    helpers::Indent,
     token::{Position, Token},
     Error, Renderer,
 };
@@ -29,7 +30,7 @@ where
             .is_some_and(|v| v.kind() == "operator_definition")
         {
             let orig = writer.indent_get();
-            writer.indent_set(std::cmp::max(1, orig));
+            writer.indent_set(std::cmp::max(Indent::new(1), orig));
             writer.push(Token::Comment(get_str(&def, input), Position::from(&def)))?;
             writer.indent_set(orig);
         } else {
@@ -41,7 +42,7 @@ where
 
     let orig = writer.indent_get();
 
-    writer.indent_set(0);
+    writer.indent_set(Indent::new(0));
     let ret = writer.push(Token::Comment(get_str(&def, input), Position::from(&def)));
     writer.indent_set(orig);
 

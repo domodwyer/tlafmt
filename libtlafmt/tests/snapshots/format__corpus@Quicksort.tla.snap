@@ -198,7 +198,7 @@ PCorrect == (pc = "Done") =>
 UV == U \union {{i}: i \in 1..Len(seq) \ UNION U}
 
 DomainPartitions == {DP \in SUBSET SUBSET (1..Len(seq0)):
-    /\ ( UNION DP) = 1..Len(seq0)
+    /\ (UNION DP) = 1..Len(seq0)
     /\ \A I \in DP: I = Min(I)..Max(I)
     /\ \A I, J \in DP: (I /= J) => (I \intersect J = {})}
 

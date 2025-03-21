@@ -52,7 +52,7 @@ PermSeqs(S) ==
 Drop(seq, i) == SubSeq(seq, 1, i - 1) \o SubSeq(seq, i + 1, Len(seq))
 
 (* Resources are available iff they have not been allocated. *)
-available == Resources \ ( UNION {alloc[c]: c \in Clients})
+available == Resources \ (UNION {alloc[c]: c \in Clients})
 
 (* Range of a function, e.g. elements of a sequence *)
 Range(f) == {f[x]: x \in DOMAIN f}
@@ -138,8 +138,8 @@ UnscheduledClients == \** clients that do not appear in the schedule
 PrevResources(i) ==
     \** resources that will be available when client i has to be satisfied
     available
-    \union ( UNION {unsat[sched[j]] \union alloc[sched[j]]: j \in 1..i - 1})
-    \union ( UNION {alloc[c]: c \in UnscheduledClients})
+    \union (UNION {unsat[sched[j]] \union alloc[sched[j]]: j \in 1..i - 1})
+    \union (UNION {alloc[c]: c \in UnscheduledClients})
 
 AllocatorInvariant == \** a lower-level invariant
     /\ \** all clients in the schedule have outstanding requests

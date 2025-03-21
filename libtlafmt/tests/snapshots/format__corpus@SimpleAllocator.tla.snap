@@ -34,7 +34,7 @@ TypeInvariant ==
 --------------------------------------------------------------------------------
 
 (* Resources are available iff they have not been allocated. *)
-available == Resources \ ( UNION {alloc[c]: c \in Clients})
+available == Resources \ (UNION {alloc[c]: c \in Clients})
 
 (* Initially, no resources have been requested or allocated. *)
 Init ==

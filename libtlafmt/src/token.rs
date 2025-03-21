@@ -120,6 +120,9 @@ pub(crate) enum Token<'a> {
     /// A `THEOREM` sequence.
     KeywordTheorem,
 
+    /// A `UNION` sequence.
+    KeywordUnion,
+
     /// A `\E` sequence.
     Exists,
 

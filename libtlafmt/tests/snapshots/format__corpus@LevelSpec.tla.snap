@@ -1146,7 +1146,7 @@ ModuleNodeLevelCorrect(n) ==
             (* We must remove the constraints on formal parameters of the   *)
             (* definitions.                                                 *)
             (****************************************************************)
-            ( UNION {ReducedLevelConstraint(
+            (UNION {ReducedLevelConstraint(
                 Node[opid],
                     defParams(opid)).argLevelParams:
                 opid \in n.opDefs})
@@ -1684,7 +1684,7 @@ DefinedOpApplNodeLevelCorrect(n) ==
             (* 2. arg[i].levelConstraints :                                 *)
             (*      Constraints inherited from each argument arg[i].        *)
             (****************************************************************)
-            ( UNION {arg[i].levelConstraints: i \in 1..p})
+            (UNION {arg[i].levelConstraints: i \in 1..p})
             \union
             (****************************************************************)
             (* 3. op.maxLevels[i] :                                         *)
@@ -1766,7 +1766,7 @@ DefinedOpApplNodeLevelCorrect(n) ==
             (*      Expression n inherits arg-level constraints from its    *)
             (*      arguments.                                              *)
             (****************************************************************)
-                ( UNION {arg[i].argLevelConstraints: i \in 1..p})
+                (UNION {arg[i].argLevelConstraints: i \in 1..p})
                 \union
                 (****************************************************************)
             (* 3. op.minMaxLevel                                            *)
@@ -1838,7 +1838,7 @@ DefinedOpApplNodeLevelCorrect(n) ==
             (*      The expression inherits all arg-level parameters from   *)
             (*      its arguments.                                          *)
             (****************************************************************)
-            ( UNION {arg[i].argLevelParams: i \in 1..p})
+            (UNION {arg[i].argLevelParams: i \in 1..p})
             \union
             (****************************************************************)
             (* 2. Elements alp of op.argLevelParams with neither alp.op or  *)
@@ -1950,7 +1950,7 @@ LetInNodeLevelCorrect(n) ==
         /\ n.argLevelParams =
             exp.argLevelParams
             \union
-            ( UNION {ReducedLevelConstraint(Node[opid],
+            (UNION {ReducedLevelConstraint(Node[opid],
                     opParams(opid)).argLevelParams:
                 opid \in n.opDefs})
             \union

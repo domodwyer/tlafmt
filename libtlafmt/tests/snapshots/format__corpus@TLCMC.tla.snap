@@ -60,7 +60,7 @@ SuccessorsOf(state, SG) == {successor \in SG.actions[state]:
 (* implementation such as TLC, pair[1] is rather an index into t than      *)
 (* an id of an actual state.                                               *)
 (***************************************************************************)
-Predecessor(t, v) == SelectSeq(t, LAMBDA pair: pair[2] = v ) [1][1]
+Predecessor(t, v) == SelectSeq(t, LAMBDA pair: pair[2] = v )[1][1]
 
 CONSTANT StateGraph, ViolationStates, null
 

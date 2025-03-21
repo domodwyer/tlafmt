@@ -1257,7 +1257,7 @@ InstanceNodeLevelCorrect(n) ==
                 \A j \in 1..mOpArg(i).numberOfArgs:
                     mOpArg(i).maxLevels[j] >=
                         MaxArgLevelConstraints(mparamId[i],
-                            M.argLevelConstraints) [j]
+                            M.argLevelConstraints)[j]
         /\ (******************************************************************)
           (* An arg-level parameter of M asserting that param[j] appears in *)
           (* an argument of operator parameter param[i], where mexp[i] is a *)

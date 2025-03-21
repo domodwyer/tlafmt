@@ -721,4 +721,12 @@ mod tests {
         ]);
         assert_eq!(output, "\n     (* 42 *)");
     }
+
+    /// Raw tokens followed by relatively spaced comments should respect the
+    /// relative spacing.
+    #[test]
+    fn test_old_value_dot_fieldname() {
+        let output: String = format([Token::At, Token::Dot, Token::Ident("bananas")]);
+        assert_eq!(output, "@.bananas");
+    }
 }

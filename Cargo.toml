@@ -12,7 +12,7 @@ keywords = ["tla", "plus", "tla+", "formatter"]
 [dependencies]
 clap = { version = "4.5.32", features = ["derive"] }
 libtlafmt = { path = "libtlafmt", version = "0.3.2" }
-tempfile = "3.19.0"
+tempfile = "3.19.1"
 thiserror = "2.0.12"
 
 [dev-dependencies]

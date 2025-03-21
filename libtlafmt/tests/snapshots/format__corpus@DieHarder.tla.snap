@@ -73,9 +73,9 @@ JugToJug(j, k) ==
 (* disjunction.                                                            *)
 (***************************************************************************)
 Next == \E j \in Jug:
-        \/ FillJug(j)
-        \/ EmptyJug(j)
-        \/ \E k \in Jug \ {j}: JugToJug(j, k)
+    \/ FillJug(j)
+    \/ EmptyJug(j)
+    \/ \E k \in Jug \ {j}: JugToJug(j, k)
     
 (***************************************************************************)
 (* We define the formula Spec to be the complete specification, asserting  *)

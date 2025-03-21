@@ -175,12 +175,12 @@ Move(S, b) ==
     /\ LET newThisBank == who_is_on_bank[b] \ S
             newOtherBank == who_is_on_bank[OtherBank(b)] \union S
         IN
-            /\ IsSafe(newThisBank)
-            /\ IsSafe(newOtherBank)
-            /\ bank_of_boat' = OtherBank(b)
-            /\ who_is_on_bank' =
-                [i \in {"E", "W"} |-> IF i = b THEN newThisBank
-                    ELSE newOtherBank]
+        /\ IsSafe(newThisBank)
+        /\ IsSafe(newOtherBank)
+        /\ bank_of_boat' = OtherBank(b)
+        /\ who_is_on_bank' =
+            [i \in {"E", "W"} |-> IF i = b THEN newThisBank
+                ELSE newOtherBank]
         
 (***************************************************************************)
 (* The next-state formula Next describes all steps s -> t that represent a *)

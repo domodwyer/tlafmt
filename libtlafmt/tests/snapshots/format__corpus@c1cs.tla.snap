@@ -61,10 +61,10 @@ Crash(i) ==
 Receive(i) ==
     /\ pc[i] /= "CRASH"
     /\ \E sndr \in Proc, msg \in Msg:
-            /\ msg \in bcastMsg
-            /\ msg \notin rcvdMsg[i]
-            /\ rcvdMsg' = [rcvdMsg EXCEPT ![i] = rcvdMsg[i] \union {msg}]
-            /\ UNCHANGED << pc, v, dValue, bcastMsg >>
+        /\ msg \in bcastMsg
+        /\ msg \notin rcvdMsg[i]
+        /\ rcvdMsg' = [rcvdMsg EXCEPT ![i] = rcvdMsg[i] \union {msg}]
+        /\ UNCHANGED << pc, v, dValue, bcastMsg >>
         
 (* Broadcasts PROPOSED(v_i) *)
 Propose(i) ==
@@ -100,11 +100,11 @@ T2(i) ==
     /\ pc[i] /= "DONE"
     /\ pc[i] /= "CRASH"
     /\ \E msg \in rcvdMsg[i]:
-            /\ msg.type = "Decision"
-            /\ dValue' = [dValue EXCEPT ![i] = msg.value]
-            /\ bcastMsg' = bcastMsg \union {makeDecisionMsg(dValue' [i], i)}
-            /\ pc' = [pc EXCEPT ![i] = "DONE"]
-            /\ UNCHANGED << v, rcvdMsg >>
+        /\ msg.type = "Decision"
+        /\ dValue' = [dValue EXCEPT ![i] = msg.value]
+        /\ bcastMsg' = bcastMsg \union {makeDecisionMsg(dValue' [i], i)}
+        /\ pc' = [pc EXCEPT ![i] = "DONE"]
+        /\ UNCHANGED << v, rcvdMsg >>
         
 (* Just to avoid deadlock checking. *)
 DoNothing(i) ==

@@ -63,9 +63,9 @@ InitNoBcast ==
 Receive(self) == (* a correct process self receives new messages *)
     /\ pc[self] /= "CR"
     /\ \E msgs \in SUBSET (Proc \times M): (* msgs is a set of messages which has been received  *)
-            /\ msgs \subseteq sent
-            /\ rcvd[self] \subseteq msgs
-            /\ rcvd' = [rcvd EXCEPT ![self] = msgs]
+        /\ msgs \subseteq sent
+        /\ rcvd[self] \subseteq msgs
+        /\ rcvd' = [rcvd EXCEPT ![self] = msgs]
         
 (* If a correct process received an INIT message or was initialized with V1, 
    it accepts this message and then broadcasts ECHO to all.  

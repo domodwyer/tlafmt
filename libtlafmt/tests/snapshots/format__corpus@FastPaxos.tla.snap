@@ -48,9 +48,9 @@ IsMajorityValue(M, v) == Cardinality(M) \div 2 < Cardinality({m \in M: m.value =
 FastAny ==
     /\ UNCHANGED << decision, maxBallot, maxVBallot, maxValue, cValue >>
     /\ \E f \in FastBallots:
-            /\ SendMessage([type |-> "P2a",
-                ballot |-> f,
-                value |-> any])
+        /\ SendMessage([type |-> "P2a",
+            ballot |-> f,
+            value |-> any])
         
 (*
     Phase 2b (Fast):
@@ -60,17 +60,17 @@ FastAny ==
 FastPropose ==
     /\ UNCHANGED << decision, cValue >>
     /\ \E a \in Replicas, m \in p2aMessages, v \in Values:
-            /\ m.value = any
-            /\ maxBallot[a] <= m.ballot
-            /\ maxValue[a] = none \/ maxValue[a] = v
-            /\ maxBallot' = [maxBallot EXCEPT ![a] = m.ballot]
-            /\ maxVBallot' = [maxVBallot EXCEPT ![a] = m.ballot]
-            /\ maxValue' = [maxValue EXCEPT ![a] = v]
-            /\ \A n \in p2bMessages: ~(n.ballot = m.ballot /\ n.acceptor = a)
-            /\ SendMessage([type |-> "P2b",
-                ballot |-> m.ballot,
-                acceptor |-> a,
-                value |-> v])
+        /\ m.value = any
+        /\ maxBallot[a] <= m.ballot
+        /\ maxValue[a] = none \/ maxValue[a] = v
+        /\ maxBallot' = [maxBallot EXCEPT ![a] = m.ballot]
+        /\ maxVBallot' = [maxVBallot EXCEPT ![a] = m.ballot]
+        /\ maxValue' = [maxValue EXCEPT ![a] = v]
+        /\ \A n \in p2bMessages: ~(n.ballot = m.ballot /\ n.acceptor = a)
+        /\ SendMessage([type |-> "P2b",
+            ballot |-> m.ballot,
+            acceptor |-> a,
+            value |-> v])
         
 (*
     A value is chosen if a fast quorum of acceptors proposed that value in a fast round.
@@ -88,7 +88,7 @@ FastDecide ==
             /\ \A a \in q: \E m \in M: m.acceptor = a
             /\ 1 = Cardinality(V)
             /\ \E m \in M: decision' = m.value
-        
+            
 (*
     Phase 2a (Classic)
 
@@ -109,15 +109,15 @@ ClassicAccept ==
         /\ LET M == {m \in p2bMessages: m.ballot = f /\ m.acceptor \in q}
                 V == {w \in Values: \E m \in M: w = m.value}
             IN
-                /\ \A a \in q: \E m \in M: m.acceptor = a
-                /\ 1 < Cardinality(V) \* Collision occurred.
-                /\ IF \E w \in V: IsMajorityValue(M, w)
-                THEN IsMajorityValue(M, v) \* Choose majority in quorum.
-                ELSE v \in V \* Choose any.
-                /\ SendMessage([type |-> "P2a",
-                    ballot |-> b,
-                    value |-> v])
-            
+            /\ \A a \in q: \E m \in M: m.acceptor = a
+            /\ 1 < Cardinality(V) \* Collision occurred.
+            /\ IF \E w \in V: IsMajorityValue(M, w)
+            THEN IsMajorityValue(M, v) \* Choose majority in quorum.
+            ELSE v \in V \* Choose any.
+            /\ SendMessage([type |-> "P2a",
+                ballot |-> b,
+                value |-> v])
+                
 (*
     Phase 2b (Classic)
 

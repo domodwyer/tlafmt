@@ -1,0 +1,13 @@
+---
+source: libtlafmt/src/renderer/indent.rs
+expression: output
+---
+----------------------------------- MODULE B -----------------------------------
+ClientRejectsBadMetadata ==
+    /\ BadKey \notin sigs
+    /\ \A f \in target_files:
+        /\ BadKey \notin f.sigs
+        /\ f.version /= InvalidVersion
+        
+\* This repro only happens when there's a comment here
+================================================================================

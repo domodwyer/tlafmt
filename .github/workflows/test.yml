@@ -25,14 +25,16 @@ jobs:
         id: cargo-dir
         uses: actions/cache@v4
         with:
-          key: ${{ runner.os }}-cargo
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo
           path: /cargo
 
       - name: Cache target dir
         id: target-dir
         uses: actions/cache@v4
         with:
-          key: ${{ runner.os }}-target-dir
+          key: ${{ runner.os }}-target-dir-${{ hashFiles('Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-target-dir
           path: target
 
       - name: cargo test

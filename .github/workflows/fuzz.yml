@@ -27,7 +27,8 @@ jobs:
         id: cargo-dir
         uses: actions/cache@v4
         with:
-          key: ${{ runner.os }}-cargo-nightly
+          key: ${{ runner.os }}-cargo-nightly-${{ hashFiles('Cargo.lock') }}-${{ hashFiles('libtlafmt/fuzz/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-nightly
           path: /cargo
 
       - name: Install cargo-fuzz
@@ -51,7 +52,8 @@ jobs:
         id: target-dir
         uses: actions/cache@v4
         with:
-          key: ${{ runner.os }}-fuzz-target-dir
+          key: ${{ runner.os }}-fuzz-target-dir-${{ hashFiles('Cargo.lock') }}-${{ hashFiles('libtlafmt/fuzz/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-fuzz-target-dir
           path: libtlafmt/fuzz/target
 
       - name: Run fuzzer

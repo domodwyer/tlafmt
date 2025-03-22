@@ -263,7 +263,11 @@ where
 
             // Insert a space if this node and the next node can be space
             // delimited.
-            if let Some(n) = iter.peek().map(|(v, _)| t.delimiting_space_len(v)) {
+            if let Some((n, next_indent)) = iter
+                .peek()
+                .map(|(v, next_indent)| (t.delimiting_space_len(v), next_indent))
+            {
+                self.indent.set(next_indent.0);
                 self.indent.write_all(&b" ".repeat(n))?;
             }
 
@@ -394,10 +398,15 @@ mod tests {
     use super::*;
 
     fn format<'a>(tokens: impl IntoIterator<Item = Token<'a>>) -> String {
+        format_indented(tokens.into_iter().map(|v| (v, Indent(0))))
+    }
+
+    fn format_indented<'a>(tokens: impl IntoIterator<Item = (Token<'a>, Indent)>) -> String {
         let mut buf = Vec::new();
         let mut w = Renderer::new(&mut buf);
 
-        for t in tokens {
+        for (t, indent) in tokens {
+            w.indent_set(indent.0);
             w.push(t).unwrap();
         }
 
@@ -695,5 +704,19 @@ mod tests {
             output,
             "\n!!!                                          (* 42 *)"
         );
+    }
+
+    /// Raw tokens followed by relatively spaced comments should respect the
+    /// relative spacing.
+    #[test]
+    fn test_comment_only_line_positioning() {
+        let output: String = format_indented([
+            (Token::Newline, Indent(0)),
+            (
+                Token::Comment(r"(* 42 *)", crate::token::Position::Relative(1)),
+                Indent(1),
+            ),
+        ]);
+        assert_eq!(output, "\n    (* 42 *)");
     }
 }

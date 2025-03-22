@@ -136,7 +136,9 @@ fn process_candidates(
 
     for (candidate_idx, (buf_idx, ..)) in candidates.iter().enumerate() {
         match &mut buf[*buf_idx] {
-            (Token::Comment(_, pos), _) => *pos = Position::Padding(new_col - lines[candidate_idx]),
+            (Token::Comment(_, pos), _) => {
+                *pos = Position::Relative(new_col - lines[candidate_idx])
+            }
             _ => unreachable!(),
         }
     }

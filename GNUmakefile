@@ -41,9 +41,11 @@ release/tlafmt_v$(VERSION)_%: target/%/release/tlafmt
 
 %.tar.gz: %
 	tar cv "$^" | gzip --best > "$@"
+	-rm $^
 
 %.zip: %
 	zip "$@" $^
+	-rm $^
 
 #? release: generate release binaries for Linux and macOS
 .PHONY: release

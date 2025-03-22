@@ -1,0 +1,11 @@
+---
+source: libtlafmt/src/renderer/comment.rs
+expression: output
+---
+-------------------------------- MODULE bananas --------------------------------
+Spec ==
+    /\ Init /\ [][Next]_vars
+    /\ WF_vars(DetectTermination)
+            \* reasonable but not necessary for detecting termination
+            \* /\ \A i \in Node : WF_vars(Wakeup(i))
+================================================================================

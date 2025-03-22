@@ -27,7 +27,7 @@ VARIABLES
     rmState,     \* $rmState[rm]$ is the state of resource manager RM.
     tmState,     \* The state of the transaction manager.
     tmPrepared,  \* The set of RMs from which the TM has received $"Prepared"$
-    \* messages.
+                 \* messages.
     msgs
 (***********************************************************************)
     (* In the protocol, processes communicate with one another by sending  *)

@@ -29,8 +29,8 @@ CONSTANT V \* The set of vouchers.
 
 VARIABLE vState,    \* vState[v] is the state of a voucher v.
     vlcState        \* The state of the voucher life cycle machine.
-\* vvlcState[v] is the state of the life cycle machine
-\* for the voucher v.
+                    \* vvlcState[v] is the state of the life cycle machine
+                    \* for the voucher v.
 --------------------------------------------------------------------------------
 VTypeOK ==
     (*************************************************************************)

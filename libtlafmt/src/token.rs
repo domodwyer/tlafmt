@@ -306,18 +306,17 @@ impl Token<'_> {
         match (self, next) {
             (_, Token::ModuleHeader(_)) => 0,
 
+            // Comments with explicit whitespace padding render the provided
+            // amount of space.
+            (_, Token::Comment(_, Position::Relative(v))) => *v,
+
             // Newlines are never automatically followed by whitespace.
             (Token::Newline | Token::SourceNewline, _) => 0,
 
             (Token::Raw(_), Token::Newline | Token::SourceNewline) => 0,
-            (Token::Raw(_), Token::Comment(_, Position::Relative(v))) => *v,
             (Token::Raw(s), _) if s.ends_with("\n") => 0,
             (Token::Raw(_), _) => 1,
             (_, Token::Raw(_)) => 1,
-
-            // Comments with explicit whitespace padding render the provided
-            // amount of space.
-            (_, Token::Comment(_, Position::Relative(v))) => *v,
 
             // These tokens can never be followed by a space, irrespective of
             // the next token.

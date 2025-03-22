@@ -26,7 +26,7 @@ pub(super) fn align_comments(buf: &mut Vec<(Token<'_>, Indent)>) {
     while i < buf.len() {
         // If this token is a comment, extract the source position and indent
         // level for it.
-        let (pos, indent) = match buf[i] {
+        let (pos, _) = match buf[i] {
             (Token::Comment(_, v), indent) => (v, indent),
             _ => {
                 i += 1;
@@ -50,7 +50,7 @@ pub(super) fn align_comments(buf: &mut Vec<(Token<'_>, Indent)>) {
         // process the aligned candidate batch before continuing.
         if candidates
             .last()
-            .map(|(_idx, pos, _)| pos)
+            .map(|(_idx, pos)| pos)
             .is_some_and(|v: &crate::token::Position| {
                 (v.unwrap_row() + 1) != pos.unwrap_row() || v.unwrap_col() != pos.unwrap_col()
             })
@@ -62,7 +62,7 @@ pub(super) fn align_comments(buf: &mut Vec<(Token<'_>, Indent)>) {
         // Only end-of-line comments (those followed by newlines) are valid for
         // adjacency alignment.
         if buf.get(i + 1).is_some_and(|(v, _)| is_newline(v)) {
-            candidates.push((i, pos, indent));
+            candidates.push((i, pos));
         }
 
         i += 1;
@@ -74,10 +74,7 @@ pub(super) fn align_comments(buf: &mut Vec<(Token<'_>, Indent)>) {
 /// Process a set of comments that are vertically aligned in the source and
 /// appear in `buf` to set the appropriate amount of padding on their comments
 /// in order to maintain vertical alignment after their lines are formatted.
-fn process_candidates(
-    buf: &mut [(Token<'_>, Indent)],
-    candidates: &mut [(usize, Position, Indent)],
-) {
+fn process_candidates(buf: &mut [(Token<'_>, Indent)], candidates: &mut [(usize, Position)]) {
     if candidates.len() < 2 {
         return;
     }
@@ -132,7 +129,14 @@ fn process_candidates(
     // This causes the location of the comment to match the pre-formatted output
     // UNLESS a now-formatted line pushes past the previous position, in which
     // case all aligned comments are pushed further back with it.
-    let new_col = max(max_line + 1, candidates[0].1.unwrap_col());
+    let mut new_col = max(max_line + 1, candidates[0].1.unwrap_col());
+
+    if buf[start..=end]
+        .iter()
+        .all(|(v, _)| matches!(v, Token::Comment(_, _)) || is_newline(v))
+    {
+        new_col = max(max_line, candidates[0].1.unwrap_col())
+    }
 
     for (candidate_idx, (buf_idx, ..)) in candidates.iter().enumerate() {
         match &mut buf[*buf_idx] {
@@ -227,6 +231,7 @@ mod tests {
         let got = line_len(tokens).next().unwrap();
         assert_eq!(got, 16);
     }
+
     #[test]
     fn test_line_len_2() {
         let tokens = [
@@ -338,6 +343,165 @@ Op == /\ bananas=42         \* This is an important number.
 ====
 "
         );
+    }
+
+    /// Spec fragments with consecutive comment lines, some of which are the
+    /// only token on the line (comment only lines).
+    mod comment_only_lines {
+        use crate::assert_rewrite;
+
+        /// Scenario 1:
+        ///
+        /// A comment appears in the middle of a block.
+        #[test]
+        fn test_comment_only_lines_1() {
+            assert_rewrite!(
+                r"
+---- MODULE bananas ----
+A ==
+    /\ X = 42
+    \* Bananas
+    \* Platanos
+    \* Apples
+    /\ Y = 25
+====
+    "
+            );
+        }
+
+        /// Scenario 2:
+        ///
+        /// A comment appears in the middle of a block, and a single
+        /// (non-aligned) comment appears at the start of the block.
+        #[test]
+        fn test_comment_only_lines_2() {
+            assert_rewrite!(
+                r"
+---- MODULE bananas ----
+TypeOK ==
+    \* Bananas
+    /\ X = 42
+    \* Platanos
+    \* Apples
+    /\ Y = 24
+====
+    "
+            );
+        }
+
+        /// Scenario 3:
+        ///
+        /// A comment appears in the middle of a block, and multiple aligned
+        /// comments appear at the start of the block.
+        #[test]
+        fn test_comment_only_lines_3() {
+            assert_rewrite!(
+                r"
+---- MODULE bananas ----
+TypeOK ==
+    \* Bananas
+    \* Bananas
+    /\ X = 42
+    \* Platanos
+    \* Apples
+    /\ Y = 24
+====
+    "
+            );
+        }
+
+        /// Scenario 4:
+        ///
+        /// A comment appears at the end of a block.
+        #[test]
+        fn test_comment_only_lines_4() {
+            assert_rewrite!(
+                r"
+---- MODULE bananas ----
+Spec == /\ Init /\ [][Next]_vars
+        /\ WF_vars(DetectTermination)
+            \* reasonable but not necessary for detecting termination
+            \* /\ \A i \in Node : WF_vars(Wakeup(i))
+====
+    "
+            );
+        }
+
+        /// Scenario 5:
+        ///
+        /// One comment only line appears in a block with other comments.
+        #[test]
+        fn test_comment_only_lines_5() {
+            assert_rewrite!(
+                r"
+---- MODULE bananas ----
+Op == /\ bananas = 42       \* This is an important number.
+      /\ platanos' = 42     \* Something here.
+                            \* Continues here.
+      /\ platanos' = 42     \* More here.
+====
+    "
+            );
+        }
+
+        /// Scenario 6:
+        ///
+        /// [test_comment_only_lines_1] with indentation of 3 chars instead of 4.
+        #[test]
+        fn test_comment_only_lines_6() {
+            assert_rewrite!(
+                r"
+---- MODULE bananas ----
+A ==
+   /\ X = 42
+   \* Bananas
+   \* Platanos
+   \* Apples
+   /\ Y = 25
+====
+    "
+            );
+        }
+
+        /// Scenario 7:
+        ///
+        /// A multi-line box comment starts a block, with indentation of 3
+        /// chars.
+        #[test]
+        fn test_comment_only_lines_7() {
+            assert_rewrite!(
+                r"
+---- MODULE bananas ----
+AlwaysResponds ==
+  (*************************************************************************)
+  (* Some simple liveness properties, implied by the fact that every       *)
+  (* request eventually generates a response.                              *)
+  (*************************************************************************)
+  /\ \A p \in Proc, r \in Reg :
+       X = 42
+  /\ \A oi \in [proc : Proc, idx : Nat] :
+         Y = 24
+====
+    "
+            );
+        }
+
+        /// Scenario 8:
+        ///
+        /// Comments in a position sensitive to indentation limit rewriting.
+        #[test]
+        fn test_comment_only_lines_8() {
+            assert_rewrite!(
+                r"
+---- MODULE bananas ----
+SetToSeqs == UNION {{x \in [1 -> set]:
+                            \* A filter applied on each permutation
+                            \* generated by [S -> T]
+                            Op(x)}}
+====
+    "
+            );
+        }
     }
 
     /// A test case discovered through fuzzing where the input string contains a

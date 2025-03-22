@@ -1,0 +1,12 @@
+---
+source: libtlafmt/src/renderer/comment.rs
+expression: output
+---
+-------------------------------- MODULE bananas --------------------------------
+A ==
+    /\ X = 42
+    \* Bananas
+    \* Platanos
+    \* Apples
+    /\ Y = 25
+================================================================================

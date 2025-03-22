@@ -126,7 +126,7 @@ VARIABLES
     inTransit, inDelivery,           (* For the communication system: spec Age_Channel *)
     suspected, delta, fromLastHeard, (* For correct detectors: spec EPFailureDetector *)
     localClock, outgoingMessages,
-    (* For the environment: the current spec EnvironmentController. *)
+               (* For the environment: the current spec EnvironmentController. *)
     procPause, (* How long a process p_i has not taken a transition. *)
     moved,     (* The last transition that a process p_i take. The initial values are
                  INIT. After every global tick, moved'[i] is assigned "NO" for every

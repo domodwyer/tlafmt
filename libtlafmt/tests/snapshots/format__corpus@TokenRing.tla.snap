@@ -31,12 +31,12 @@ Init ==
     /\ c \in [Node -> 0..M - 1]
 
 CreateToken ==
-(* Node 0 executes this action to inject new value into system *)
+    (* Node 0 executes this action to inject new value into system *)
     /\ c[0] = c[N - 1]
     /\ c' = [c EXCEPT ![0] = (c[N - 1] + 1) % M]
 
 PassToken(i) ==
-(* Other nodes just copy value of the predecessor *)
+    (* Other nodes just copy value of the predecessor *)
     /\ i /= 0
     /\ c[i] /= c[i - 1]
     /\ c' = [c EXCEPT ![i] = c[i - 1]]

@@ -93,7 +93,7 @@ Fairness ==
 Spec == Init /\ [][Next]_vars /\ Fairness
 
 Invariants ==
-\* Two cars or more cannot be in the same location in the Bridge at the same time
+    \* Two cars or more cannot be in the same location in the Bridge at the same time
     /\ \A a, b \in Cars:
             /\ Location[a] \in Bridge
             /\ Location[a] = Location[b]
@@ -109,11 +109,11 @@ TypeOK ==
     /\ Len(WaitingBeforeBridge) <= Cardinality(Cars)
 
 CarsInBridgeExitBridge ==
-\* All cars eventually exit the Bridge 
+    \* All cars eventually exit the Bridge 
     \A car \in Cars: Location[car] \in Bridge ~> Location[car] \notin Bridge
 
 CarsEnterBridge ==
-\* All cars eventually enter the bridge
+    \* All cars eventually enter the bridge
     \A car \in Cars: Location[car] \notin Bridge ~> Location[car] \in Bridge
 
 THEOREM Spec => []Invariants

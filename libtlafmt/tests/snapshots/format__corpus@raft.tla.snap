@@ -323,8 +323,8 @@ HandleRequestVoteRequest(i, j, m) ==
 \* Server i receives a RequestVote response from server j with
 \* m.mterm = currentTerm[i].
 HandleRequestVoteResponse(i, j, m) ==
-\* This tallies votes even when the current state is not Candidate, but
-\* they won't be looked at, so it doesn't matter.
+    \* This tallies votes even when the current state is not Candidate, but
+    \* they won't be looked at, so it doesn't matter.
     /\ m.mterm = currentTerm[i]
     /\ votesResponded' = [votesResponded EXCEPT ![i] =
         votesResponded[i] \union {j}]

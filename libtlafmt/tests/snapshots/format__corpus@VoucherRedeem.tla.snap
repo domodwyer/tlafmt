@@ -60,7 +60,7 @@ VARIABLES
     (***********************************************************************)
 
 Messages ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The set of all possible messages.  Messages of type "Prepared" are    *)
   (* sent from the H indicated by the message's vh field to the VTP.       *)
   (* Similar "Prepared" is also sent from C indicated by message's vc      *)
@@ -73,7 +73,7 @@ Messages ==
         [type: {"Redeem", "Abort"}]
 
 VTPTypeOK ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The type-correctness invariant                                        *)
   (*************************************************************************)
     /\ vState \in [V -> {"valid", "redeemed"}]
@@ -85,7 +85,7 @@ VTPTypeOK ==
     /\ msgs \subseteq Messages
 
 VTPInit ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The initial predicate.                                                *)
   (*************************************************************************)
     /\ vState = [v \in V |-> "valid"]
@@ -101,7 +101,7 @@ VTPInit ==
 (* the VTP's actions, the Hs' actions, then the Cs' actions.               *)
 (***************************************************************************)
 VTPRcvPrepared(h, c) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The VTP receives a "Prepared" message from Voucher Holder h and the   *)
   (* Voucher Collector c. We could add the additional enabling condition   *)
   (* h,c \notin vtpRPrepared, which disables the action if the VTP has     *)
@@ -117,7 +117,7 @@ VTPRcvPrepared(h, c) ==
     /\ UNCHANGED << vState, vlcState, hState, cState, vtpState, msgs >>
 
 VTPRedeem(v) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The VTP Redeems the voucher; enabled iff the VTP is in its            *)
   (* initial state and every H and C has sent a "Prepared" message.        *)
   (*************************************************************************)
@@ -132,7 +132,7 @@ VTPRedeem(v) ==
     /\ UNCHANGED << hState, cState, vtpRPrepared >>
 
 VTPAbort(v) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The VTP spontaneously aborts the transaction.                         *)
   (*************************************************************************)
     /\ vState[v] = "valid"
@@ -143,7 +143,7 @@ VTPAbort(v) ==
     /\ UNCHANGED << vState, vlcState, hState, cState, vtpRPrepared >>
 
 HPrepare(h) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Voucher holder h prepares.                                            *)
   (*************************************************************************)
     /\ vState = [v \in V |-> "valid"]
@@ -154,7 +154,7 @@ HPrepare(h) ==
     /\ UNCHANGED << vState, vlcState, vtpState, cState, vtpRPrepared >>
 
 HChooseToAbort(h) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Voucher holder h spontaneously decides to abort.  As noted above, h   *)
   (* does not send any message in our simplified spec.                     *)
   (*************************************************************************)
@@ -165,7 +165,7 @@ HChooseToAbort(h) ==
     /\ UNCHANGED << vState, vlcState, vtpState, cState, vtpRPrepared, msgs >>
 
 HRcvRedeemMsg(h) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Voucher holder h is told by the VTP to Redeem.                        *)
   (*************************************************************************)
     /\ vState \in [V -> {"valid", "redeemed"}]
@@ -176,7 +176,7 @@ HRcvRedeemMsg(h) ==
     /\ UNCHANGED << vtpState, vState, vlcState, cState, vtpRPrepared, msgs >>
 
 HRcvAbortMsg(h) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Voucher holder h is told by the VTP to abort.                         *)
   (*************************************************************************)
     /\ vState = [v \in V |-> "valid"]
@@ -187,7 +187,7 @@ HRcvAbortMsg(h) ==
     /\ UNCHANGED << vState, vlcState, vtpState, cState, vtpRPrepared, msgs >>
 
 CPrepare(c) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Voucher collector c prepares.                                         *)
   (*************************************************************************)
     /\ vState = [v \in V |-> "valid"]
@@ -198,7 +198,7 @@ CPrepare(c) ==
     /\ UNCHANGED << vState, vlcState, vtpState, hState, vtpRPrepared >>
 
 CChooseToAbort(c) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Voucher collector c spontaneously decides to abort. As noted above, c *)
   (* does not send any message in our simplified spec.                     *)
   (*************************************************************************)
@@ -209,7 +209,7 @@ CChooseToAbort(c) ==
     /\ UNCHANGED << vState, vlcState, vtpState, hState, vtpRPrepared, msgs >>
 
 CRcvRedeemMsg(c) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Voucher collector c is told by the VTP to Redeem.                     *)
   (*************************************************************************)
     /\ vState \in [V -> {"valid", "redeemed"}]
@@ -220,7 +220,7 @@ CRcvRedeemMsg(c) ==
     /\ UNCHANGED << vtpState, vState, vlcState, hState, vtpRPrepared, msgs >>
 
 CRcvAbortMsg(c) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Voucher collector c is told by the VTP to abort.                      *)
   (*************************************************************************)
     /\ vState = [v \in V |-> "valid"]
@@ -243,7 +243,7 @@ VTPNext ==
         \/ CRcvAbortMsg(c) \/ CRcvRedeemMsg(c)
 --------------------------------------------------------------------------------
 VTPConsistent ==
-(*************************************************************************)
+    (*************************************************************************)
   (* A state predicate asserting that a H and an C have not reached        *)
   (* conflicting decisions. It is an invariant of the specification.       *)
   (*************************************************************************)

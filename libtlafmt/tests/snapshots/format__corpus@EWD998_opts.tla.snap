@@ -54,13 +54,13 @@ ASSUME F \subseteq FeatureFlags
 --------------------------------------------------------------------------------
 
 InitSim ==
-\* Constraint the set of initial states defined in EWD998!Init to
-\* those that correspond to what an implementation is likely to start with.
-\* In other words, when collecting statistics, we don't want to start in a
-\* state where the system has e.g. already terminated.
-\* /\ active \in [ Node -> BOOLEAN ]
-\* /\ color \in [ Node -> Color ]\
-\* The set of initial states is a random subset of the states defined by Init.
+    \* Constraint the set of initial states defined in EWD998!Init to
+    \* those that correspond to what an implementation is likely to start with.
+    \* In other words, when collecting statistics, we don't want to start in a
+    \* state where the system has e.g. already terminated.
+    \* /\ active \in [ Node -> BOOLEAN ]
+    \* /\ color \in [ Node -> Color ]\
+    \* The set of initial states is a random subset of the states defined by Init.
     /\ active \in RandomSubset(1000, [Node -> BOOLEAN ])
     /\ color \in RandomSubset(1000, [Node -> Color])
 
@@ -91,7 +91,7 @@ SystemOpts ==
     \/ \E i \in Node \ {0}: PassTokenOpts(i)
 
 SendMsgOpts(i) ==
-\* Linearly decreasing probability over "time" of an (active) node to send a message.
+    \* Linearly decreasing probability over "time" of an (active) node to send a message.
     /\ RandomElement(1..TLCGet("level")) = 1
     /\ SendMsg(i)
 
@@ -110,18 +110,18 @@ terminated ==
 ASSUME TLCSet(1, 0)
 
 AtTermination ==
-\* Cfg: ACTION_CONSTRAINT AtTermination
+    \* Cfg: ACTION_CONSTRAINT AtTermination
     IF terminated /= terminated'
     THEN TLCSet(1, TLCGet("level"))
     ELSE TRUE
 
 AtTerminationDetected ==
-\* Cfg: CONSTRAINT AtTerminationDetected
-\* This is just an ordinary state constraint (could have been an invariant 
-\* too).  The disadvantage of a constraint (or inv) is that the antecedent
-\* is evaluated for *every* generated state, instead of just after the last
-\* state when we actually want the consequent to be evalauted.
-\* A constraint's advantage is that it works with old versions of TLC.
+    \* Cfg: CONSTRAINT AtTerminationDetected
+    \* This is just an ordinary state constraint (could have been an invariant 
+    \* too).  The disadvantage of a constraint (or inv) is that the antecedent
+    \* is evaluated for *every* generated state, instead of just after the last
+    \* state when we actually want the consequent to be evalauted.
+    \* A constraint's advantage is that it works with old versions of TLC.
     terminationDetected =>
         /\ LET o == TLCGet("stats").behavior.actions
             IN \* Validate statistics are sane.

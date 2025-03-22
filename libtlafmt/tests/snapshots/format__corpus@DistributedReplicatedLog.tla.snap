@@ -72,8 +72,8 @@ AllExtending ==
 THEOREM Spec => AllExtending
 
 InSync ==
-\* TLC correctly verifies that InSync is not a property of the system because
-\* followers are permitted to copy only a prefix of the missing suffix.
+    \* TLC correctly verifies that InSync is not a property of the system because
+    \* followers are permitted to copy only a prefix of the missing suffix.
     \A i, j \in Servers: []<>(cLogs[i] = cLogs[j])
 
 ================================================================================

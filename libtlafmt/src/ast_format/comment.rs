@@ -22,7 +22,20 @@ where
     // If a comment was not indented, it should be rendered without
     // formatter-added indentation below this branch.
     if def.start_position().column != 0 {
-        writer.push(Token::Comment(get_str(&def, input), Position::from(&def)))?;
+        // Special case indentation within an operator body to ensure a comment
+        // appears indented if it is the first statement in the body.
+        if def
+            .parent()
+            .is_some_and(|v| v.kind() == "operator_definition")
+        {
+            let orig = writer.indent_get();
+            writer.indent_set(std::cmp::max(1, orig));
+            writer.push(Token::Comment(get_str(&def, input), Position::from(&def)))?;
+            writer.indent_set(orig);
+        } else {
+            writer.push(Token::Comment(get_str(&def, input), Position::from(&def)))?;
+        }
+
         return Ok(());
     }
 

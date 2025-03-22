@@ -63,7 +63,7 @@ VARIABLES
     (***********************************************************************)
 
 Messages ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The set of all possible messages.  Messages of type "Prepared" are    *)
   (* sent from the H indicated by the message's vh field to the VTP.       *)
   (* Similar "Prepared" is also sent from I indicated by message's vc      *)
@@ -76,7 +76,7 @@ Messages ==
         [type: {"Issue", "Abort"}]
 
 VTPTypeOK ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The type-correctness invariant                                        *)
   (*************************************************************************)
     /\ vState \in [V -> {"phantom", "valid"}]
@@ -88,7 +88,7 @@ VTPTypeOK ==
     /\ msgs \subseteq Messages
 
 VTPInit ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The initial predicate.                                                *)
   (*************************************************************************)
     /\ vState = [v \in V |-> "phantom"]
@@ -104,7 +104,7 @@ VTPInit ==
 (* the VTP's actions, the Hs' actions, then the Is' actions.               *)
 (***************************************************************************)
 VTPRcvPrepared(h, i) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The VTP receives a "Prepared" message from Voucher Holder h and the   *)
   (* Voucher Issuer i. We could add the additional enabling condition      *)
   (* h,i \notin vtpIPrepared, which disables the action if the VTP has     *)
@@ -120,7 +120,7 @@ VTPRcvPrepared(h, i) ==
     /\ UNCHANGED << vState, vlcState, hState, iState, vtpState, msgs >>
 
 VTPIssue(v) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The VTP Issues the voucher; enabled iff the VTP is in its             *)
   (* initial state and every H and I has sent a "Prepared" message.        *)
   (*************************************************************************)
@@ -135,7 +135,7 @@ VTPIssue(v) ==
     /\ UNCHANGED << hState, iState, vtpIPrepared >>
 
 VTPAbort(v) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The VTP spontaneously aborts the transaction.                         *)
   (*************************************************************************)
     /\ vState[v] = "phantom"
@@ -146,7 +146,7 @@ VTPAbort(v) ==
     /\ UNCHANGED << vState, vlcState, hState, iState, vtpIPrepared >>
 
 HPrepare(h) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Voucher holder h prepares.                                            *)
   (*************************************************************************)
     /\ vState = [v \in V |-> "phantom"]
@@ -157,7 +157,7 @@ HPrepare(h) ==
     /\ UNCHANGED << vState, vlcState, vtpState, iState, vtpIPrepared >>
 
 HChooseToAbort(h) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Voucher holder h spontaneously decides to abort.  As noted above, h   *)
   (* does not send any message in our simplified spec.                     *)
   (*************************************************************************)
@@ -168,7 +168,7 @@ HChooseToAbort(h) ==
     /\ UNCHANGED << vState, vlcState, vtpState, iState, vtpIPrepared, msgs >>
 
 HRcvIssueMsg(h) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Voucher holder h is told by the VTP to Issue.                         *)
   (*************************************************************************)
     /\ vState \in [V -> {"phantom", "valid"}]
@@ -179,7 +179,7 @@ HRcvIssueMsg(h) ==
     /\ UNCHANGED << vtpState, vState, vlcState, iState, vtpIPrepared, msgs >>
 
 HRcvAbortMsg(h) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Voucher holder h is told by the VTP to abort.                         *)
   (*************************************************************************)
     /\ vState = [v \in V |-> "phantom"]
@@ -190,7 +190,7 @@ HRcvAbortMsg(h) ==
     /\ UNCHANGED << vState, vlcState, vtpState, iState, vtpIPrepared, msgs >>
 
 IPrepare(i) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Voucher issuer i prepares.                                            *)
   (*************************************************************************)
     /\ vState = [v \in V |-> "phantom"]
@@ -201,7 +201,7 @@ IPrepare(i) ==
     /\ UNCHANGED << vState, vlcState, vtpState, hState, vtpIPrepared >>
 
 IChooseToAbort(i) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Voucher issuer i spontaneously decides to abort. As noted above, i    *)
   (* does not send any message in our simplified spec.                     *)
   (*************************************************************************)
@@ -212,7 +212,7 @@ IChooseToAbort(i) ==
     /\ UNCHANGED << vState, vlcState, vtpState, hState, vtpIPrepared, msgs >>
 
 IRcvIssueMsg(i) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Voucher issuer i is told by the VTP to Issue.                         *)
   (*************************************************************************)
     /\ vState \in [V -> {"phantom", "valid"}]
@@ -223,7 +223,7 @@ IRcvIssueMsg(i) ==
     /\ UNCHANGED << vtpState, vState, vlcState, hState, vtpIPrepared, msgs >>
 
 IRcvAbortMsg(i) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Voucher issuer i is told by the VTP to abort.                         *)
   (*************************************************************************)
     /\ vState = [v \in V |-> "phantom"]
@@ -246,7 +246,7 @@ VTPNext ==
         \/ IRcvAbortMsg(i) \/ IRcvIssueMsg(i)
 --------------------------------------------------------------------------------
 VTPConsistent ==
-(*************************************************************************)
+    (*************************************************************************)
   (* A state predicate asserting that a H and an I have not reached        *)
   (* conflicting decisions. It is an invariant of the specification.       *)
   (*************************************************************************)

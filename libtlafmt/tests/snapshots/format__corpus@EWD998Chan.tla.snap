@@ -44,7 +44,7 @@ TypeOK ==
 --------------------------------------------------------------------------------
 
 Init ==
-(* Rule 0 *)
+    (* Rule 0 *)
     /\ counter = [i \in Node |-> 0] \* c properly initialized
 \*   /\ inbox = [i \in Node |-> IF i = 0 
 \*                              THEN << [type |-> "tok", q |-> 0, color |-> "black" ] >> 
@@ -58,7 +58,7 @@ Init ==
     /\ color \in [Node -> Color]
 
 InitiateProbe ==
-(* Rule 1 *)
+    (* Rule 1 *)
     /\ \E j \in 1..Len(inbox[0]):
         \* Token is at node 0.
             /\ inbox[0][j].type = "tok"
@@ -80,7 +80,7 @@ InitiateProbe ==
     /\ UNCHANGED << active, counter >>
 
 PassToken(i) ==
-(* Rule 2 *)
+    (* Rule 2 *)
     /\ ~active[i] \* If machine i is active, keep the token.
     /\ \E j \in 1..Len(inbox[i]):
         /\ inbox[i][j].type = "tok"
@@ -104,7 +104,7 @@ System ==
 --------------------------------------------------------------------------------
 
 SendMsg(i) ==
-\* Only allowed to send msgs if node i is active.
+    \* Only allowed to send msgs if node i is active.
     /\ active[i]
     (* Rule 0 *)
     /\ counter' = [counter EXCEPT ![i] = @ + 1]
@@ -117,7 +117,7 @@ SendMsg(i) ==
     /\ UNCHANGED << active, color >>
 
 RecvMsg(i) ==
-(* Rule 0 *)
+    (* Rule 0 *)
     /\ counter' = [counter EXCEPT ![i] = @ - 1]
     (* Rule 3 *)
     /\ color' = [color EXCEPT ![i] = "black"]

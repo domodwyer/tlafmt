@@ -20,7 +20,7 @@ ASSUME
     /\ CSVRecords(CSVFile) = 0 => CSVWrite("steps", <<>>, CSVFile)
 
 AtStabilization ==
-\* State constraint at cfg
+    \* State constraint at cfg
     UniqueToken =>
         /\ CSVWrite("%1$s", << TLCGet("level") >>, CSVFile)
         /\ TLCGet("stats").traces % 250 = 0 =>

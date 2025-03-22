@@ -7,7 +7,7 @@ input_file: libtlafmt/tests/corpus/SimKnuthYao.tla
 EXTENDS KnuthYao, Integers, Functions, CSV, TLC, TLCExt, IOUtils, Statistics
 
 StatelessCrookedCoin ==
-\* 3/8 tails, 5/8 heads.
+    \* 3/8 tails, 5/8 heads.
     /\ IF RandomElement(1..8) \in 1..3
     THEN
         /\ flip' = "T"
@@ -28,7 +28,7 @@ StatelessCrookedCoin ==
 --------------------------------------------------------------------------------
 
 StatefulCrookedCoin ==
-\* Crooked coin: Decreasing chance of a tail over time.
+    \* Crooked coin: Decreasing chance of a tail over time.
     /\ IF RandomElement(1..p.den) = 1
     THEN flip' = "T"
     ELSE flip' = "H"
@@ -41,8 +41,8 @@ SimInit ==
     /\ flip \in Flip
 
 SimNext ==
-\* Need an artificial initial state to be able to model a crooked coin.  Otherwise,
-\* the first flip will always be fair. 
+    \* Need an artificial initial state to be able to model a crooked coin.  Otherwise,
+    \* the first flip will always be fair. 
     \/
         /\ state = "init"
         /\ state' = "s0"
@@ -56,7 +56,7 @@ SimNext ==
         /\ TossCoin
 
 IsDyadic ==
-\* This is expensive to evaluate with TLC.
+    \* This is expensive to evaluate with TLC.
     IsDyadicRational(p)
 
 --------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ ASSUME
     /\ \A i \in Done: TLCSet(atoi(i), 0)
 
 Stats ==
-\* Cfg: CONSTRAINT Stats
+    \* Cfg: CONSTRAINT Stats
     /\ state \in Done =>
         /\ CSVWrite("%1$s,%2$s,%3$s", << state, p.den, flip >>, CSVFile)
         /\ TLCSet(atoi(state), TLCGet(atoi(state)) + 1)
@@ -92,7 +92,7 @@ Stats ==
 --------------------------------------------------------------------------------
 
 PostCondition ==
-\* Cfg: POSTCONDITION PostCondition
+    \* Cfg: POSTCONDITION PostCondition
     LET uniform == [i \in 1..6 |-> 6]
         samples == [i \in Done |-> TLCGet(atoi(i))]
         sum == FoldFunctionOnSet(+, 0, samples, Done)

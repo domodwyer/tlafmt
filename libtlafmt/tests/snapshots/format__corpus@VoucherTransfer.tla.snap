@@ -70,7 +70,7 @@ VARIABLES
     (***********************************************************************)
 
 Messages ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The set of all possible messages.  Messages of type "Prepared" are    *)
   (* sent from the SH indicated by the message's vsh field to the VTP.     *)
   (* Similar "Prepared" is also sent from DH indicated by message's vdh    *)
@@ -83,7 +83,7 @@ Messages ==
         [type: {"Transfer", "Abort"}]
 
 VTPTypeOK ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The type-correctness invariant                                        *)
   (*************************************************************************)
     /\ vState \in [V -> {"valid"}]
@@ -95,7 +95,7 @@ VTPTypeOK ==
     /\ msgs \subseteq Messages
 
 VTPInit ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The initial predicate.                                                *)
   (*************************************************************************)
     /\ vState = [v \in V |-> "valid"]
@@ -111,7 +111,7 @@ VTPInit ==
 (* the VTP's actions, the SHs' actions, then the DHs' actions.             *)
 (***************************************************************************)
 VTPRcvPrepared(sh, dh) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The VTP receives a "Prepared" message from Source Voucher Holder sh   *)
   (* and the Destination Voucher Holder dh. We could add the additional    *)
   (* enabling condition sh,dh \not in vtpTPrepared, which disables the     *)
@@ -128,7 +128,7 @@ VTPRcvPrepared(sh, dh) ==
     /\ UNCHANGED << vState, vlcState, shState, dhState, vtpState, msgs >>
 
 VTPTransfer(v) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The VTP Transfers the voucher; enabled iff the VTP is in its          *)
   (* initial state and every SH and DH has sent a "Prepared" message.      *)
   (*************************************************************************)
@@ -141,7 +141,7 @@ VTPTransfer(v) ==
     /\ UNCHANGED << shState, dhState, vState, vlcState, vtpTPrepared >>
 
 VTPAbort(v) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* The VTP spontaneously aborts the transaction.                         *)
   (*************************************************************************)
     /\ vState[v] = "valid"
@@ -152,7 +152,7 @@ VTPAbort(v) ==
     /\ UNCHANGED << vState, vlcState, shState, dhState, vtpTPrepared >>
 
 SHPrepare(sh) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Source Voucher holder sh prepares.                                    *)
   (*************************************************************************)
     /\ vState = [v \in V |-> "valid"]
@@ -163,7 +163,7 @@ SHPrepare(sh) ==
     /\ UNCHANGED << vState, vlcState, vtpState, dhState, vtpTPrepared >>
 
 SHChooseToAbort(sh) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Source Voucher holder sh spontaneously decides to abort. As noted     *)
   (* above, sh does not send any message in our simplified spec.           *)
   (*************************************************************************)
@@ -174,7 +174,7 @@ SHChooseToAbort(sh) ==
     /\ UNCHANGED << vState, vlcState, vtpState, dhState, vtpTPrepared, msgs >>
 
 SHRcvTransferMsg(sh) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Source Voucher holder sh is told by the VTP to Transfer.              *)
   (*************************************************************************)
     /\ vState = [v \in V |-> "valid"]
@@ -185,7 +185,7 @@ SHRcvTransferMsg(sh) ==
     /\ UNCHANGED << vtpState, vlcState, vState, dhState, vtpTPrepared, msgs >>
 
 SHRcvAbortMsg(sh) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Source Voucher holder sh is told by the VTP to abort.                 *)
   (*************************************************************************)
     /\ vState = [v \in V |-> "valid"]
@@ -196,7 +196,7 @@ SHRcvAbortMsg(sh) ==
     /\ UNCHANGED << vState, vlcState, vtpState, dhState, vtpTPrepared, msgs >>
 
 DHPrepare(dh) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Destination Voucher holder dh prepares.                                         *)
   (*************************************************************************)
     /\ vState = [v \in V |-> "valid"]
@@ -207,7 +207,7 @@ DHPrepare(dh) ==
     /\ UNCHANGED << vState, vlcState, vtpState, shState, vtpTPrepared >>
 
 DHChooseToAbort(dh) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Destination Voucher holder dh spontaneously decides to abort. As      *)
   (* noted above, dh does not send any message in our simplified spec.     *)
   (*************************************************************************)
@@ -218,7 +218,7 @@ DHChooseToAbort(dh) ==
     /\ UNCHANGED << vState, vlcState, vtpState, shState, vtpTPrepared, msgs >>
 
 DHRcvTransferMsg(dh) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Destination Voucher holder dh is told by the VTP to Transfer.         *)
   (*************************************************************************)
     /\ vState = [v \in V |-> "valid"]
@@ -229,7 +229,7 @@ DHRcvTransferMsg(dh) ==
     /\ UNCHANGED << vtpState, vState, vlcState, shState, vtpTPrepared, msgs >>
 
 DHRcvAbortMsg(dh) ==
-(*************************************************************************)
+    (*************************************************************************)
   (* Destination Voucher holder dh is told by the VTP to abort.            *)
   (*************************************************************************)
     /\ vState = [v \in V |-> "valid"]
@@ -252,7 +252,7 @@ VTPNext ==
         \/ DHRcvAbortMsg(dh) \/ DHRcvTransferMsg(dh)
 --------------------------------------------------------------------------------
 VTPConsistent ==
-(*************************************************************************)
+    (*************************************************************************)
   (* A state predicate asserting that a SH and an DH have not reached      *)
   (* conflicting decisions. It is an invariant of the specification.       *)
   (*************************************************************************)

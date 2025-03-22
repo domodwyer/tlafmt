@@ -42,7 +42,7 @@ Init ==
 \* Action triggered by user commands:
 
 PASSIVE_OPEN(local, remote) ==
-\* User command: PASSIVE-OPEN
+    \* User command: PASSIVE-OPEN
     /\ local /= remote
     /\ connstate[local] = "CLOSED"
     /\ UNCHANGED network
@@ -50,7 +50,7 @@ PASSIVE_OPEN(local, remote) ==
     /\ tcb' = [tcb EXCEPT ![local] = TRUE]
 
 ACTIVE_OPEN(local, remote) ==
-\* User command: ACTIVE-OPEN
+    \* User command: ACTIVE-OPEN
     /\ local /= remote
     /\ connstate[local] = "CLOSED"
     /\ network' = [network EXCEPT ![remote] = Append(@, "SYN")]
@@ -58,7 +58,7 @@ ACTIVE_OPEN(local, remote) ==
     /\ tcb' = [tcb EXCEPT ![local] = TRUE]
 
 CLOSE_SYN_SENT(local, remote) ==
-\* User command: CLOSE
+    \* User command: CLOSE
     /\ local /= remote
     /\ connstate[local] = "SYN-SENT"
     /\ UNCHANGED network
@@ -66,7 +66,7 @@ CLOSE_SYN_SENT(local, remote) ==
     /\ tcb' = [tcb EXCEPT ![local] = FALSE]
 
 CLOSE_SYN_RECEIVED(local, remote) ==
-\* User Command: CLOSE
+    \* User Command: CLOSE
     /\ local /= remote
     /\ connstate[local] = "SYN-RECEIVED"
     /\ network' = [network EXCEPT ![remote] = Append(@, "FIN")]
@@ -74,7 +74,7 @@ CLOSE_SYN_RECEIVED(local, remote) ==
     /\ UNCHANGED tcb
 
 SEND(local, remote) ==
-\* User command: SEND
+    \* User command: SEND
     /\ local /= remote
     /\ connstate[local] = "LISTEN"
     /\ network' = [network EXCEPT ![remote] = Append(@, "SYN")]
@@ -82,7 +82,7 @@ SEND(local, remote) ==
     /\ UNCHANGED tcb
 
 CLOSE_LISTEN(local, remote) ==
-\* User command: CLOSE
+    \* User command: CLOSE
     /\ local /= remote
     /\ connstate[local] = "LISTEN"
     /\ UNCHANGED network
@@ -90,7 +90,7 @@ CLOSE_LISTEN(local, remote) ==
     /\ tcb' = [tcb EXCEPT ![local] = FALSE]
 
 CLOSE_ESTABLISHED(local, remote) ==
-\* User command: CLOSE
+    \* User command: CLOSE
     /\ local /= remote
     /\ connstate[local] = "ESTABLISHED"
     /\ network' = [network EXCEPT ![remote] = Append(@, "FIN")]
@@ -98,7 +98,7 @@ CLOSE_ESTABLISHED(local, remote) ==
     /\ UNCHANGED tcb
 
 CLOSE_CLOSE_WAIT(local, remote) ==
-\* User command: CLOSE
+    \* User command: CLOSE
     /\ local /= remote
     /\ connstate[local] = "CLOSE-WAIT"
     /\ network' = [network EXCEPT ![remote] = Append(@, "FIN")]
@@ -220,7 +220,7 @@ TimeWait(local, remote) ==
     \* TODO: Timeout=2MSL
 
 Note2(local, remote) ==
-(* Note 2: A transition from FIN-WAIT-1 to TIME-WAIT if a FIN is received
+    (* Note 2: A transition from FIN-WAIT-1 to TIME-WAIT if a FIN is received
        and the local FIN is also acknowledged. *)
     /\ local /= remote
     /\ connstate[local] = "FIN-WAIT-1"
@@ -246,12 +246,12 @@ System ==
         \/ Note2(local, remote)
 
 Note3(local, remote) ==
-(* Note 3: A RST can be sent from any state with a corresponding transition 
+    (* Note 3: A RST can be sent from any state with a corresponding transition 
        to TIME-WAIT (see [70] for rationale). Similarly, receipt of a RST from
        any state results in a transition to LISTEN or CLOSED. *)
-\* ??? "...can be sent from any state with a corresponding transition to TIME-WAIT"
-\* ??? could also be interpreted as those states from where we can tranisiton to TIME-WAIT,
-\* ??? i.e., FIN-WAIT-1, FIN-WAIT-2, CLOSING.
+    \* ??? "...can be sent from any state with a corresponding transition to TIME-WAIT"
+    \* ??? could also be interpreted as those states from where we can tranisiton to TIME-WAIT,
+    \* ??? i.e., FIN-WAIT-1, FIN-WAIT-2, CLOSING.
     /\ local /= remote
     /\ UNCHANGED tcb
     /\
@@ -285,9 +285,9 @@ Spec ==
 --------------------------------------------------------------------------------
 
 Inv ==
-\* If there are no messages in flight and one node is in the ESTABLISHED
-\* state, then the other node is also in the ESTABLISHED state. When
-\* message are in flight, the state of the nodes can be different.
+    \* If there are no messages in flight and one node is in the ESTABLISHED
+    \* state, then the other node is also in the ESTABLISHED state. When
+    \* message are in flight, the state of the nodes can be different.
     \A local, remote \in {p \in Peers: network[p] = <<>>}:
         connstate[local] = "ESTABLISHED" <=> connstate[remote] = "ESTABLISHED"
 

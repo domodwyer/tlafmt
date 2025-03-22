@@ -27,10 +27,22 @@ target/x86_64-unknown-linux-musl/release/tlafmt: $(SRC)
 target/x86_64-pc-windows-gnu/release/tlafmt.exe: $(SRC)
 	cross build --release --target x86_64-pc-windows-gnu
 
+target/wasm32-unknown-emscripten/release/tlafmt.js target/wasm32-unknown-emscripten/release/tlafmt.wasm: $(SRC)
+	RUSTFLAGS="-C link-arg=-sNODERAWFS -C link-arg=-sALLOW_MEMORY_GROWTH=1" \
+		cross build --target wasm32-unknown-emscripten --release
+
 # Windows-specific rule due to the trailing .exe
 release/tlafmt_v$(VERSION)_x86_64-pc-windows-gnu.exe: target/x86_64-pc-windows-gnu/release/tlafmt.exe
 	@-mkdir -p $(dir $@)
 	cp $^ $@
+
+# WASM-specific rule
+release/tlafmt_v$(VERSION)_wasm32_emscripten.zip: \
+	target/wasm32-unknown-emscripten/release/tlafmt.js \
+	target/wasm32-unknown-emscripten/release/tlafmt.wasm
+
+	@-mkdir -p $(dir $@)
+	zip -j "$@" $^
 
 release/tlafmt_v$(VERSION)_%: target/%/release/tlafmt
 	@-mkdir -p $(dir $@)
@@ -54,7 +66,9 @@ release: release/tlafmt_v$(VERSION)_x86_64-unknown-linux-musl.tar.gz \
 	release/tlafmt_v$(VERSION)_x86_64-pc-windows-gnu.exe.tar.gz \
 	release/tlafmt_v$(VERSION)_x86_64-pc-windows-gnu.exe.tar.gz.sha256sum \
 	release/tlafmt_v$(VERSION)_aarch64-apple-darwin.zip \
-	release/tlafmt_v$(VERSION)_aarch64-apple-darwin.zip.sha256sum
+	release/tlafmt_v$(VERSION)_aarch64-apple-darwin.zip.sha256sum \
+	release/tlafmt_v$(VERSION)_wasm32_emscripten.zip \
+	release/tlafmt_v$(VERSION)_wasm32_emscripten.zip.sha256sum
 
 #? clean: remove any generated files
 .PHONY: clean

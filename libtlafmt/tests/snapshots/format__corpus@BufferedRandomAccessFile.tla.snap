@@ -117,12 +117,12 @@ FlushBuffer ==
     /\ dirty
     /\ LET len == Min(length - lo, BuffSz) IN
         /\ IF len > 0
-        THEN LET diskPosA == lo IN \* super.seek(this.lo)
-            /\ file_content' = WriteToFile(file_content, diskPosA, ArraySlice(buff, 0, len))
-            /\ file_pointer' = diskPosA + len
-            /\ diskPos' = lo + len
-        ELSE
-        UNCHANGED << diskPos, file_pointer, file_content >>
+            THEN LET diskPosA == lo IN \* super.seek(this.lo)
+                /\ file_content' = WriteToFile(file_content, diskPosA, ArraySlice(buff, 0, len))
+                /\ file_pointer' = diskPosA + len
+                /\ diskPos' = lo + len
+            ELSE
+            UNCHANGED << diskPos, file_pointer, file_content >>
         /\ dirty' = FALSE
     /\ UNCHANGED << length, curr, lo, buff >>
 
@@ -142,23 +142,23 @@ FillBuffer ==
 Seek(pos) ==
     /\ curr' = pos
     /\ IF pos < lo \/ pos >= (lo + BuffSz) THEN
-        /\ ~dirty \* call to FlushBuffer
-        /\ lo' = (pos \div BuffSz) * BuffSz
-        /\ FillBuffer
-    ELSE
-    UNCHANGED << lo, diskPos, file_pointer, buff >>
+            /\ ~dirty \* call to FlushBuffer
+            /\ lo' = (pos \div BuffSz) * BuffSz
+            /\ FillBuffer
+        ELSE
+        UNCHANGED << lo, diskPos, file_pointer, buff >>
     /\ UNCHANGED << dirty, length, file_content >>
 
 SetLength(newLength) ==
     /\ file_content' = TruncateOrExtendFile(file_content, newLength)
     /\ IF ArrayLen(file_content) > newLength /\ file_pointer > newLength
-    THEN file_pointer' = newLength
-    ELSE file_pointer' \in Offset
+        THEN file_pointer' = newLength
+        ELSE file_pointer' \in Offset
     /\ length' = newLength
     /\ diskPos' = file_pointer'
     /\ IF curr > newLength
-    THEN curr' = newLength
-    ELSE UNCHANGED curr
+        THEN curr' = newLength
+        ELSE UNCHANGED curr
     \* In reality the buffer doesn't change---but some of its bytes might no
     \* longer be relevant and have to be marked as arbitrary.
     /\ buff' = MkArray(BuffSz, [i \in 0..(BuffSz - 1) |->
@@ -356,8 +356,8 @@ SetLength(new_length) ==
     \*
     \* [1]: https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/RandomAccessFile.html#setLength(long)
     /\ IF ArrayLen(file_content) > new_length /\ file_pointer > new_length
-    THEN file_pointer' = new_length
-    ELSE file_pointer' \in Offset
+        THEN file_pointer' = new_length
+        ELSE file_pointer' \in Offset
 
 Read(output) ==
     /\ output = ArraySlice(file_content, file_pointer, Min(file_pointer + ArrayLen(output), ArrayLen(file_content)))

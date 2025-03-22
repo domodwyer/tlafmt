@@ -47,7 +47,7 @@ TypeOK ==
     /\ \A i \in DOMAIN towers:
         /\ towers[i] \in Nat \* Towers are represented by natural numbers
         /\ towers[i] < 2 ^ D
-        
+            
 (***************************************************************************)
 (* Now we define of the initial predicate, that specifies the initial      *)
 (* values of the variables.                                                *)

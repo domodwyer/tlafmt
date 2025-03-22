@@ -372,11 +372,11 @@ leader(self) ==
                 /\ \A v \in S: \E Q \in Quorum: ShowsSafeAt(Q, self, v)
                 /\ msgs' = (msgs \union ({[type |-> "1c", bal |-> self, val |-> v]: v \in S}))
         \/
-            /\ \E v \in Value:
-                /\
-                    /\ sentMsgs("2a", self) = {}
-                    /\ [type |-> "1c", bal |-> self, val |-> v] \in msgs
-                /\ msgs' = (msgs \union {([type |-> "2a", bal |-> self, val |-> v])})
+                /\ \E v \in Value:
+                    /\
+                        /\ sentMsgs("2a", self) = {}
+                        /\ [type |-> "1c", bal |-> self, val |-> v] \in msgs
+                    /\ msgs' = (msgs \union {([type |-> "2a", bal |-> self, val |-> v])})
     /\ UNCHANGED << maxBal, maxVBal, maxVVal >>
 
 Next == (\E self \in Acceptor: acceptor(self))
@@ -434,7 +434,7 @@ TLANext ==
             \/ Phase1a(self)
             \/ \E S \in SUBSET Value: Phase1c(self, S)
             \/ \E v \in Value: Phase2a(self, v)
-        
+            
 (***************************************************************************)
 (* The following theorem specifies the relation between the next-state     *)
 (* relation Next obtained by translating the PlusCal code and the          *)

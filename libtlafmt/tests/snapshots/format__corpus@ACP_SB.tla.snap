@@ -106,8 +106,8 @@ request(i) ==
     /\ coordinator.alive
     /\ ~coordinator.request[i]
     /\ coordinator' = [coordinator EXCEPT !.request =
-        [@ EXCEPT ![i] = TRUE]
-    ]
+                [@ EXCEPT ![i] = TRUE]
+        ]
     /\ UNCHANGED << participant >>
 
 \* getVote(i):
@@ -127,8 +127,8 @@ getVote(i) ==
     /\ coordinator.vote[i] = waiting
     /\ participant[i].voteSent
     /\ coordinator' = [coordinator EXCEPT !.vote =
-        [@ EXCEPT ![i] = participant[i].vote]
-    ]
+                [@ EXCEPT ![i] = participant[i].vote]
+        ]
     /\ UNCHANGED << participant >>
 
 \* detectFault(i):
@@ -190,8 +190,8 @@ coordBroadcast(i) ==
     /\ coordinator.decision /= undecided
     /\ coordinator.broadcast[i] = notsent
     /\ coordinator' = [coordinator EXCEPT !.broadcast =
-        [@ EXCEPT ![i] = coordinator.decision]
-    ]
+                [@ EXCEPT ![i] = coordinator.decision]
+        ]
     /\ UNCHANGED << participant >>
 
 \* coordDie:
@@ -221,8 +221,8 @@ sendVote(i) ==
     /\ participant[i].alive
     /\ coordinator.request[i]
     /\ participant' = [participant EXCEPT ![i] =
-        [@ EXCEPT !.voteSent = TRUE]
-    ]
+                [@ EXCEPT !.voteSent = TRUE]
+        ]
     /\ UNCHANGED << coordinator >>
 
 \* abortOnVote(i):
@@ -240,8 +240,8 @@ abortOnVote(i) ==
     /\ participant[i].voteSent
     /\ participant[i].vote = no
     /\ participant' = [participant EXCEPT ![i] =
-        [@ EXCEPT !.decision = abort]
-    ]
+                [@ EXCEPT !.decision = abort]
+        ]
     /\ UNCHANGED << coordinator >>
 
 \* abortOnTimeoutRequest(i):
@@ -258,8 +258,8 @@ abortOnTimeoutRequest(i) ==
     /\ ~coordinator.alive
     /\ ~coordinator.request[i]
     /\ participant' = [participant EXCEPT ![i] =
-        [@ EXCEPT !.decision = abort]
-    ]
+                [@ EXCEPT !.decision = abort]
+        ]
     /\ UNCHANGED << coordinator >>
 
 \* decide(i):
@@ -276,8 +276,8 @@ decide(i) ==
     /\ participant[i].decision = undecided
     /\ coordinator.broadcast[i] /= notsent
     /\ participant' = [participant EXCEPT ![i] =
-        [@ EXCEPT !.decision = coordinator.broadcast[i]]
-    ]
+                [@ EXCEPT !.decision = coordinator.broadcast[i]]
+        ]
     /\ UNCHANGED << coordinator >>
 
 \* parDie(i):
@@ -289,8 +289,8 @@ decide(i) ==
 parDie(i) ==
     /\ participant[i].alive
     /\ participant' = [participant EXCEPT ![i] =
-        [@ EXCEPT !.alive = FALSE, !.faulty = TRUE]
-    ]
+                [@ EXCEPT !.alive = FALSE, !.faulty = TRUE]
+        ]
     /\ UNCHANGED << coordinator >>
 
 --------------------------------------------------------------------------------

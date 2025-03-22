@@ -51,7 +51,7 @@ FastAny ==
         /\ SendMessage([type |-> "P2a",
             ballot |-> f,
             value |-> any])
-        
+            
 (*
     Phase 2b (Fast):
 
@@ -71,7 +71,7 @@ FastPropose ==
             ballot |-> m.ballot,
             acceptor |-> a,
             value |-> v])
-        
+            
 (*
     A value is chosen if a fast quorum of acceptors proposed that value in a fast round.
 
@@ -88,7 +88,7 @@ FastDecide ==
             /\ \A a \in q: \E m \in M: m.acceptor = a
             /\ 1 = Cardinality(V)
             /\ \E m \in M: decision' = m.value
-            
+                
 (*
     Phase 2a (Classic)
 
@@ -112,12 +112,12 @@ ClassicAccept ==
             /\ \A a \in q: \E m \in M: m.acceptor = a
             /\ 1 < Cardinality(V) \* Collision occurred.
             /\ IF \E w \in V: IsMajorityValue(M, w)
-            THEN IsMajorityValue(M, v) \* Choose majority in quorum.
-            ELSE v \in V \* Choose any.
+                THEN IsMajorityValue(M, v) \* Choose majority in quorum.
+                ELSE v \in V \* Choose any.
             /\ SendMessage([type |-> "P2a",
                 ballot |-> b,
                 value |-> v])
-                
+                        
 (*
     Phase 2b (Classic)
 

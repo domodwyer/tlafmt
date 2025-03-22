@@ -112,7 +112,7 @@ ReceiveRequest(p, q) ==
         /\ network' = [network EXCEPT ![q][p] = Tail(@),
             ![p][q] = Append(@, AckMessage)]
         /\ UNCHANGED << ack, crit >>
-        
+            
 (***************************************************************************)
 (* Process p receives an acknowledgement from q.                           *)
 (***************************************************************************)
@@ -124,7 +124,7 @@ ReceiveAck(p, q) ==
             /\ ack' = [ack EXCEPT ![p] = @ \union {q}]
             /\ network' = [network EXCEPT ![q][p] = Tail(@)]
             /\ UNCHANGED << clock, req, crit >>
-        
+            
 (**************************************************************************)
 (* Process p enters the critical section.                                 *)
 (**************************************************************************)
@@ -156,7 +156,7 @@ ReceiveRelease(p, q) ==
             /\ req' = [req EXCEPT ![p][q] = 0]
             /\ network' = [network EXCEPT ![q][p] = Tail(@)]
             /\ UNCHANGED << clock, ack, crit >>
-        
+            
 (***************************************************************************)
 (* Next-state relation.                                                    *)
 (***************************************************************************)

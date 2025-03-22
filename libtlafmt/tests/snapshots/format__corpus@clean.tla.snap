@@ -68,10 +68,10 @@ anneal ==
 
 extend ==
     /\ tee = "Warm" \* too cool for extension
-    /\ tee' = "Hot" \* "Hot" is just right
-    /\ UNCHANGED << primer, template >>
-    /\ dna' = dna + hybrid \* assuming it just happens
-    /\ hybrid' = 0 \* all turned to dna
+        /\ tee' = "Hot" \* "Hot" is just right
+        /\ UNCHANGED << primer, template >>
+        /\ dna' = dna + hybrid \* assuming it just happens
+        /\ hybrid' = 0 \* all turned to dna
 
 (* initial state *)
 Init ==

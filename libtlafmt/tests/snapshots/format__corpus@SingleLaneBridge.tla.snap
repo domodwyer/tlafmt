@@ -45,10 +45,10 @@ NextLocation(car) == IF car \in CarsRight THEN RMove(Location[car]) ELSE LMove(L
 
 ChangeLocation(car) ==
     /\ IF
-        \/ car \in CarsRight /\ NextLocation(car) = EndBridge + 1
-        \/ car \in CarsLeft /\ NextLocation(car) = StartBridge - 1
-    THEN WaitingBeforeBridge' = Append(WaitingBeforeBridge, car)
-    ELSE UNCHANGED WaitingBeforeBridge
+            \/ car \in CarsRight /\ NextLocation(car) = EndBridge + 1
+            \/ car \in CarsLeft /\ NextLocation(car) = StartBridge - 1
+        THEN WaitingBeforeBridge' = Append(WaitingBeforeBridge, car)
+        ELSE UNCHANGED WaitingBeforeBridge
     /\ Location' = [Location EXCEPT ![car] = NextLocation(car)]
 
 HaveSameDirection(car) ==

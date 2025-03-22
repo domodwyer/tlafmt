@@ -72,10 +72,10 @@ Init == (* Global variables *)
 L3 ==
     /\ pc = "L3"
     /\ IF j < 2 * n
-    THEN
-        /\ pc' = "L5"
-    ELSE
-        /\ pc' = "Done"
+        THEN
+            /\ pc' = "L5"
+        ELSE
+            /\ pc' = "Done"
     /\ UNCHANGED << b, n, f, i, j, k >>
 
 L5 ==
@@ -87,19 +87,19 @@ L5 ==
 L6 ==
     /\ pc = "L6"
     /\ IF b[j % n] /= b[(k + i + 1) % n] /\ i /= nil
-    THEN
-        /\ pc' = "L7"
-    ELSE
-        /\ pc' = "L10"
+        THEN
+            /\ pc' = "L7"
+        ELSE
+            /\ pc' = "L10"
     /\ UNCHANGED << b, n, f, i, j, k >>
 
 L7 ==
     /\ pc = "L7"
     /\ IF b[j % n] < b[(k + i + 1) % n]
-    THEN
-        /\ pc' = "L8"
-    ELSE
-        /\ pc' = "L9"
+        THEN
+            /\ pc' = "L8"
+        ELSE
+            /\ pc' = "L9"
     /\ UNCHANGED << b, n, f, i, j, k >>
 
 L8 ==
@@ -117,19 +117,19 @@ L9 ==
 L10 ==
     /\ pc = "L10"
     /\ IF b[j % n] /= b[(k + i + 1) % n] /\ i = nil
-    THEN
-        /\ pc' = "L11"
-    ELSE
-        /\ pc' = "L14"
+        THEN
+            /\ pc' = "L11"
+        ELSE
+            /\ pc' = "L14"
     /\ UNCHANGED << b, n, f, i, j, k >>
 
 L11 ==
     /\ pc = "L11"
     /\ IF b[j % n] < b[(k + i + 1) % n]
-    THEN
-        /\ pc' = "L12"
-    ELSE
-        /\ pc' = "L13"
+        THEN
+            /\ pc' = "L12"
+        ELSE
+            /\ pc' = "L13"
     /\ UNCHANGED << b, n, f, i, j, k >>
 
 L12 ==

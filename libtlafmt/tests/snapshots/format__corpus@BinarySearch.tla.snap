@@ -65,26 +65,26 @@ Init == (* Global variables *)
 a ==
     /\ pc = "a"
     /\ IF low <= high /\ result = 0
-    THEN
-        /\ LET mid == (low + high) \div 2 IN
-            LET mval == seq[mid] IN
-                IF mval = val
-                THEN
-                    /\ result' = mid
-                    /\ UNCHANGED << low, high >>
-                ELSE
-                    /\ IF val < mval
+        THEN
+            /\ LET mid == (low + high) \div 2 IN
+                LET mval == seq[mid] IN
+                    IF mval = val
                     THEN
-                        /\ high' = mid - 1
-                        /\ low' = low
+                        /\ result' = mid
+                        /\ UNCHANGED << low, high >>
                     ELSE
-                        /\ low' = mid + 1
-                        /\ high' = high
-                    /\ UNCHANGED result
-        /\ pc' = "a"
-    ELSE
-        /\ pc' = "Done"
-        /\ UNCHANGED << low, high, result >>
+                        /\ IF val < mval
+                            THEN
+                                /\ high' = mid - 1
+                                /\ low' = low
+                            ELSE
+                                /\ low' = mid + 1
+                                /\ high' = high
+                        /\ UNCHANGED result
+            /\ pc' = "a"
+        ELSE
+            /\ pc' = "Done"
+            /\ UNCHANGED << low, high, result >>
     /\ UNCHANGED << seq, val >>
 
 (* Allow infinite stuttering to prevent deadlock on termination. *)

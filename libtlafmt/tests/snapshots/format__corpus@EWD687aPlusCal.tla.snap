@@ -143,21 +143,21 @@ node(self) ==
                     /\ UNCHANGED parent
         /\ UNCHANGED << terminationDetected, activeSons >>
     \/
-        /\ pendingAck(network, self)
-        /\ network' = receiveAck(network, self)
-        /\ activeSons' = [activeSons EXCEPT ![self] = activeSons[self] - 1]
-        /\ UNCHANGED << terminationDetected, active, parent >>
+            /\ pendingAck(network, self)
+            /\ network' = receiveAck(network, self)
+            /\ activeSons' = [activeSons EXCEPT ![self] = activeSons[self] - 1]
+            /\ UNCHANGED << terminationDetected, active, parent >>
     \/
-        /\ (~active[self] /\ activeSons[self] = 0 /\ parent[self] /= none)
-        /\ IF parent[self] = self
-        THEN
-            /\ terminationDetected' = TRUE
-            /\ UNCHANGED network
-        ELSE
-            /\ network' = sendAck(network, parent[self])
-            /\ UNCHANGED terminationDetected
-        /\ parent' = [parent EXCEPT ![self] = none]
-        /\ UNCHANGED << active, activeSons >>
+            /\ (~active[self] /\ activeSons[self] = 0 /\ parent[self] /= none)
+            /\ IF parent[self] = self
+                THEN
+                    /\ terminationDetected' = TRUE
+                    /\ UNCHANGED network
+                ELSE
+                    /\ network' = sendAck(network, parent[self])
+                    /\ UNCHANGED terminationDetected
+            /\ parent' = [parent EXCEPT ![self] = none]
+            /\ UNCHANGED << active, activeSons >>
 
 Next == (\E self \in Node: node(self))
 

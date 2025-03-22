@@ -469,140 +469,140 @@ Init == (* Global variables *)
 rloop(self) ==
     /\ pc[self] = "rloop"
     /\ IF ~terminated
-    THEN
-        /\
-            \/
-                /\ node[self].leader /= self
-                /\ \E b \in Ballots:
-                    /\
-                        /\ b > node[self].balMaxKnown
-                        /\ ~\E m \in msgs: (m.type = "Prepare") /\ (m.bal = b)
-                    /\ node' = [node EXCEPT ![self].leader = self,
-                        ![self].balPrepared = 0,
-                        ![self].balMaxKnown = b,
-                        ![self].insts = [s \in Slots |->
-                            [node[self].insts[s]
-                            EXCEPT !.status = IF @ = "Accepting"
-                                THEN "Preparing"
-                                ELSE @]]]
-                    /\ msgs' = (msgs \union ({PrepareMsg(self, b),
-                                PrepareReplyMsg(self, b, VotesByNode(node' [self]))}))
-                /\ UNCHANGED << pending, observed >>
-            \/
-                /\ \E m \in msgs:
+        THEN
+            /\
+                \/
+                    /\ node[self].leader /= self
+                    /\ \E b \in Ballots:
                         /\
-                            /\ m.type = "Prepare"
-                            /\ m.bal > node[self].balMaxKnown
-                        /\ node' = [node EXCEPT ![self].leader = m.src,
-                            ![self].balMaxKnown = m.bal,
+                            /\ b > node[self].balMaxKnown
+                            /\ ~\E m \in msgs: (m.type = "Prepare") /\ (m.bal = b)
+                        /\ node' = [node EXCEPT ![self].leader = self,
+                            ![self].balPrepared = 0,
+                            ![self].balMaxKnown = b,
                             ![self].insts = [s \in Slots |->
                                 [node[self].insts[s]
                                 EXCEPT !.status = IF @ = "Accepting"
                                     THEN "Preparing"
                                     ELSE @]]]
-                        /\ msgs' = (msgs \union ({PrepareReplyMsg(self, m.bal, VotesByNode(node' [self]))}))
-                /\ UNCHANGED << pending, observed >>
-            \/
-                /\
-                    /\ node[self].leader = self
-                    /\ node[self].balPrepared = 0
-                /\ LET prs == {m \in msgs:
-                        /\ m.type = "PrepareReply"
-                        /\ m.bal = node[self].balMaxKnown} IN
-                    /\ Cardinality(prs) >= MajorityNum
-                    /\ node' = [node EXCEPT ![self].balPrepared = node[self].balMaxKnown,
-                        ![self].insts = [s \in Slots |->
-                            [node[self].insts[s]
-                            EXCEPT !.status = IF
-                                        \/ @ = "Preparing"
-                                        \/
-                                            /\ @ = "Empty"
-                                            /\ PeakVotedCmd(prs, s) /= "nil"
-                                    THEN "Accepting"
-                                    ELSE @,
-                                !.cmd = PeakVotedCmd(prs, s)]]]
-                    /\ msgs' = (msgs \union ({AcceptMsg(self, node' [self].balPrepared, s, node' [self].insts[s].cmd):
-                                s \in {s \in Slots: node' [self].insts[s].status = "Accepting"}}))
-                /\ UNCHANGED << pending, observed >>
-            \/
-                /\
-                    /\ node[self].leader = self
-                    /\ node[self].balPrepared = node[self].balMaxKnown
-                    /\ \E s \in Slots: node[self].insts[s].status = "Empty"
-                    /\ Len(UnseenPending(node[self].insts)) > 0
-                /\ LET s == FirstEmptySlot(node[self].insts) IN
-                    LET c == Head(UnseenPending(node[self].insts)) IN
-                        /\ node' = [node EXCEPT ![self].insts[s].status = "Accepting",
-                            ![self].insts[s].cmd = c,
-                            ![self].insts[s].voted.bal = node[self].balPrepared,
-                            ![self].insts[s].voted.cmd = c]
-                        /\ msgs' = (msgs \union ({AcceptMsg(self, node' [self].balPrepared, s, c),
-                            AcceptReplyMsg(self, node' [self].balPrepared, s)}))
-                        /\ IF (ReqEvent(c)) \notin Range(observed)
-                        THEN
-                            /\ observed' = Append(observed, (ReqEvent(c)))
-                        ELSE
-                            /\ TRUE
-                            /\ UNCHANGED observed
-                /\ UNCHANGED pending
-            \/
-                /\ \E m \in msgs:
-                    /\
-                        /\ m.type = "Accept"
-                        /\ m.bal >= node[self].balMaxKnown
-                        /\ m.bal > node[self].insts[m.slot].voted.bal
-                    /\ node' = [node EXCEPT ![self].leader = m.src,
-                        ![self].balMaxKnown = m.bal,
-                        ![self].insts[m.slot].status = "Accepting",
-                        ![self].insts[m.slot].cmd = m.cmd,
-                        ![self].insts[m.slot].voted.bal = m.bal,
-                        ![self].insts[m.slot].voted.cmd = m.cmd]
-                    /\ msgs' = (msgs \union ({AcceptReplyMsg(self, m.bal, m.slot)}))
-                /\ UNCHANGED << pending, observed >>
-            \/
-                /\
-                    /\ node[self].leader = self
-                    /\ node[self].balPrepared = node[self].balMaxKnown
-                    /\ node[self].commitUpTo < NumCommands
-                    /\ node[self].insts[node[self].commitUpTo + 1].status = "Accepting"
-                /\ LET s == node[self].commitUpTo + 1 IN
-                    LET c == node[self].insts[s].cmd IN
-                        LET v == node[self].kvalue IN
-                            LET ars == {m \in msgs:
-                                    /\ m.type = "AcceptReply"
-                                    /\ m.slot = s
-                                    /\ m.bal = node[self].balPrepared} IN
-                                /\ Cardinality(ars) >= MajorityNum
-                                /\ node' = [node EXCEPT ![self].insts[s].status = "Committed",
-                                    ![self].commitUpTo = s,
-                                    ![self].kvalue = IF c \in Writes THEN c ELSE @]
-                                /\ IF (AckEvent(c, v)) \notin Range(observed)
-                                THEN
-                                    /\ observed' = Append(observed, (AckEvent(c, v)))
-                                ELSE
-                                    /\ TRUE
-                                    /\ UNCHANGED observed
-                                /\ pending' = RemovePending(c)
-                                /\ msgs' = (msgs \union ({CommitNoticeMsg(s)}))
-            \/
-                /\
-                    /\ node[self].leader /= self
-                    /\ node[self].commitUpTo < NumCommands
-                    /\ node[self].insts[node[self].commitUpTo + 1].status = "Accepting"
-                /\ LET s == node[self].commitUpTo + 1 IN
-                    LET c == node[self].insts[s].cmd IN
-                        \E m \in msgs:
+                        /\ msgs' = (msgs \union ({PrepareMsg(self, b),
+                                    PrepareReplyMsg(self, b, VotesByNode(node' [self]))}))
+                    /\ UNCHANGED << pending, observed >>
+                \/
+                        /\ \E m \in msgs:
                             /\
-                                /\ m.type = "CommitNotice"
-                                /\ m.upto = s
-                            /\ node' = [node EXCEPT ![self].insts[s].status = "Committed",
-                                ![self].commitUpTo = s,
-                                ![self].kvalue = IF c \in Writes THEN c ELSE @]
-                /\ UNCHANGED << msgs, pending, observed >>
-        /\ pc' = [pc EXCEPT ![self] = "rloop"]
-    ELSE
-        /\ pc' = [pc EXCEPT ![self] = "Done"]
-        /\ UNCHANGED << msgs, node, pending, observed >>
+                                /\ m.type = "Prepare"
+                                /\ m.bal > node[self].balMaxKnown
+                            /\ node' = [node EXCEPT ![self].leader = m.src,
+                                ![self].balMaxKnown = m.bal,
+                                ![self].insts = [s \in Slots |->
+                                    [node[self].insts[s]
+                                    EXCEPT !.status = IF @ = "Accepting"
+                                        THEN "Preparing"
+                                        ELSE @]]]
+                            /\ msgs' = (msgs \union ({PrepareReplyMsg(self, m.bal, VotesByNode(node' [self]))}))
+                        /\ UNCHANGED << pending, observed >>
+                \/
+                        /\
+                            /\ node[self].leader = self
+                            /\ node[self].balPrepared = 0
+                        /\ LET prs == {m \in msgs:
+                                /\ m.type = "PrepareReply"
+                                /\ m.bal = node[self].balMaxKnown} IN
+                            /\ Cardinality(prs) >= MajorityNum
+                            /\ node' = [node EXCEPT ![self].balPrepared = node[self].balMaxKnown,
+                                ![self].insts = [s \in Slots |->
+                                    [node[self].insts[s]
+                                    EXCEPT !.status = IF
+                                                \/ @ = "Preparing"
+                                                \/
+                                                    /\ @ = "Empty"
+                                                    /\ PeakVotedCmd(prs, s) /= "nil"
+                                            THEN "Accepting"
+                                            ELSE @,
+                                        !.cmd = PeakVotedCmd(prs, s)]]]
+                            /\ msgs' = (msgs \union ({AcceptMsg(self, node' [self].balPrepared, s, node' [self].insts[s].cmd):
+                                        s \in {s \in Slots: node' [self].insts[s].status = "Accepting"}}))
+                        /\ UNCHANGED << pending, observed >>
+                \/
+                        /\
+                                /\ node[self].leader = self
+                                /\ node[self].balPrepared = node[self].balMaxKnown
+                                /\ \E s \in Slots: node[self].insts[s].status = "Empty"
+                                /\ Len(UnseenPending(node[self].insts)) > 0
+                        /\ LET s == FirstEmptySlot(node[self].insts) IN
+                                LET c == Head(UnseenPending(node[self].insts)) IN
+                                    /\ node' = [node EXCEPT ![self].insts[s].status = "Accepting",
+                                        ![self].insts[s].cmd = c,
+                                        ![self].insts[s].voted.bal = node[self].balPrepared,
+                                        ![self].insts[s].voted.cmd = c]
+                                    /\ msgs' = (msgs \union ({AcceptMsg(self, node' [self].balPrepared, s, c),
+                                        AcceptReplyMsg(self, node' [self].balPrepared, s)}))
+                                    /\ IF (ReqEvent(c)) \notin Range(observed)
+                                        THEN
+                                            /\ observed' = Append(observed, (ReqEvent(c)))
+                                        ELSE
+                                            /\ TRUE
+                                            /\ UNCHANGED observed
+                        /\ UNCHANGED pending
+                \/
+                        /\ \E m \in msgs:
+                                    /\
+                                        /\ m.type = "Accept"
+                                        /\ m.bal >= node[self].balMaxKnown
+                                        /\ m.bal > node[self].insts[m.slot].voted.bal
+                                    /\ node' = [node EXCEPT ![self].leader = m.src,
+                                        ![self].balMaxKnown = m.bal,
+                                        ![self].insts[m.slot].status = "Accepting",
+                                        ![self].insts[m.slot].cmd = m.cmd,
+                                        ![self].insts[m.slot].voted.bal = m.bal,
+                                        ![self].insts[m.slot].voted.cmd = m.cmd]
+                                    /\ msgs' = (msgs \union ({AcceptReplyMsg(self, m.bal, m.slot)}))
+                        /\ UNCHANGED << pending, observed >>
+                \/
+                        /\
+                            /\ node[self].leader = self
+                            /\ node[self].balPrepared = node[self].balMaxKnown
+                            /\ node[self].commitUpTo < NumCommands
+                            /\ node[self].insts[node[self].commitUpTo + 1].status = "Accepting"
+                        /\ LET s == node[self].commitUpTo + 1 IN
+                            LET c == node[self].insts[s].cmd IN
+                                LET v == node[self].kvalue IN
+                                    LET ars == {m \in msgs:
+                                            /\ m.type = "AcceptReply"
+                                            /\ m.slot = s
+                                            /\ m.bal = node[self].balPrepared} IN
+                                        /\ Cardinality(ars) >= MajorityNum
+                                        /\ node' = [node EXCEPT ![self].insts[s].status = "Committed",
+                                            ![self].commitUpTo = s,
+                                            ![self].kvalue = IF c \in Writes THEN c ELSE @]
+                                        /\ IF (AckEvent(c, v)) \notin Range(observed)
+                                            THEN
+                                                /\ observed' = Append(observed, (AckEvent(c, v)))
+                                            ELSE
+                                                /\ TRUE
+                                                /\ UNCHANGED observed
+                                        /\ pending' = RemovePending(c)
+                                        /\ msgs' = (msgs \union ({CommitNoticeMsg(s)}))
+                \/
+                        /\
+                                /\ node[self].leader /= self
+                                /\ node[self].commitUpTo < NumCommands
+                                /\ node[self].insts[node[self].commitUpTo + 1].status = "Accepting"
+                        /\ LET s == node[self].commitUpTo + 1 IN
+                                LET c == node[self].insts[s].cmd IN
+                                    \E m \in msgs:
+                                        /\
+                                            /\ m.type = "CommitNotice"
+                                            /\ m.upto = s
+                                        /\ node' = [node EXCEPT ![self].insts[s].status = "Committed",
+                                            ![self].commitUpTo = s,
+                                            ![self].kvalue = IF c \in Writes THEN c ELSE @]
+                        /\ UNCHANGED << msgs, pending, observed >>
+            /\ pc' = [pc EXCEPT ![self] = "rloop"]
+        ELSE
+            /\ pc' = [pc EXCEPT ![self] = "Done"]
+            /\ UNCHANGED << msgs, node, pending, observed >>
 
 Replica(self) == rloop(self)
 

@@ -45,13 +45,13 @@ Init == (* Global variables *)
 lb ==
     /\ pc = "lb"
     /\ IF i <= Len(f)
-    THEN
-        /\ h' = max(h, f[i])
-        /\ i' = i + 1
-        /\ pc' = "lb"
-    ELSE
-        /\ pc' = "Done"
-        /\ UNCHANGED << h, i >>
+        THEN
+            /\ h' = max(h, f[i])
+            /\ i' = i + 1
+            /\ pc' = "lb"
+        ELSE
+            /\ pc' = "Done"
+            /\ UNCHANGED << h, i >>
     /\ f' = f
 
 (* Allow infinite stuttering to prevent deadlock on termination. *)

@@ -61,12 +61,12 @@ Phase1or2Write(p, d) ==
 Phase1or2Read(p, d, q) ==
     /\ d \in disksWritten[p]
     /\ IF disk[d][q].mbal < dblock[p].mbal
-    THEN
-        /\ blocksRead' =
-            [blocksRead EXCEPT
-                ![p][d] = @ \union {[block |-> disk[d][q], proc |-> q]}]
-        /\ UNCHANGED << input, output, disk, phase, dblock, disksWritten >>
-    ELSE StartBallot(p)
+        THEN
+            /\ blocksRead' =
+                [blocksRead EXCEPT
+                    ![p][d] = @ \union {[block |-> disk[d][q], proc |-> q]}]
+            /\ UNCHANGED << input, output, disk, phase, dblock, disksWritten >>
+        ELSE StartBallot(p)
 
 EndPhase1or2(p) ==
     /\ IsMajority({d \in disksWritten[p]:
@@ -88,9 +88,9 @@ EndPhase1or2(p) ==
                             ELSE maxBlk.inp]
             /\ UNCHANGED output
         \/
-            /\ phase[p] = 2
-            /\ output' = [output EXCEPT ![p] = dblock[p].inp]
-            /\ UNCHANGED dblock
+                /\ phase[p] = 2
+                /\ output' = [output EXCEPT ![p] = dblock[p].inp]
+                /\ UNCHANGED dblock
     /\ phase' = [phase EXCEPT ![p] = @ + 1]
     /\ InitializePhase(p)
     /\ UNCHANGED << input, disk >>

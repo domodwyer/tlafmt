@@ -236,7 +236,7 @@ ProcTick ==
     \E i \in Proc:
         \/
             /\ failed[i] = TRUE
-        
+            
             /\ UNCHANGED envVars
             /\ CommChan!Deliver(i) (* Some messages are delivery to a process p_i. *)
             /\ UNCHANGED procVars  (* However, p_i cannot receive those messages because
@@ -259,7 +259,7 @@ ProcTick ==
                     /\ moved' = [moved EXCEPT ![i] = "RECEIVE"]
                     /\ CommChan!Deliver(i)
                     /\ Detector!Receive(i, inDelivery')
-                
+                            
 (* Two constraints PHIConstraint and DELTAConstraint are respectively restrictions on
    message delay and relative speeds of processes in partial synchronoy. We use these 
    constraints to filter out executions. Only executions satisfying these constraints

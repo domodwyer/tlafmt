@@ -159,8 +159,8 @@ AnimSpec ==
                 ELSE - 1
             ELSE 0]
     /\ inbox = [n \in Node |-> IF n = Initiator \* RingOfNodes[Initiator] 
-        THEN << [type |-> "tok", q |-> 0, color |-> "black"] >>
-        ELSE <<>>] \* with empty channels.
+            THEN << [type |-> "tok", q |-> 0, color |-> "black"] >>
+            ELSE <<>>] \* with empty channels.
     /\ Init!5
     /\ [][\E n \in Node: System(n)]_vars
 

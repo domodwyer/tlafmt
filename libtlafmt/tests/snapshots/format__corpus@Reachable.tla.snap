@@ -96,20 +96,20 @@ Init == (* Global variables *)
 a ==
     /\ pc = "a"
     /\ IF vroot /= {}
-    THEN
-        /\ \E v \in vroot:
-            IF v \notin marked
-            THEN
-                /\ marked' = (marked \union {v})
-                /\ vroot' = (vroot \union Succ[v])
-            ELSE
-                /\ vroot' = vroot \ {v}
-                /\ UNCHANGED marked
-        /\ pc' = "a"
-    ELSE
-        /\ pc' = "Done"
-        /\ UNCHANGED << marked, vroot >>
-    
+        THEN
+            /\ \E v \in vroot:
+                IF v \notin marked
+                THEN
+                    /\ marked' = (marked \union {v})
+                    /\ vroot' = (vroot \union Succ[v])
+                ELSE
+                    /\ vroot' = vroot \ {v}
+                    /\ UNCHANGED marked
+            /\ pc' = "a"
+        ELSE
+            /\ pc' = "Done"
+            /\ UNCHANGED << marked, vroot >>
+        
 (* Allow infinite stuttering to prevent deadlock on termination. *)
 Terminating == pc = "Done" /\ UNCHANGED vars
 

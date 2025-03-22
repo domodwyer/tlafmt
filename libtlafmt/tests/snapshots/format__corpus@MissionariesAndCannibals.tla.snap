@@ -181,7 +181,7 @@ Move(S, b) ==
         /\ who_is_on_bank' =
             [i \in {"E", "W"} |-> IF i = b THEN newThisBank
                 ELSE newOtherBank]
-        
+            
 (***************************************************************************)
 (* The next-state formula Next describes all steps s -> t that represent a *)
 (* safe move of a set S of people across the river starting from           *)

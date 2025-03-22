@@ -29,12 +29,12 @@ IInit ==
 IChoose(p) ==
     /\ output[p] = NotAnInput
     /\ IF chosen = NotAnInput
-    THEN \E ip \in allInput:
-        /\ chosen' = ip
-        /\ output' = [output EXCEPT ![p] = ip]
-    ELSE
-        /\ output' = [output EXCEPT ![p] = chosen]
-        /\ UNCHANGED chosen
+        THEN \E ip \in allInput:
+            /\ chosen' = ip
+            /\ output' = [output EXCEPT ![p] = ip]
+        ELSE
+            /\ output' = [output EXCEPT ![p] = chosen]
+            /\ UNCHANGED chosen
     /\ UNCHANGED << input, allInput >>
 
 IFail(p) ==

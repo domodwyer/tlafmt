@@ -65,7 +65,7 @@ Receive(i) ==
         /\ msg \notin rcvdMsg[i]
         /\ rcvdMsg' = [rcvdMsg EXCEPT ![i] = rcvdMsg[i] \union {msg}]
         /\ UNCHANGED << pc, v, dValue, bcastMsg >>
-        
+            
 (* Broadcasts PROPOSED(v_i) *)
 Propose(i) ==
     /\ pc[i] = "PROPOSE"
@@ -80,18 +80,18 @@ Core_T1(i) ==
     /\ pc[i] = "DECIDE"
     /\ Cardinality({msg \in rcvdMsg[i]: msg.type = "Proposed"}) >= N - T
     /\ IF
-        /\ (\E tV \in Values: \A msg \in rcvdMsg[i]: msg.type = "Proposed" => msg.value = tV)
-    THEN
-        /\ dValue' = [dValue EXCEPT ![i] = CHOOSE tV \in Values: (Cardinality({msg \in rcvdMsg[i]: msg.type = "Proposed" /\ msg.value = tV}) >= N - T)]
-        /\ bcastMsg' = bcastMsg \union {makeDecisionMsg(dValue' [i], i)}
-        /\ pc' = [pc EXCEPT ![i] = "DONE"]
-        /\ UNCHANGED << v >>
-    ELSE
-        /\ IF \E tV \in Values: Cardinality({msg \in rcvdMsg[i]: msg.type = "Proposed" /\ msg.value = tV}) >= N - 2 * T
+            /\ (\E tV \in Values: \A msg \in rcvdMsg[i]: msg.type = "Proposed" => msg.value = tV)
         THEN
-            /\ v' = [v EXCEPT ![i] = CHOOSE tV \in Values: (Cardinality({msg \in rcvdMsg[i]: msg.type = "Proposed" /\ msg.value = tV}) >= N - 2 * T)]
-            /\ UNCHANGED << dValue, bcastMsg >>
-        ELSE UNCHANGED << dValue, v, bcastMsg >>
+            /\ dValue' = [dValue EXCEPT ![i] = CHOOSE tV \in Values: (Cardinality({msg \in rcvdMsg[i]: msg.type = "Proposed" /\ msg.value = tV}) >= N - T)]
+            /\ bcastMsg' = bcastMsg \union {makeDecisionMsg(dValue' [i], i)}
+            /\ pc' = [pc EXCEPT ![i] = "DONE"]
+            /\ UNCHANGED << v >>
+        ELSE
+        /\ IF \E tV \in Values: Cardinality({msg \in rcvdMsg[i]: msg.type = "Proposed" /\ msg.value = tV}) >= N - 2 * T
+            THEN
+                /\ v' = [v EXCEPT ![i] = CHOOSE tV \in Values: (Cardinality({msg \in rcvdMsg[i]: msg.type = "Proposed" /\ msg.value = tV}) >= N - 2 * T)]
+                /\ UNCHANGED << dValue, bcastMsg >>
+            ELSE UNCHANGED << dValue, v, bcastMsg >>
         /\ pc' = [pc EXCEPT ![i] = "CALL"]
     /\ UNCHANGED << rcvdMsg >>
 
@@ -105,7 +105,7 @@ T2(i) ==
         /\ bcastMsg' = bcastMsg \union {makeDecisionMsg(dValue' [i], i)}
         /\ pc' = [pc EXCEPT ![i] = "DONE"]
         /\ UNCHANGED << v, rcvdMsg >>
-        
+            
 (* Just to avoid deadlock checking. *)
 DoNothing(i) ==
     /\

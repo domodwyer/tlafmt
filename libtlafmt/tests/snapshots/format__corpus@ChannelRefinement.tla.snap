@@ -20,22 +20,22 @@ VARIABLE bitsSent
 Init ==
     /\ bitsSent = <<>>
     /\ IF L!Init THEN H!Init
-    ELSE h = ErrorVal
+        ELSE h = ErrorVal
 
 SendBit == \E b \in {0, 1}:
-    /\ L!Send(b)
-    /\ IF Len(bitsSent) < 3
-    THEN
-        /\ bitsSent' = << b >> \o bitsSent
-        /\ UNCHANGED h
-    ELSE
-        /\ bitsSent' = <<>>
-        /\ H!Send(BitSeqToNat[<<b>> \o bitsSent])
+        /\ L!Send(b)
+        /\ IF Len(bitsSent) < 3
+            THEN
+                /\ bitsSent' = << b >> \o bitsSent
+                /\ UNCHANGED h
+            ELSE
+                /\ bitsSent' = <<>>
+                /\ H!Send(BitSeqToNat[<<b>> \o bitsSent])
 
 RcvBit ==
     /\ L!Rcv
     /\ IF bitsSent = <<>> THEN H!Rcv
-    ELSE UNCHANGED h
+        ELSE UNCHANGED h
     /\ UNCHANGED bitsSent
 
 Error ==

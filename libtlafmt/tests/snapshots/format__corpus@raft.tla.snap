@@ -336,8 +336,8 @@ HandleRequestVoteResponse(i, j, m) ==
             /\ voterLog' = [voterLog EXCEPT ![i] =
                 voterLog[i] @@ (j :> m.mlog)]
         \/
-            /\ ~m.mvoteGranted
-            /\ UNCHANGED << votesGranted, voterLog >>
+                /\ ~m.mvoteGranted
+                /\ UNCHANGED << votesGranted, voterLog >>
     /\ Discard(m)
     /\ UNCHANGED << serverVars, votedFor, leaderVars, logVars >>
 
@@ -363,12 +363,12 @@ HandleAppendEntriesRequest(i, j, m) ==
                         /\ state[i] = Follower
                         /\ ~logOk
                 /\ Reply([mtype |-> AppendEntriesResponse,
-                        mterm |-> currentTerm[i],
-                        msuccess |-> FALSE,
-                        mmatchIndex |-> 0,
-                        msource |-> i,
-                        mdest |-> j],
-                    m)
+                            mterm |-> currentTerm[i],
+                            msuccess |-> FALSE,
+                            mmatchIndex |-> 0,
+                            msource |-> i,
+                            mdest |-> j],
+                        m)
                 /\ UNCHANGED << serverVars, logVars >>
             \/ \* return to follower state
                 /\ m.mterm = currentTerm[i]
@@ -392,15 +392,15 @@ HandleAppendEntriesRequest(i, j, m) ==
                                     \* example if we process an old, duplicated request),
                                     \* but that doesn't really affect anything.
                             /\ commitIndex' = [commitIndex EXCEPT ![i] =
-                                m.mcommitIndex]
+                                    m.mcommitIndex]
                             /\ Reply([mtype |-> AppendEntriesResponse,
-                                    mterm |-> currentTerm[i],
-                                    msuccess |-> TRUE,
-                                    mmatchIndex |-> m.mprevLogIndex +
-                                        Len(m.mentries),
-                                    msource |-> i,
-                                    mdest |-> j],
-                                m)
+                                        mterm |-> currentTerm[i],
+                                        msuccess |-> TRUE,
+                                        mmatchIndex |-> m.mprevLogIndex +
+                                            Len(m.mentries),
+                                        msource |-> i,
+                                        mdest |-> j],
+                                    m)
                             /\ UNCHANGED << serverVars, log >>
                         \/ \* conflict: remove 1 entry
                             /\ m.mentries /= <<>>
@@ -466,14 +466,14 @@ Receive(m) ==
                 \/ DropStaleResponse(i, j, m)
                 \/ HandleRequestVoteResponse(i, j, m)
         \/
-            /\ m.mtype = AppendEntriesRequest
-            /\ HandleAppendEntriesRequest(i, j, m)
+                /\ m.mtype = AppendEntriesRequest
+                /\ HandleAppendEntriesRequest(i, j, m)
         \/
-            /\ m.mtype = AppendEntriesResponse
-            /\
-                \/ DropStaleResponse(i, j, m)
-                \/ HandleAppendEntriesResponse(i, j, m)
-            
+                /\ m.mtype = AppendEntriesResponse
+                /\
+                    \/ DropStaleResponse(i, j, m)
+                    \/ HandleAppendEntriesResponse(i, j, m)
+                    
 \* End of message handlers.
 --------------------------------------------------------------------------------
 \* Network state transitions

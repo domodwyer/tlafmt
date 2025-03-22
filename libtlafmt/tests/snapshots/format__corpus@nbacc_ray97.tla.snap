@@ -95,7 +95,7 @@ Step(self) ==
         \/ UponCrash(self)
         \/ UponSent(self)
         \/ pc' = pc /\ sent' = sent (* Do nothing but we need this to avoid deadlock *)
-    
+        
 (* Some processes vote YES. Others vote NO. *)
 Init ==
     /\ sent = {}

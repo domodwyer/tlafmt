@@ -52,8 +52,8 @@ M_Req(p) ==
 M_Do(p) ==
     /\ ctl[p] = "busy"
     /\ wmem' = IF buf[p].op = "Wr"
-    THEN [wmem EXCEPT ![buf[p].adr] = buf[p].val]
-    ELSE wmem
+        THEN [wmem EXCEPT ![buf[p].adr] = buf[p].val]
+        ELSE wmem
     /\ buf' = [buf EXCEPT ![p] = IF buf[p].op = "Wr"
         THEN NoVal
         ELSE wmem[buf[p].adr]]

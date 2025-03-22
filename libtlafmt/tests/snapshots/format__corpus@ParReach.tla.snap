@@ -113,40 +113,40 @@ Init == (* Global variables *)
 a(self) ==
     /\ pc[self] = "a"
     /\ IF vroot /= {}
-    THEN
-        /\ \E v \in vroot:
-            u' = [u EXCEPT ![self] = v]
-        /\ pc' = [pc EXCEPT ![self] = "b"]
-    ELSE
-        /\ pc' = [pc EXCEPT ![self] = "Done"]
-        /\ u' = u
+        THEN
+            /\ \E v \in vroot:
+                u' = [u EXCEPT ![self] = v]
+            /\ pc' = [pc EXCEPT ![self] = "b"]
+        ELSE
+            /\ pc' = [pc EXCEPT ![self] = "Done"]
+            /\ u' = u
     /\ UNCHANGED << marked, vroot, toVroot >>
 
 b(self) ==
     /\ pc[self] = "b"
     /\ IF u[self] \notin marked
-    THEN
-        /\ marked' = (marked \union {u[self]})
-        /\ toVroot' = [toVroot EXCEPT ![self] = Succ[u[self]]]
-        /\ pc' = [pc EXCEPT ![self] = "c"]
-        /\ vroot' = vroot
-    ELSE
-        /\ vroot' = vroot \ {u[self]}
-        /\ pc' = [pc EXCEPT ![self] = "a"]
-        /\ UNCHANGED << marked, toVroot >>
+        THEN
+            /\ marked' = (marked \union {u[self]})
+            /\ toVroot' = [toVroot EXCEPT ![self] = Succ[u[self]]]
+            /\ pc' = [pc EXCEPT ![self] = "c"]
+            /\ vroot' = vroot
+        ELSE
+            /\ vroot' = vroot \ {u[self]}
+            /\ pc' = [pc EXCEPT ![self] = "a"]
+            /\ UNCHANGED << marked, toVroot >>
     /\ u' = u
 
 c(self) ==
     /\ pc[self] = "c"
     /\ IF toVroot[self] /= {}
-    THEN
-        /\ \E w \in toVroot[self]:
-            /\ vroot' = (vroot \union {w})
-            /\ toVroot' = [toVroot EXCEPT ![self] = toVroot[self] \ {w}]
-        /\ pc' = [pc EXCEPT ![self] = "c"]
-    ELSE
-        /\ pc' = [pc EXCEPT ![self] = "a"]
-        /\ UNCHANGED << vroot, toVroot >>
+        THEN
+            /\ \E w \in toVroot[self]:
+                /\ vroot' = (vroot \union {w})
+                /\ toVroot' = [toVroot EXCEPT ![self] = toVroot[self] \ {w}]
+            /\ pc' = [pc EXCEPT ![self] = "c"]
+        ELSE
+            /\ pc' = [pc EXCEPT ![self] = "a"]
+            /\ UNCHANGED << vroot, toVroot >>
     /\ UNCHANGED << marked, u >>
 
 p(self) == a(self) \/ b(self) \/ c(self)
@@ -195,7 +195,7 @@ Inv ==
     /\ \A q \in Procs:
         /\ (pc[q] \in {"a", "b", "Done"}) => (toVroot[q] = {})
         /\ (pc[q] = "b") => (u[q] \in vroot \union marked)
-        
+            
 (***************************************************************************)
 (* To define a refinement mapping from states of the parallel algorithm to *)
 (* states of Misra's algorithm, we must define the expressions in this     *)

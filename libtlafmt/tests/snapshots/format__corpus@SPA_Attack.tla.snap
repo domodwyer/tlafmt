@@ -368,26 +368,26 @@ UsrCommitSpaAuth ==
     /\ uState' = "Auth_End"
     /\ uTstamp' = uTstamp + 1 \* uTstamp increases each session for anti-replay. 
     /\ AuthChannel' = Append(AuthChannel,
-        [MsgID |-> "SPA_AUTH",
-            sIP |-> uIP,
-            sPort |-> SelLocalPort(uTstamp, USER_BASEPORT),
-            dIP |-> uSDPSvrInfo.IP,
-            dPort |-> uSDPSvrInfo.Port,
-            ClientID |-> uID,
-            Tstamp |-> uTstamp,
-            SvrIP |-> Encrypt(uSvrInfo.IP, Key),
-            SvrPort |-> Encrypt(uSvrInfo.Port, Key),
-            HMAC |-> CalcHMAC(uIP, uID, uTstamp, Encrypt(uSvrInfo.IP, Key),
-                Encrypt(uSvrInfo.Port, Key), Key),
-            Type |-> "User"]
-    )
-    /\ uAuthSession' = uAuthSession \union {Head(AuthChannel')} \* Auth session is recorded in Log
-    /\ UNCHANGED << uIP, uID, Key, uSDPSvrInfo, uSvrInfo, uTCPLinkSet >>
-    /\ UNCHANGED sdpsvr_vars
-    /\ UNCHANGED fw_vars
-    /\ UNCHANGED attacker_vars
-    /\ UNCHANGED server_vars
-    /\ UNCHANGED << uChannel, FwCtlChannel, FwDataChannel, aChannel, sChannel >>
+                [MsgID |-> "SPA_AUTH",
+                    sIP |-> uIP,
+                    sPort |-> SelLocalPort(uTstamp, USER_BASEPORT),
+                    dIP |-> uSDPSvrInfo.IP,
+                    dPort |-> uSDPSvrInfo.Port,
+                    ClientID |-> uID,
+                    Tstamp |-> uTstamp,
+                    SvrIP |-> Encrypt(uSvrInfo.IP, Key),
+                    SvrPort |-> Encrypt(uSvrInfo.Port, Key),
+                    HMAC |-> CalcHMAC(uIP, uID, uTstamp, Encrypt(uSvrInfo.IP, Key),
+                        Encrypt(uSvrInfo.Port, Key), Key),
+                    Type |-> "User"]
+        )
+        /\ uAuthSession' = uAuthSession \union {Head(AuthChannel')} \* Auth session is recorded in Log
+        /\ UNCHANGED << uIP, uID, Key, uSDPSvrInfo, uSvrInfo, uTCPLinkSet >>
+        /\ UNCHANGED sdpsvr_vars
+        /\ UNCHANGED fw_vars
+        /\ UNCHANGED attacker_vars
+        /\ UNCHANGED server_vars
+        /\ UNCHANGED << uChannel, FwCtlChannel, FwDataChannel, aChannel, sChannel >>
     \*/\ UNCHANGED <<vars \ (uState,uTstamp,AuthChannel,uAuthSession) >>
 
 \* Action 2: UsrConnectSvr
@@ -544,42 +544,42 @@ SDPSvrProcSpaAuth ==
     /\ Head(AuthChannel).dIP = SDPSvrInfo.IP
     /\ Head(AuthChannel).dPort = SDPSvrInfo.Port
     /\ IF FindAntiReplay(Head(AuthChannel), SDPSucSession) = TRUE \* case 1: the packet is a replay message 
-    THEN
-        /\ SDPSvrAntiReplayAtk \*drop packets and record exception into log
-        /\ UNCHANGED user_vars
-        /\ UNCHANGED << SDPSvrState, SDPSucSession, Account, SDPSvrInfo, SpoofCount, SpoofSession >>
-        /\ UNCHANGED fw_vars
-        /\ UNCHANGED attacker_vars
-        /\ UNCHANGED server_vars
-        /\ UNCHANGED << uChannel, FwCtlChannel, FwDataChannel, aChannel, sChannel >>
-    ELSE
-        /\ IF SpaProcAuth(Head(AuthChannel), Account) = FALSE \* case 2: it is a spoof message or from unknown user
         THEN
-            /\ SDPSvrAntiSpoof \*drop packets and record exception into log
+            /\ SDPSvrAntiReplayAtk \*drop packets and record exception into log
             /\ UNCHANGED user_vars
-            /\ UNCHANGED << SDPSvrState, SDPSucSession, Account, SDPSvrInfo, ReplayCount, ReplaySession >>
+            /\ UNCHANGED << SDPSvrState, SDPSucSession, Account, SDPSvrInfo, SpoofCount, SpoofSession >>
             /\ UNCHANGED fw_vars
             /\ UNCHANGED attacker_vars
             /\ UNCHANGED server_vars
             /\ UNCHANGED << uChannel, FwCtlChannel, FwDataChannel, aChannel, sChannel >>
-        ELSE \*case 3: Authenticated successfully, then send instruction to FW to allow data access towards target server.
-            /\ SDPSvrCfgFw([sIP |-> Head(AuthChannel).sIP,
-                    sPort |-> MATCH_ANY, \* this Acl Rule is 3 tuple, for data access source port is undetermined now.
-                    dIP |-> DeCrypt(Head(AuthChannel).SvrIP, GetKey(Head(AuthChannel).ClientID, Account)),
-                    dPort |-> DeCrypt(Head(AuthChannel).SvrPort, GetKey(Head(AuthChannel).ClientID, Account)),
-                    protocol |-> "TCP",
-                    action |-> "Accept"],
-                "Add" \* The instruction code is to Add a new rule.
-            )
-            /\ SDPSucSession' = SDPSucSession \union {Head(AuthChannel)} \*record in log
-            /\ AuthChannel' = Tail(AuthChannel)
-            /\ UNCHANGED user_vars
-            /\ UNCHANGED << SDPSvrState, Account, SDPSvrInfo, ReplayCount, SpoofCount, ReplaySession, SpoofSession >>
-            /\ UNCHANGED fw_vars
-            /\ UNCHANGED attacker_vars
-            /\ UNCHANGED server_vars
-            /\ UNCHANGED << uChannel, FwDataChannel, aChannel, sChannel >>
-        
+        ELSE
+            /\ IF SpaProcAuth(Head(AuthChannel), Account) = FALSE \* case 2: it is a spoof message or from unknown user
+                THEN
+                    /\ SDPSvrAntiSpoof \*drop packets and record exception into log
+                    /\ UNCHANGED user_vars
+                    /\ UNCHANGED << SDPSvrState, SDPSucSession, Account, SDPSvrInfo, ReplayCount, ReplaySession >>
+                    /\ UNCHANGED fw_vars
+                    /\ UNCHANGED attacker_vars
+                    /\ UNCHANGED server_vars
+                    /\ UNCHANGED << uChannel, FwCtlChannel, FwDataChannel, aChannel, sChannel >>
+                ELSE \*case 3: Authenticated successfully, then send instruction to FW to allow data access towards target server.
+                    /\ SDPSvrCfgFw([sIP |-> Head(AuthChannel).sIP,
+                                sPort |-> MATCH_ANY, \* this Acl Rule is 3 tuple, for data access source port is undetermined now.
+                                dIP |-> DeCrypt(Head(AuthChannel).SvrIP, GetKey(Head(AuthChannel).ClientID, Account)),
+                                dPort |-> DeCrypt(Head(AuthChannel).SvrPort, GetKey(Head(AuthChannel).ClientID, Account)),
+                                protocol |-> "TCP",
+                                action |-> "Accept"],
+                            "Add" \* The instruction code is to Add a new rule.
+                        )
+                    /\ SDPSucSession' = SDPSucSession \union {Head(AuthChannel)} \*record in log
+                    /\ AuthChannel' = Tail(AuthChannel)
+                    /\ UNCHANGED user_vars
+                    /\ UNCHANGED << SDPSvrState, Account, SDPSvrInfo, ReplayCount, SpoofCount, ReplaySession, SpoofSession >>
+                    /\ UNCHANGED fw_vars
+                    /\ UNCHANGED attacker_vars
+                    /\ UNCHANGED server_vars
+                    /\ UNCHANGED << uChannel, FwDataChannel, aChannel, sChannel >>
+                
 (***************************************************************************)
 (* `^                                                                      *)
 (*  Init state description of FireWall                                     *)
@@ -654,35 +654,35 @@ FwProcEndPointAccess ==
     /\ FwState = "Work"
     /\ FwDataChannel /= <<>>
     /\ (
-        \/ Head(FwDataChannel).Flg = "TCP_SYN" \* to simplify the model, we only consider TCP connection proceudre for data access
-        \/ Head(FwDataChannel).Flg = "TCP_ACK" \* the end point euipments as TCP client, only send TCP_SYN and TCP_ACK packet to target server.
-    )
+                \/ Head(FwDataChannel).Flg = "TCP_SYN" \* to simplify the model, we only consider TCP connection proceudre for data access
+                \/ Head(FwDataChannel).Flg = "TCP_ACK" \* the end point euipments as TCP client, only send TCP_SYN and TCP_ACK packet to target server.
+        )
     /\ (IF AclMatch4Tuple(Head(FwDataChannel), AclRuleSet)
-        THEN \*CASE1 : the incoming packets exactly match a 4 tuple rule
-            /\ sChannel' = Append(sChannel, Head(FwDataChannel)) \* route the packets to target server
-            /\ FwDataChannel' = Tail(FwDataChannel)
-            /\ AclRuleSet' = AclRuleSet
-            /\ DropPackets' = DropPackets
-        ELSE
-        (IF AclMatch3Tuple(Head(FwDataChannel), AclRuleSet)
-            THEN \*CASE2 : the incoming packets only match a 3 tuple rule
+            THEN \*CASE1 : the incoming packets exactly match a 4 tuple rule
                 /\ sChannel' = Append(sChannel, Head(FwDataChannel)) \* route the packets to target server
-                /\ AclRuleSet' = AclRuleSet \union {CreateRelatedRule(Head(FwDataChannel))}
-                /\ FwDataChannel' = Tail(FwDataChannel) \* This is a new TCP link, so create a exactly matched 4 tuple rule and add it to rule table
-                /\ DropPackets' = DropPackets
-            ELSE \*CASE3 : the incoming packets not match any rule
                 /\ FwDataChannel' = Tail(FwDataChannel)
                 /\ AclRuleSet' = AclRuleSet
-                /\ sChannel' = sChannel \*just drop the packets
-                /\ DropPackets' = DropPackets \union {Head(FwDataChannel)} \* record it into exception log 
+                /\ DropPackets' = DropPackets
+            ELSE
+            (IF AclMatch3Tuple(Head(FwDataChannel), AclRuleSet)
+                THEN \*CASE2 : the incoming packets only match a 3 tuple rule
+                    /\ sChannel' = Append(sChannel, Head(FwDataChannel)) \* route the packets to target server
+                    /\ AclRuleSet' = AclRuleSet \union {CreateRelatedRule(Head(FwDataChannel))}
+                    /\ FwDataChannel' = Tail(FwDataChannel) \* This is a new TCP link, so create a exactly matched 4 tuple rule and add it to rule table
+                    /\ DropPackets' = DropPackets
+                ELSE \*CASE3 : the incoming packets not match any rule
+                    /\ FwDataChannel' = Tail(FwDataChannel)
+                    /\ AclRuleSet' = AclRuleSet
+                    /\ sChannel' = sChannel \*just drop the packets
+                    /\ DropPackets' = DropPackets \union {Head(FwDataChannel)} \* record it into exception log 
+            )
         )
-    )
-    /\ UNCHANGED user_vars
-    /\ UNCHANGED sdpsvr_vars
-    /\ UNCHANGED attacker_vars
-    /\ UNCHANGED << FwState, AgedRuleSet >>
-    /\ UNCHANGED server_vars
-    /\ UNCHANGED << uChannel, AuthChannel, FwCtlChannel, aChannel >>
+        /\ UNCHANGED user_vars
+        /\ UNCHANGED sdpsvr_vars
+        /\ UNCHANGED attacker_vars
+        /\ UNCHANGED << FwState, AgedRuleSet >>
+        /\ UNCHANGED server_vars
+        /\ UNCHANGED << uChannel, AuthChannel, FwCtlChannel, aChannel >>
 
 \* Action 7: FwProcAclTimeOut
 \* A 3 Tuple ACL Rule configured by SDP controller automatically deleted due to aging mechanism.
@@ -739,46 +739,46 @@ ServerRcvTCPSyn ==
     /\ Head(sChannel).dPort = sSvrInfo.Port
     /\ sChannel' = Tail(sChannel)
     /\ (IF NewLink(Head(sChannel), sTCPLinkSet)
-        THEN \*CASE1 : New TCP SYN packets
-            /\ sTCPLinkSet' = sTCPLinkSet \union {\*create a TCB and update local link set.
-                [dIP |-> Head(sChannel).sIP,
-                    dPort |-> Head(sChannel).sPort,
-                    sIP |-> Head(sChannel).dIP,
-                    sPort |-> Head(sChannel).dPort,
-                    Type |-> Head(sChannel).Type,
-                    State |-> "SYN_RCVD" \* the TCB 's state is SYN_RCVD
-                ]}
-            /\ (IF Head(sChannel).Type = "User"
-                THEN \*If the client is legistimate user, then send TCP_SYN_ACK packet to legistimate user.
-                (
-                    /\ uChannel' = Append(uChannel, [
+            THEN \*CASE1 : New TCP SYN packets
+                /\ sTCPLinkSet' = sTCPLinkSet \union {\*create a TCB and update local link set.
+                    [dIP |-> Head(sChannel).sIP,
+                        dPort |-> Head(sChannel).sPort,
                         sIP |-> Head(sChannel).dIP,
                         sPort |-> Head(sChannel).dPort,
-                        dIP |-> Head(sChannel).sIP,
-                        dPort |-> Head(sChannel).sPort,
-                        Flg |-> "TCP_SYN_ACK",
-                        Type |-> Head(sChannel).Type]
+                        Type |-> Head(sChannel).Type,
+                        State |-> "SYN_RCVD" \* the TCB 's state is SYN_RCVD
+                    ]}
+                /\ (IF Head(sChannel).Type = "User"
+                        THEN \*If the client is legistimate user, then send TCP_SYN_ACK packet to legistimate user.
+                        (
+                            /\ uChannel' = Append(uChannel, [
+                                        sIP |-> Head(sChannel).dIP,
+                                        sPort |-> Head(sChannel).dPort,
+                                        dIP |-> Head(sChannel).sIP,
+                                        dPort |-> Head(sChannel).sPort,
+                                        Flg |-> "TCP_SYN_ACK",
+                                        Type |-> Head(sChannel).Type]
+                                )
+                            /\ aChannel' = aChannel
+                        )
+                        ELSE \*If the client is attacker, then send TCP_SYN_ACK packet to attacker.
+                        (
+                            /\ aChannel' = Append(aChannel, [
+                                        sIP |-> Head(sChannel).dIP,
+                                        sPort |-> Head(sChannel).dPort,
+                                        dIP |-> Head(sChannel).sIP,
+                                        dPort |-> Head(sChannel).sPort,
+                                        Flg |-> "TCP_SYN_ACK",
+                                        Type |-> Head(sChannel).Type]
+                                )
+                            /\ uChannel' = uChannel
+                        )
                     )
-                    /\ aChannel' = aChannel
-                )
-                ELSE \*If the client is attacker, then send TCP_SYN_ACK packet to attacker.
-                (
-                    /\ aChannel' = Append(aChannel, [
-                        sIP |-> Head(sChannel).dIP,
-                        sPort |-> Head(sChannel).dPort,
-                        dIP |-> Head(sChannel).sIP,
-                        dPort |-> Head(sChannel).sPort,
-                        Flg |-> "TCP_SYN_ACK",
-                        Type |-> Head(sChannel).Type]
-                    )
-                    /\ uChannel' = uChannel
-                )
-            )
-        ELSE \*CASE2 : duplicated TCP SYN packet,just neglect it for we don't focus on TCP SYN Flood attack.
-            /\ sTCPLinkSet' = sTCPLinkSet
-            /\ aChannel' = aChannel
-            /\ uChannel' = uChannel
-    )
+            ELSE \*CASE2 : duplicated TCP SYN packet,just neglect it for we don't focus on TCP SYN Flood attack.
+                /\ sTCPLinkSet' = sTCPLinkSet
+                /\ aChannel' = aChannel
+                /\ uChannel' = uChannel
+        )
     /\ UNCHANGED user_vars
     /\ UNCHANGED sdpsvr_vars
     /\ UNCHANGED attacker_vars
@@ -1245,17 +1245,17 @@ CliSvrLinkMatch(c, s) ==
 UserAccessAvailProperty ==
 <>[](
     /\ (\A x \in uTCPLinkSet:
-        \/ (
-            /\ x.State = "ESTABLISHED" \* scenario1: TCP link established, and exactly matched Acl Rule available in FW.  
-            /\ \E y \in sTCPLinkSet: (CliSvrLinkMatch(x, y) /\ x.State = y.State)
-            /\ AclMatch4Tuple(x, AclRuleSet)
+                    \/ (
+                                /\ x.State = "ESTABLISHED" \* scenario1: TCP link established, and exactly matched Acl Rule available in FW.  
+                                /\ \E y \in sTCPLinkSet: (CliSvrLinkMatch(x, y) /\ x.State = y.State)
+                                /\ AclMatch4Tuple(x, AclRuleSet)
+                        )
+                    \/ (
+                                /\ x.State = "SYN_SENT" \* scenario2: TCP link half-established due to 3 tuple Acl Rule aged in FW.
+                                /\ \A y \in sTCPLinkSet: ~CliSvrLinkMatch(x, y)
+                                /\ AclMatch3Tuple(x, AgedRuleSet)
+                        )
         )
-        \/ (
-            /\ x.State = "SYN_SENT" \* scenario2: TCP link half-established due to 3 tuple Acl Rule aged in FW.
-            /\ \A y \in sTCPLinkSet: ~CliSvrLinkMatch(x, y)
-            /\ AclMatch3Tuple(x, AgedRuleSet)
-        )
-    )
     /\ uTCPLinkSet /= {}
 )
 
@@ -1325,10 +1325,10 @@ FwCorrectProperty == \*to simplify the model, we don't consider TCP packets re-t
             WithDropPkts(x)
     
     /\ \A x \in uTCPLinkSet: IF x.State = "ESTABLISHED"
-        THEN
-            WithOutDropPkts(x)
-        ELSE
-            WithDropPkts(x)
+            THEN
+                WithOutDropPkts(x)
+            ELSE
+                WithDropPkts(x)
 )
 ================================================================================
 \* Modification History

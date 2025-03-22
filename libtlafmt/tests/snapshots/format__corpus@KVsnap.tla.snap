@@ -130,14 +130,14 @@ UPDATE(self) ==
 COMMIT(self) ==
     /\ pc[self] = "COMMIT"
     /\ IF missed[self] \intersect write_keys[self] = {}
-    THEN
-        /\ tx' = tx \ {self}
-        /\ missed' = [o \in TxId |-> IF o \in tx' THEN missed[o] \union write_keys[self] ELSE missed[o]]
-        /\ store' = [k \in Key |-> IF k \in write_keys[self] THEN snapshotStore[self][k] ELSE store[k]]
-        /\ ops' = [ops EXCEPT ![self] = ops[self] \o SetToSeq({wOp(k, self): k \in write_keys[self]})]
-    ELSE
-        /\ TRUE
-        /\ UNCHANGED << store, tx, missed, ops >>
+        THEN
+            /\ tx' = tx \ {self}
+            /\ missed' = [o \in TxId |-> IF o \in tx' THEN missed[o] \union write_keys[self] ELSE missed[o]]
+            /\ store' = [k \in Key |-> IF k \in write_keys[self] THEN snapshotStore[self][k] ELSE store[k]]
+            /\ ops' = [ops EXCEPT ![self] = ops[self] \o SetToSeq({wOp(k, self): k \in write_keys[self]})]
+        ELSE
+            /\ TRUE
+            /\ UNCHANGED << store, tx, missed, ops >>
     /\ pc' = [pc EXCEPT ![self] = "Done"]
     /\ UNCHANGED << snapshotStore, read_keys, write_keys >>
 

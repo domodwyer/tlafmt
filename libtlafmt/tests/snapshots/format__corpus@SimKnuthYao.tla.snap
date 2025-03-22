@@ -9,29 +9,29 @@ EXTENDS KnuthYao, Integers, Functions, CSV, TLC, TLCExt, IOUtils, Statistics
 StatelessCrookedCoin ==
     \* 3/8 tails, 5/8 heads.
     /\ IF RandomElement(1..8) \in 1..3
-    THEN
-        /\ flip' = "T"
-        \* Multiplying these probabilities quickly overflows TLC's dyadic rationals.
-        \* /\ p' = Reduce([ num |-> p.num * 3, den |-> p.den * 8 ])
-    ELSE
-        /\ flip' = "H"
-        \* /\ p' = Reduce([ num |-> p.num * 5, den |-> p.den * 8 ])
-        \* Statistically, modeling the crooked coin with a disjunct is the same, 
-        \* but the generator won't extend the behavior if both disjuncts evaluate
-        \* to false. Confirm by running the generator with a fixed number of traces
-        \* and see how PostCondition is violated.
-        \* /\ \/ /\ RandomElement(1..10) \in 4..10
-        \*       /\ flip' = "H"
-        \*    \/ /\ RandomElement(1..10) \in 1..3
-        \*       /\ flip' = "T"
+        THEN
+            /\ flip' = "T"
+            \* Multiplying these probabilities quickly overflows TLC's dyadic rationals.
+            \* /\ p' = Reduce([ num |-> p.num * 3, den |-> p.den * 8 ])
+        ELSE
+            /\ flip' = "H"
+            \* /\ p' = Reduce([ num |-> p.num * 5, den |-> p.den * 8 ])
+            \* Statistically, modeling the crooked coin with a disjunct is the same, 
+            \* but the generator won't extend the behavior if both disjuncts evaluate
+            \* to false. Confirm by running the generator with a fixed number of traces
+            \* and see how PostCondition is violated.
+            \* /\ \/ /\ RandomElement(1..10) \in 4..10
+            \*       /\ flip' = "H"
+            \*    \/ /\ RandomElement(1..10) \in 1..3
+            \*       /\ flip' = "T"
 
 --------------------------------------------------------------------------------
 
 StatefulCrookedCoin ==
     \* Crooked coin: Decreasing chance of a tail over time.
     /\ IF RandomElement(1..p.den) = 1
-    THEN flip' = "T"
-    ELSE flip' = "H"
+        THEN flip' = "T"
+        ELSE flip' = "H"
 
 --------------------------------------------------------------------------------
 

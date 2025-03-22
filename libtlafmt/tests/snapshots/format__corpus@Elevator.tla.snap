@@ -69,16 +69,16 @@ SafetyInvariant == \* Some more comprehensive checks beyond the type invariant
                 /\ PersonState[p].location = e
                 /\ PersonState[p].destination = f
     /\ \A p \in Person: \* A person is in an elevator only if the elevator is moving toward their destination floor
-            /\ \A e \in Elevator:
-                /\ (PersonState[p].location = e /\ ElevatorState[e].floor /= PersonState[p].destination) =>
-                    /\ ElevatorState[e].direction = GetDirection[ElevatorState[e].floor, PersonState[p].destination]
+                /\ \A e \in Elevator:
+                    /\ (PersonState[p].location = e /\ ElevatorState[e].floor /= PersonState[p].destination) =>
+                        /\ ElevatorState[e].direction = GetDirection[ElevatorState[e].floor, PersonState[p].destination]
     /\ \A c \in ActiveElevatorCalls: PeopleWaiting[c.floor, c.direction] /= {} \* No ghost calls
 
 TemporalInvariant == \* Expectations about elevator system capabilities
     /\ \A c \in ElevatorCall: \* Every call is eventually serviced by an elevator
-            /\ c \in ActiveElevatorCalls ~> \E e \in Elevator: CanServiceCall[e, c]
+                /\ c \in ActiveElevatorCalls ~> \E e \in Elevator: CanServiceCall[e, c]
     /\ \A p \in Person: \* If a person waits for their elevator, they'll eventually arrive at their floor
-            /\ PersonState[p].waiting ~> PersonState[p].location = PersonState[p].destination
+                /\ PersonState[p].waiting ~> PersonState[p].location = PersonState[p].destination
 
 PickNewDestination(p) == \* Person decides they need to go to a different floor
     LET pState == PersonState[p] IN

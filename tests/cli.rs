@@ -57,24 +57,7 @@ fn test_help_text() {
     )
     .unwrap();
 
-    assert_eq!(
-        "\
-A formatter for TLA+ specs
-
-Usage: tlafmt [OPTIONS] [FILE]
-
-Arguments:
-  [FILE]  Path to the TLA+ file to format
-
-Options:
-  -c, --check     Check the input file and exit with an error (code 3) if it needs formatting
-  -i, --in-place  Overwrite the source file with the formatted output instead of printing it to stdout
-      --stdin     Read the input file from stdin instead of the filesystem
-  -h, --help      Print help
-  -V, --version   Print version
-",
-    stdout
-    );
+    assert_snapshot!(stdout);
 }
 
 /// Check mode behaviour for formatted and unformatted input files.

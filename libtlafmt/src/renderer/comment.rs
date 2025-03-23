@@ -135,7 +135,7 @@ fn process_candidates(buf: &mut [(Token<'_>, Indent)], candidates: &mut [(usize,
         .iter()
         .all(|(v, _)| matches!(v, Token::Comment(_, _)) || is_newline(v))
     {
-        new_col = max(max_line, candidates[0].1.unwrap_col())
+        new_col = lines[0];
     }
 
     for (candidate_idx, (buf_idx, ..)) in candidates.iter().enumerate() {
@@ -506,30 +506,6 @@ SetToSeqs == UNION {{x \in [1 -> set]:
         /// Scenario 9:
         ///
         /// Comments which are inline with statements that are re-indented.
-        ///
-        /// These comments are NOT re-indented, which while it's desirable for
-        /// this block, it would cause the comments in
-        /// [test_comment_only_lines_8] and [test_comment_only_lines_4] to be
-        /// repositioned in a way that looks unnatural.
-        ///
-        /// By leaving them "where they are" it is at least not surprising, and
-        /// easy to correct (the reverse is not "fixable" by re-indenting the
-        /// source).
-        ///
-        /// This renders like:
-        ///
-        /// ```text
-        /// TypeOK ==
-        ///     /\ X = 42
-        ///               \* Platanos
-        ///               \* Platanos
-        ///     /\ Y = 24
-        /// ```
-        ///
-        /// If the positions of the surrounding nodes were retained at the
-        /// `Token` level, it could be determined that the comment needs
-        /// rewriting to be inline with the new position of those nodes, which
-        /// would allow this to be formatted.
         #[test]
         fn test_comment_only_lines_9() {
             assert_rewrite!(

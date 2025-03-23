@@ -6,6 +6,6 @@ expression: output
 Spec ==
     /\ Init /\ [][Next]_vars
     /\ WF_vars(DetectTermination)
-            \* reasonable but not necessary for detecting termination
-            \* /\ \A i \in Node : WF_vars(Wakeup(i))
+    \* reasonable but not necessary for detecting termination
+    \* /\ \A i \in Node : WF_vars(Wakeup(i))
 ================================================================================

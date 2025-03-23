@@ -42,8 +42,8 @@ WritesAssumption ==
     /\ IsFiniteSet(Writes)
     /\ Cardinality(Writes) >= 1
     /\ "nil" \notin Writes
-                            \* a write command model value serves as both the
-                            \* ID of the command and the value to be written
+    \* a write command model value serves as both the
+    \* ID of the command and the value to be written
 
 ReadsAssumption ==
     /\ IsFiniteSet(Reads)
@@ -84,10 +84,10 @@ InitPending == (CHOOSE ws \in [1..Cardinality(Writes) -> Writes]
     : Range(ws) = Writes)
 \o(CHOOSE rs \in [1..Cardinality(Reads) -> Reads]
     : Range(rs) = Reads)
-                    \* W.L.O.G., choose any sequence contatenating writes
-                    \* commands and read commands as the sequence of reqs;
-                    \* all other cases are either symmetric or less useful
-                    \* than this one
+\* W.L.O.G., choose any sequence contatenating writes
+\* commands and read commands as the sequence of reqs;
+\* all other cases are either symmetric or less useful
+\* than this one
 
 \* Server-side constants & states.
 MajorityNum == (Cardinality(Replicas) \div 2) + 1

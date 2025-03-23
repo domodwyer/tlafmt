@@ -1,12 +1,12 @@
 use std::cmp::max;
 
 use crate::{
-    helpers::INDENT_STR,
+    helpers::{Indent, INDENT_STR},
     renderer::token_len,
     token::{Position, Token},
 };
 
-use super::{is_newline, Indent};
+use super::is_newline;
 
 /// Scan `buf`, searching for comments that appear vertically aligned (same
 /// column index) in the input source file and compute the appropriate amount of
@@ -23,11 +23,18 @@ pub(super) fn align_comments(buf: &mut Vec<(Token<'_>, Indent)>) {
 
     // Look for end-of-line comments in consecutive rows.
     let mut i = 0;
+    let mut newline_count = 0;
+    let mut last_newline_count = 0;
     while i < buf.len() {
         // If this token is a comment, extract the source position and indent
         // level for it.
-        let (pos, _) = match buf[i] {
-            (Token::Comment(_, v), indent) => (v, indent),
+        let (pos, _) = match &buf[i] {
+            (Token::Comment(_, v), indent) => (*v, indent),
+            (Token::Newline, _) => {
+                newline_count += 1;
+                i += 1;
+                continue;
+            }
             _ => {
                 i += 1;
                 continue;
@@ -41,23 +48,30 @@ pub(super) fn align_comments(buf: &mut Vec<(Token<'_>, Indent)>) {
         //   * Appears at the end of a line of text
         //   * The previous line also has an end-of-line comment
         //   * These two comments have the same column index
+        //   * They appear on consecutive lines in the rendered output
         //
         // Then they become realignment candidates, and their vertical alignment
         // will be preserved after formatting.
 
         // If the line delta between this comment and the last candidate is >1,
-        // OR this comment is not vertically aligned with the previous, then
-        // process the aligned candidate batch before continuing.
+        // OR this comment is not vertically aligned with the previous, OR are
+        // not on consecutive lines in the rendered output then process the
+        // aligned candidate batch before continuing.
         if candidates
             .last()
             .map(|(_idx, pos)| pos)
             .is_some_and(|v: &crate::token::Position| {
-                (v.unwrap_row() + 1) != pos.unwrap_row() || v.unwrap_col() != pos.unwrap_col()
+                (v.unwrap_row() + 1) != pos.unwrap_row()
+                    || v.unwrap_col() != pos.unwrap_col()
+                    || (newline_count - last_newline_count) > 1
             })
         {
             process_candidates(buf, &mut candidates);
             candidates.truncate(0);
         }
+
+        // Remember the line number at which the last candidate was observed.
+        last_newline_count = newline_count;
 
         // Only end-of-line comments (those followed by newlines) are valid for
         // adjacency alignment.
@@ -170,7 +184,7 @@ where
             // the indentation level from the first token on the next line (only the
             // first can set the line indentation).
             if is_newline(t) {
-                len = iter.peek().unwrap().1 .0 as usize * INDENT_STR.len();
+                len = iter.peek().unwrap().1.get() as usize * INDENT_STR.len();
                 line_tokens = 0;
                 continue;
             }
@@ -217,56 +231,56 @@ mod tests {
     #[test]
     fn test_line_len_1() {
         let tokens = [
-            (Token::Newline, Indent(255)),
+            (Token::Newline, Indent::new(255)),
             // The first token, which sets the indent level
-            (Token::And, Indent(1)), // 4 + 2 + space
+            (Token::And, Indent::new(1)), // 4 + 2 + space
             // The rest, which do not affect indent.
-            (Token::Ident("bananas"), Indent(255)), // 7 + space
-            (Token::Eq, Indent(255)),               // 1 + space
-            (Token::Lit("42"), Indent(255)),        // 2
-        ]
-        .iter()
-        .peekable();
+            (Token::Ident("bananas"), Indent::new(255)), // 7 + space
+            (Token::Eq, Indent::new(255)),               // 1 + space
+            (Token::Lit("42"), Indent::new(255)),        // 2
+        ];
 
-        let got = line_len(tokens).next().unwrap();
+        let iter = tokens.iter().peekable();
+
+        let got = line_len(iter).next().unwrap();
         assert_eq!(got, 16);
     }
 
     #[test]
     fn test_line_len_2() {
         let tokens = [
-            (Token::SourceNewline, Indent(255)),
+            (Token::SourceNewline, Indent::new(255)),
             // Immediately followed by second newline
-            (Token::Newline, Indent(255)),
+            (Token::Newline, Indent::new(255)),
             // The first token, which sets the indent level
-            (Token::And, Indent(1)), // 4 + 2 + space
+            (Token::And, Indent::new(1)), // 4 + 2 + space
             // The rest, which do not affect indent.
-            (Token::Ident("platanos"), Indent(255)), // 8
-            (Token::Prime, Indent(255)),             // 1 + space
-            (Token::Eq, Indent(255)),                // 1 + space
-            (Token::Lit("42"), Indent(255)),         // 2
-        ]
-        .iter()
-        .peekable();
+            (Token::Ident("platanos"), Indent::new(255)), // 8
+            (Token::Prime, Indent::new(255)),             // 1 + space
+            (Token::Eq, Indent::new(255)),                // 1 + space
+            (Token::Lit("42"), Indent::new(255)),         // 2
+        ];
 
-        let got = line_len(tokens).next().unwrap();
+        let iter = tokens.iter().peekable();
+
+        let got = line_len(iter).next().unwrap();
         assert_eq!(got, 18);
     }
 
     #[test]
     fn test_line_len_only_comment() {
         let tokens = [
-            (Token::SourceNewline, Indent(255)),
+            (Token::SourceNewline, Indent::new(255)),
             (
                 Token::Comment("(* bananas *)", Position::Source { row: 2, col: 40 }),
-                Indent(1),
+                Indent::new(1),
             ),
-            (Token::SourceNewline, Indent(255)),
-        ]
-        .iter()
-        .peekable();
+            (Token::SourceNewline, Indent::new(255)),
+        ];
 
-        let got = line_len(tokens).next().unwrap();
+        let iter = tokens.iter().peekable();
+
+        let got = line_len(iter).next().unwrap();
         assert_eq!(got, 4);
     }
 
@@ -517,6 +531,24 @@ TypeOK ==     /\ X = 42
               /\ Y = 24
 ====
     "
+            )
+        }
+
+        /// Scenario 10:
+        ///
+        /// Comments which are aligned, but part of a connective list that is
+        /// rewrote, causing them to no longer be on consecutive lines.
+        #[test]
+        fn test_comment_only_lines_10() {
+            assert_rewrite!(
+                r#"
+---- MODULE bananas ----
+SvrHidenProperty ==
+    /\ (\A x \in sTCPLinkSet: /\ x.Type # "Attacker"
+                              /\ x.State = "ESTABLISHED") \* C1
+    /\ (\A y \in aTCPLinkSet: /\ y.State # "ESTABLISHED") \* C2
+====
+"#
             );
         }
     }

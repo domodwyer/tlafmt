@@ -1,4 +1,35 @@
+use std::ops::{Add, Sub};
+
 pub(crate) const INDENT_STR: &str = "    ";
+
+/// A fixed indentation level.
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Ord, Eq)]
+pub(crate) struct Indent(u8);
+
+impl Indent {
+    pub(crate) const fn new(v: u8) -> Self {
+        Self(v)
+    }
+    pub(crate) const fn get(&self) -> u8 {
+        self.0
+    }
+}
+
+impl Add<u8> for Indent {
+    type Output = Self;
+
+    fn add(self, rhs: u8) -> Self::Output {
+        Self(self.0 + rhs)
+    }
+}
+
+impl Sub for Indent {
+    type Output = Self;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        Self(self.0 - rhs.0)
+    }
+}
 
 /// An indentation decorator which inserts the specified indentation after every
 /// newline.
@@ -25,8 +56,8 @@ impl<W> IndentDecorator<W> {
         }
     }
 
-    pub(crate) fn set(&mut self, depth: u8) {
-        self.depth = depth;
+    pub(crate) fn set(&mut self, depth: Indent) {
+        self.depth = depth.get();
     }
 }
 
@@ -72,7 +103,7 @@ Yes.
         let mut buf = Vec::new();
         let mut out = IndentDecorator::new(&mut buf);
 
-        out.set(2);
+        out.set(Indent::new(2));
         out.write_all(s.as_bytes()).unwrap();
 
         let got = String::from_utf8(buf).unwrap();

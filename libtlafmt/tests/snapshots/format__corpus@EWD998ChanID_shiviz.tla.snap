@@ -47,23 +47,23 @@ MCInit ==
 
 Inv ==
     \* TODO Choose some upper length or a invariant that produces a more
-     \* TODO interesting behavior.  If you increase the length, don't forget
-     \* TODO to also update TLC's depth parameter.
+    \* TODO interesting behavior.  If you increase the length, don't forget
+    \* TODO to also update TLC's depth parameter.
     TLCGet("level") < 666
 \* A trace ending with  terminationDetected = TRUE  that is longer than 22
 \* steps.
 \*EWD998Chan!EWD998!terminationDetected => TLCGet("level") < 23
 
 \* Temporal logics got rid of explicit state indices.  However, when we transform
- \* counter-examples, the annoyances of handling indices re-surface.  Especially,
- \* we are dealing with *finite* prefixes of behaviors.
+\* counter-examples, the annoyances of handling indices re-surface.  Especially,
+\* we are dealing with *finite* prefixes of behaviors.
 
 \* The  n \in Node  whose "variables" changed in the current step compared to
- \* the *predecessor* state.  The parameter  s  represents the current state,
- \* the parameter  t  the predecessor state.
- \* Determining whether or not a node has changed is usually easiest by
- \* introducing a prophecy variable into the spec (see  thread  variable in
- \* https://git.io/JZ0Wb).
+\* the *predecessor* state.  The parameter  s  represents the current state,
+\* the parameter  t  the predecessor state.
+\* Determining whether or not a node has changed is usually easiest by
+\* introducing a prophecy variable into the spec (see  thread  variable in
+\* https://git.io/JZ0Wb).
 host ==
     LET None == "--" \* This should be a model value:  CHOOSE n : n \notin Node
         lvl == TLCGet("level")

@@ -34,8 +34,7 @@ struct Args {
     #[arg(required_unless_present = "stdin", conflicts_with = "stdin")]
     file: Option<PathBuf>,
 
-    /// Check the input file and exit with an error (code 3) if it needs
-    /// formatting.
+    /// Check the input file and print a diff of any changes that would be made.
     #[arg(short, long)]
     check: bool,
 

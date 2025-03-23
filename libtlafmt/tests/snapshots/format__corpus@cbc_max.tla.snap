@@ -45,8 +45,8 @@ Msgs == Msg1s \union Msg2s
 
 (* Find the maximum value in arr *)
 MAX(arr) == CHOOSE maxVal \in Values:
-    /\(\E p \in Proc: arr[p] = maxVal)
-    /\(\A p \in Proc: maxVal >= arr[p])
+    /\ (\E p \in Proc: arr[p] = maxVal)
+    /\ (\A p \in Proc: maxVal >= arr[p])
 
 (* Line 1 *)
 Init ==
@@ -134,7 +134,7 @@ Phs2(i) ==
  *)
 Choose(i) ==
     /\ pc[i] = "CHOOSE"
-    /\ dval' = [dval EXCEPT ![i] = (CHOOSE tV \in Values:(\E j \in Proc: tV = V[i][j]))]
+    /\ dval' = [dval EXCEPT ![i] = (CHOOSE tV \in Values: (\E j \in Proc: tV = V[i][j]))]
     /\ pc' = [pc EXCEPT ![i] = "DONE"]
     /\ UNCHANGED << V, v, w, nCrash, sntMsgs, rcvdMsgs >>
 
@@ -170,10 +170,10 @@ TypeOK ==
     /\ rcvdMsgs \in [Proc -> SUBSET Msgs]
 
 (* If a process decides v, then v was proposed by some process. *)
-Validity == (\A i \in Proc: dval[i] /= Bottom =>(\E j \in Proc: dval[i] = v[j]))
+Validity == (\A i \in Proc: dval[i] /= Bottom => (\E j \in Proc: dval[i] = v[j]))
 
 (* No two processes decide differently. *)
-Agreement == \A i, j \in Proc:(dval[i] /= Bottom /\ dval[j] /= Bottom) => dval[i] = dval[j]
+Agreement == \A i, j \in Proc: (dval[i] /= Bottom /\ dval[j] /= Bottom) => dval[i] = dval[j]
 
 (* Every correct process eventually decides on some values. *)
 Termination == <>(\A i \in Proc: pc[i] = "CRASH" \/ pc[i] = "DONE")

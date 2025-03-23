@@ -33,7 +33,7 @@ ClassicBallots == Ballots \ FastBallots \* The set of ballots of classic rounds.
 FastAssume ==
     /\ \A q \in FastQuorums: q \subseteq Replicas
     /\ \A q, r \in FastQuorums: q \intersect r /= {}
-    /\ \A q \in FastQuorums:(3 * Cardinality(Replicas)) \div 4 <= Cardinality(q)
+    /\ \A q \in FastQuorums: (3 * Cardinality(Replicas)) \div 4 <= Cardinality(q)
     /\ \A q \in Quorums: \A r, s \in FastQuorums: q \intersect r \intersect s /= {}
 
 ASSUME PaxosAssume /\ FastAssume
@@ -160,8 +160,8 @@ FastNext ==
 FastSpec ==
     /\ FastInit
     /\ [][FastNext]_<< messages, decision, maxBallot, maxVBallot, maxValue, cValue >>
-    /\ SF_<< messages, decision, maxBallot, maxVBallot, maxValue, cValue >>(FastDecide)
-    /\ SF_<< messages, decision, maxBallot, maxVBallot, maxValue, cValue >>(ClassicDecide)
+    /\ SF_<< messages, decision, maxBallot, maxVBallot, maxValue, cValue >> (FastDecide)
+    /\ SF_<< messages, decision, maxBallot, maxVBallot, maxValue, cValue >> (ClassicDecide)
 
 \* Non-triviality safety property: Only proposed values can be learnt.
 FastNontriviality ==

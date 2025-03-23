@@ -19,7 +19,7 @@ EmptyBag == SetToBag({})
 CopiesIn(e, B) == IF BagIn(e, B) THEN B[e] ELSE 0
 
 B1 (+) B2 ==
-    [e \in(DOMAIN B1) \union(DOMAIN B2) |-> CopiesIn(e, B1) + CopiesIn(e, B2)]
+    [e \in (DOMAIN B1) \union (DOMAIN B2) |-> CopiesIn(e, B1) + CopiesIn(e, B2)]
 
 B1 (-) B2 ==
     LET B == [e \in DOMAIN B1 |-> CopiesIn(e, B1) - CopiesIn(e, B2)]
@@ -36,7 +36,7 @@ BagUnion(S) ==
     [e \in UNION {BagToSet(B): B \in S} |-> Sum([B \in S |-> CopiesIn(e, B)])]
 
 B1 \sqsubseteq B2 ==
-    /\(DOMAIN B1) \subseteq(DOMAIN B2)
+    /\ (DOMAIN B1) \subseteq (DOMAIN B2)
     /\ \A e \in DOMAIN B1: B1[e] <= B2[e]
 
 SubBag(B) ==

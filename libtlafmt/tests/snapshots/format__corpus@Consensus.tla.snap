@@ -229,7 +229,7 @@ THEOREM LiveSpec => Success
 (* VoteProof.                                                              *)
 (***************************************************************************)
 THEOREM LiveSpecEquals ==
-    LiveSpec <=> Spec /\([]<> <<Next>>_vars \/ []<>(chosen /= {}))
+    LiveSpec <=> Spec /\ ([]<> <<Next>>_vars \/ []<>(chosen /= {}))
 <1>1. (chosen # {}) <=> ~(chosen = {})
   OBVIOUS
 <1>2. ([]<>~ENABLED <<Next>>_vars) <=> []<>(chosen # {})

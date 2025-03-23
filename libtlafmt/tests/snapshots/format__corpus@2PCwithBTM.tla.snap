@@ -193,7 +193,7 @@ Terminating ==
     /\ UNCHANGED vars
 
 Next == TManager \/ BTManager
-\/(\E self \in RM: RManager(self))
+\/ (\E self \in RM: RManager(self))
 \/ Terminating
 
 Spec ==

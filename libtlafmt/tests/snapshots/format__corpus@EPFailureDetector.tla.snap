@@ -130,7 +130,7 @@ Receive(i, incomingMessages) ==
                 /\ \E m \in incomingMessages: m.from = j
             THEN delta[i][j] + 1
             ELSE delta[i][j]]]
-    /\ suspected' = [suspected EXCEPT ![i] = suspected[i] \ {j \in Proc:(\E msg \in incomingMessages: msg.from = j)}]
+    /\ suspected' = [suspected EXCEPT ![i] = suspected[i] \ {j \in Proc: (\E msg \in incomingMessages: msg.from = j)}]
     /\ UNCHANGED outgoingMessages
 
 (*  - A process p_i makes predictions at every PredictPoint ticks of its local clock, based on messages 

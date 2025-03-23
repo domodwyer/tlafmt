@@ -4,9 +4,9 @@ expression: output
 ---
 -------------------------------- MODULE bananas --------------------------------
 SvrHidenProperty ==
-    /\(\A x \in sTCPLinkSet:
+    /\ (\A x \in sTCPLinkSet:
         /\ x.Type /= "Attacker"
         /\ x.State = "ESTABLISHED") \* C1
-    /\(\A y \in aTCPLinkSet:
+    /\ (\A y \in aTCPLinkSet:
         /\ y.State /= "ESTABLISHED") \* C2
 ================================================================================

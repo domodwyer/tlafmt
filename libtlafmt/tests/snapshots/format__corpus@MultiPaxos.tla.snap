@@ -82,7 +82,7 @@ AckEvent(c, v) == [type |-> "Ack", cmd |-> c, val |-> v]
 
 InitPending == (CHOOSE ws \in [1..Cardinality(Writes) -> Writes]
     : Range(ws) = Writes)
-\o(CHOOSE rs \in [1..Cardinality(Reads) -> Reads]
+\o (CHOOSE rs \in [1..Cardinality(Reads) -> Reads]
     : Range(rs) = Reads)
 \* W.L.O.G., choose any sequence contatenating writes
 \* commands and read commands as the sequence of reqs;
@@ -150,7 +150,7 @@ PrepareReplyMsg(r, b, iv) ==
 PeakVotedCmd(prs, s) ==
     IF \A pr \in prs: pr.votes[s].bal = 0
     THEN "nil"
-    ELSE LET bc == CHOOSE bc \in(Ballots \X Commands):
+    ELSE LET bc == CHOOSE bc \in (Ballots \X Commands):
             /\ \E pr \in prs:
                 /\ pr.votes[s].bal = bc[1]
                 /\ pr.votes[s].cmd = bc[2]
@@ -476,7 +476,7 @@ rloop(self) ==
                 /\ \E b \in Ballots:
                     /\
                         /\ b > node[self].balMaxKnown
-                        /\ ~\E m \in msgs:(m.type = "Prepare") /\(m.bal = b)
+                        /\ ~\E m \in msgs: (m.type = "Prepare") /\ (m.bal = b)
                     /\ node' = [node EXCEPT ![self].leader = self,
                         ![self].balPrepared = 0,
                         ![self].balMaxKnown = b,
@@ -485,7 +485,7 @@ rloop(self) ==
                             EXCEPT !.status = IF @ = "Accepting"
                                 THEN "Preparing"
                                 ELSE @]]]
-                    /\ msgs' = (msgs \union({PrepareMsg(self, b),
+                    /\ msgs' = (msgs \union ({PrepareMsg(self, b),
                         PrepareReplyMsg(self, b, VotesByNode(node' [self]))}))
                 /\ UNCHANGED << pending, observed >>
             \/
@@ -500,7 +500,7 @@ rloop(self) ==
                             EXCEPT !.status = IF @ = "Accepting"
                                 THEN "Preparing"
                                 ELSE @]]]
-                    /\ msgs' = (msgs \union({PrepareReplyMsg(self, m.bal, VotesByNode(node' [self]))}))
+                    /\ msgs' = (msgs \union ({PrepareReplyMsg(self, m.bal, VotesByNode(node' [self]))}))
                 /\ UNCHANGED << pending, observed >>
             \/
                 /\
@@ -521,7 +521,7 @@ rloop(self) ==
                                     THEN "Accepting"
                                     ELSE @,
                                 !.cmd = PeakVotedCmd(prs, s)]]]
-                    /\ msgs' = (msgs \union({AcceptMsg(self, node' [self].balPrepared, s, node' [self].insts[s].cmd):
+                    /\ msgs' = (msgs \union ({AcceptMsg(self, node' [self].balPrepared, s, node' [self].insts[s].cmd):
                         s \in {s \in Slots: node' [self].insts[s].status = "Accepting"}}))
                 /\ UNCHANGED << pending, observed >>
             \/
@@ -536,11 +536,11 @@ rloop(self) ==
                             ![self].insts[s].cmd = c,
                             ![self].insts[s].voted.bal = node[self].balPrepared,
                             ![self].insts[s].voted.cmd = c]
-                        /\ msgs' = (msgs \union({AcceptMsg(self, node' [self].balPrepared, s, c),
+                        /\ msgs' = (msgs \union ({AcceptMsg(self, node' [self].balPrepared, s, c),
                             AcceptReplyMsg(self, node' [self].balPrepared, s)}))
-                        /\ IF(ReqEvent(c)) \notin Range(observed)
+                        /\ IF (ReqEvent(c)) \notin Range(observed)
                         THEN
-                            /\ observed' = Append(observed,(ReqEvent(c)))
+                            /\ observed' = Append(observed, (ReqEvent(c)))
                         ELSE
                             /\ TRUE
                             /\ UNCHANGED observed
@@ -557,7 +557,7 @@ rloop(self) ==
                         ![self].insts[m.slot].cmd = m.cmd,
                         ![self].insts[m.slot].voted.bal = m.bal,
                         ![self].insts[m.slot].voted.cmd = m.cmd]
-                    /\ msgs' = (msgs \union({AcceptReplyMsg(self, m.bal, m.slot)}))
+                    /\ msgs' = (msgs \union ({AcceptReplyMsg(self, m.bal, m.slot)}))
                 /\ UNCHANGED << pending, observed >>
             \/
                 /\
@@ -576,14 +576,14 @@ rloop(self) ==
                                 /\ node' = [node EXCEPT ![self].insts[s].status = "Committed",
                                     ![self].commitUpTo = s,
                                     ![self].kvalue = IF c \in Writes THEN c ELSE @]
-                                /\ IF(AckEvent(c, v)) \notin Range(observed)
+                                /\ IF (AckEvent(c, v)) \notin Range(observed)
                                 THEN
-                                    /\ observed' = Append(observed,(AckEvent(c, v)))
+                                    /\ observed' = Append(observed, (AckEvent(c, v)))
                                 ELSE
                                     /\ TRUE
                                     /\ UNCHANGED observed
                                 /\ pending' = RemovePending(c)
-                                /\ msgs' = (msgs \union({CommitNoticeMsg(s)}))
+                                /\ msgs' = (msgs \union ({CommitNoticeMsg(s)}))
             \/
                 /\
                     /\ node[self].leader /= self

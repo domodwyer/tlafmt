@@ -12,7 +12,7 @@ ASSUME (Rho \in Real) /\  (Rho > 0)
 
 --------------------------------- MODULE Inner ---------------------------------
 VARIABLE t
-TNext == t' = IF HCnxt THEN 0 ELSE t +(now' - now)
+TNext == t' = IF HCnxt THEN 0 ELSE t + (now' - now)
 Timer == (t = 0) /\ [][TNext]_<< t, hr, now >>
 MaxTime == [](t <= 3600 + Rho)
 MinTime == [][HCnxt => t \geq 3600 - Rho]_hr
@@ -28,7 +28,7 @@ NowNext ==
 RTnow ==
     /\ now \in Real
     /\ [][NowNext]_now
-    /\ \A r \in Real: WF_now(NowNext /\(now' > r))
+    /\ \A r \in Real: WF_now(NowNext /\ (now' > r))
 
-RTHC == HC /\ RTnow /\( \EE t : I(t)!HCTime )
+RTHC == HC /\ RTnow /\ ( \EE t : I(t)!HCTime )
 ================================================================================

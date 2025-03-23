@@ -312,8 +312,8 @@ progN == parProgN \/ coordProgN
 \* Death transitions are left outside of fairness
 
 fairness ==
-    /\ \A i \in participants: WF_<< coordinator, participant >>(parProg(i))
-    /\ WF_<< coordinator, participant >>(coordProgB)
+    /\ \A i \in participants: WF_<< coordinator, participant >> (parProg(i))
+    /\ WF_<< coordinator, participant >> (coordProgB)
 
 Spec == Init /\ [][progN]_<< coordinator, participant >> /\ fairness
 
@@ -340,7 +340,7 @@ AC1 == [] \A i, j \in participants:
     
 \* If any participant decides commit, then all participants must have votes YES
 AC2 == []((\E i \in participants: participant[i].decision = commit)
-    =>(\A j \in participants: participant[j].vote = yes))
+    => (\A j \in participants: participant[j].vote = yes))
 
 \* If any participant decides abort, then:
 \*   at least one participant voted NO, or
@@ -348,15 +348,15 @@ AC2 == []((\E i \in participants: participant[i].decision = commit)
 \*   coordinator is faulty
 AC3_1 == []((\E i \in participants: participant[i].decision = abort)
     =>
-        \/(\E j \in participants: participant[j].vote = no)
-        \/(\E j \in participants: participant[j].faulty)
+        \/ (\E j \in participants: participant[j].vote = no)
+        \/ (\E j \in participants: participant[j].faulty)
         \/ coordinator.faulty)
 
 \* Each participant decides at most once
 AC4 == []
-    /\(\A i \in participants: participant[i].decision = commit
+    /\ (\A i \in participants: participant[i].decision = commit
         => [](participant[i].decision = commit))
-    /\(\A j \in participants: participant[j].decision = abort
+    /\ (\A j \in participants: participant[j].decision = abort
         => [](participant[j].decision = abort))
 
 --------------------------------------------------------------------------------
@@ -383,12 +383,12 @@ VoteStable == \A i \in participants:
 
 StrongerAC2 == []((\E i \in participants: participant[i].decision = commit)
     =>
-        /\(\A j \in participants: participant[j].vote = yes)
+        /\ (\A j \in participants: participant[j].vote = yes)
         /\ coordinator.decision = commit)
 
 StrongerAC3_1 == []((\E i \in participants: participant[i].decision = abort)
     =>
-        \/(\E j \in participants: participant[j].vote = no)
+        \/ (\E j \in participants: participant[j].vote = no)
         \/
             /\ \E j \in participants: participant[j].faulty
             /\ coordinator.decision = abort
@@ -410,7 +410,7 @@ DecisionReachedNoFault == (\A i \in participants: participant[i].alive)
 ~> (\A k \in participants: participant[k].decision /= undecided)
 
 AbortImpliesNoVote == []((\E i \in participants: participant[i].decision = abort)
-    =>(\E j \in participants: participant[j].vote = no))
+    => (\E j \in participants: participant[j].vote = no))
 
 \* The following is the termination property that this SB algorithm doesn't have
 AC5 == <> \A i \in participants:

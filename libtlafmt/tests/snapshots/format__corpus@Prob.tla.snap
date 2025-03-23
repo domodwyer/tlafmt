@@ -12,7 +12,7 @@ vars == << p, state >>
 One == 100000
 
 a / b == IF b /= 0 THEN << a, b >> ELSE CHOOSE x \in {}: TRUE
-a \odot b == (a[1] * b[1]) /(a[2] * b[2])
+a \odot b == (a[1] * b[1]) / (a[2] * b[2])
 Norm(x) == x[1] \div x[2]
 
 MarkovInit(Initial) ==

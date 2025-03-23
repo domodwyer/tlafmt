@@ -56,8 +56,8 @@ Labels == Group(<< Text(LegendBasePos.x, LegendBasePos.y, "Circle: Active, Black
             Text(LegendBasePos.x, LegendBasePos.y + 20, "Line: Message, Arrow: Receiver", Arial),
             Text(LegendBasePos.x, LegendBasePos.y + 40, "Dashed: In-Flight, Solid: Arrival in next", Arial),
             Text(LegendBasePos.x, LegendBasePos.y + 60, "Level: " \o ToString(TLCGet("level")) \o
-                " Terminated: " \o(IF EWD998Chan!EWD998!Termination THEN "T" ELSE "F") \o
-                " Detected: " \o(IF EWD998Chan!EWD998!terminationDetected THEN "T" ELSE "F"), Arial) >>,
+                " Terminated: " \o (IF EWD998Chan!EWD998!Termination THEN "T" ELSE "F") \o
+                " Detected: " \o (IF EWD998Chan!EWD998!terminationDetected THEN "T" ELSE "F"), Arial) >>,
     <<>>)
 
 --------------------------------------------------------------------------------
@@ -78,7 +78,7 @@ RingNetwork ==
                     [rx |-> IF ~active[n] THEN "0" ELSE "15",
                         stroke |-> "black",
                         fill |-> color[n]])
-        IN Group(<< node, id >>,("transform" :> "translate(0 125)"))
+        IN Group(<< node, id >>, ("transform" :> "translate(0 125)"))
     IN Group(RN, <<>>)
 
 --------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ TokenNetwork ==
         circ == Circle(coord.x - 2, coord.y, 8, [stroke |-> "black", fill |-> token.color])
         id == Text(coord.x - 5, coord.y + 3, ToString(token.q), [font |-> "Arial", fill |-> CHOOSE c \in Color: c /= token.color])
     \* Group always expects a sequence!
-    IN Group(<< circ, id >>,("transform" :> "translate(0 125)"))
+    IN Group(<< circ, id >>, ("transform" :> "translate(0 125)"))
 
 --------------------------------------------------------------------------------
 \* Messages send from one node to another.  A proper arrow would be more intuitive with regards to the direction
@@ -106,7 +106,7 @@ Messages ==
                         to.x + ArrowPosOffset, to.y + ArrowPosOffset,
                         [stroke |-> "orange", stroke_dasharray |-> IF pl \in plsN THEN "5" ELSE "0",
                             marker_end |-> "url(#arrow)"]) \* See Defs below for the definition of arrow.
-                IN Group(<< line >>,("transform" :> "translate(0 125)"))
+                IN Group(<< line >>, ("transform" :> "translate(0 125)"))
         IN Group(I, <<>>)
     IN Group(M, <<>>)
 

@@ -114,7 +114,7 @@ Done ==
   (* prisoner has been in the room at least once.  (He will trivially know *)
   (* that he's already been in the room when this condition is true.)      *)
   (*************************************************************************)
-    count = 2 *(Cardinality(Prisoner) - 1)
+    count = 2 * (Cardinality(Prisoner) - 1)
 --------------------------------------------------------------------------------
 (***************************************************************************)
 (* Next come the actions performed by each prisoner when he (or she) is    *)
@@ -126,7 +126,7 @@ NonCounterStep(i) ==
   (* if (s)he has not already moved it up two times.  Otherwise, (s)he     *)
   (* flips switch B.                                                       *)
   (*************************************************************************)
-    /\ IF(~switchAUp) /\(timesSwitched[i] < 2)
+    /\ IF (~switchAUp) /\ (timesSwitched[i] < 2)
     THEN
         /\ switchAUp' = TRUE
         /\ timesSwitched' = [timesSwitched EXCEPT ![i] = @ + 1]
@@ -176,7 +176,7 @@ Safety ==
   (* counter increments the count only when in the room, and Done implies  *)
   (* count > 0, it also implies that the counter has been in the room.     *)
   (*************************************************************************)
-[](Done =>(\A i \in Prisoner \ {Counter}: timesSwitched[i] > 0))
+[](Done => (\A i \in Prisoner \ {Counter}: timesSwitched[i] > 0))
 
 Liveness == <>Done
 (*************************************************************************)

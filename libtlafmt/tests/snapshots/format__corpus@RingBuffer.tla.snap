@@ -91,8 +91,8 @@ EndRead(index, reader) ==
 TypeOk ==
     ringbuffer \in [
         slots: UNION {[0..LastIndex -> Values \union {NULL}]},
-        readers: UNION {[0..LastIndex -> SUBSET(Readers)]},
-        writers: UNION {[0..LastIndex -> SUBSET(Writers)]}
+        readers: UNION {[0..LastIndex -> SUBSET (Readers)]},
+        writers: UNION {[0..LastIndex -> SUBSET (Writers)]}
     ]
 
 ================================================================================

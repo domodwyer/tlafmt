@@ -76,7 +76,7 @@ TC1(R) ==
 R ** T == LET SR == Support(R)
         ST == Support(T)
     IN { <<r, t>> \in SR \X ST:
-    \E s \in SR \intersect ST:(<< r, s >> \in R) /\(<< s, t >> \in T)}
+    \E s \in SR \intersect ST: (<< r, s >> \in R) /\ (<< s, t >> \in T)}
 
 (***************************************************************************)
 (* We can then define the closure of R to equal                            *)
@@ -89,7 +89,7 @@ R ** T == LET SR == Support(R)
 (***************************************************************************)
 TC2(R) ==
     LET C[n \in Nat ] == IF n = 0 THEN R
-    ELSE C[n - 1] \union(C[n - 1] ** R)
+    ELSE C[n - 1] \union (C[n - 1] ** R)
     IN IF R = {} THEN {} ELSE C[Cardinality(Support(R)) - 1]
 
 (***************************************************************************)

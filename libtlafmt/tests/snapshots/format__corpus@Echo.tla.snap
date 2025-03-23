@@ -177,7 +177,7 @@ Termination == <>(\A self \in ProcSet: pc[self] = "Done")
 (* Correctness properties.                                                 *)
 (***************************************************************************)
 TypeOK ==
-    /\ parent \in [Node ->(Node \union {NoNode})]
+    /\ parent \in [Node -> (Node \union {NoNode})]
     /\ children \in [Node -> SUBSET Node]
     /\ rcvd \in [Node -> Nat ]
     /\ nbrs \in [Node -> SUBSET Node]

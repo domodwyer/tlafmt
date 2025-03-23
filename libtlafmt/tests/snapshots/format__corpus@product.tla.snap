@@ -91,7 +91,7 @@ heat ==
     /\ shortTemplate' = shortTemplate + shortHybrid + shortLongDouble + tinyShortDouble
     /\ tinyTemplate' = tinyTemplate + tinyHybrid + tinyShortDouble + 2 * product
     (* stage and cycle*)
-    /\(stage = "init" \/ stage = "extended")
+    /\ (stage = "init" \/ stage = "extended")
     /\ stage' = "denatured"
     /\ UNCHANGED cycle
 
@@ -112,7 +112,7 @@ anneal ==
     /\ \E k \in 1..natMin(primer, sumList(templates)):
         /\ primer' = primer - k \* k consumed
         (* choose templates to anneal with primer *)
-        /\ \E tup \in((0..longTemplate) \X (0..shortTemplate) \X (0..tinyTemplate)):
+        /\ \E tup \in ((0..longTemplate) \X (0..shortTemplate) \X (0..tinyTemplate)):
             /\ sumList(tup) = k
             /\ longTemplate' = longTemplate - tup[1]
             /\ longHybrid' = longHybrid + tup[1]
@@ -200,7 +200,7 @@ TypeOK ==
     /\ product \in Nat
 
 (* safety *)
-thirdCycleProduct == ((cycle < 3) =>(product = 0))
+thirdCycleProduct == ((cycle < 3) => (product = 0))
 
 (* refinement *)
 stagesInstance == INSTANCE stages WITH

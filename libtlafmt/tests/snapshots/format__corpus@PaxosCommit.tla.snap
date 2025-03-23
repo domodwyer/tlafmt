@@ -206,7 +206,7 @@ Phase2a(bal, rm) ==
             maxbal == Maximum({m.bal: m \in mset})
             val == IF maxbal = - 1
             THEN "aborted"
-            ELSE(CHOOSE m \in mset: m.bal = maxbal).val
+            ELSE (CHOOSE m \in mset: m.bal = maxbal).val
         IN
             /\ \A ac \in MS: \E m \in mset: m.acc = ac
             /\ Send([type |-> "phase2a", ins |-> rm, bal |-> bal, val |-> val])

@@ -24,13 +24,13 @@ TypeInvariant ==
 
 Coherence == \A p, q \in Proc, a \in Adr:
     (NoVal \notin {cache[p][a], cache[q][a]})
-    =>(cache[p][a] = cache[q][a])
+    => (cache[p][a] = cache[q][a])
 --------------------------------------------------------------------------------
 Req(p) == M!Req(p) /\ UNCHANGED << cache, memQ >>
 Rsp(p) == M!Rsp(p) /\ UNCHANGED << cache, memQ >>
 
 RdMiss(p) ==
-    /\(ctl[p] = "busy") /\(buf[p].op = "Rd")
+    /\ (ctl[p] = "busy") /\ (buf[p].op = "Rd")
     /\ cache[p][buf[p].adr] = NoVal
     /\ Len(memQ) < QLen
     /\ memQ' = Append(memQ, << p, buf[p] >>)
@@ -48,10 +48,10 @@ DoRd(p) ==
 DoWr(p) ==
     LET r == buf[p]
     IN
-        /\(ctl[p] = "busy") /\(r.op = "Wr")
+        /\ (ctl[p] = "busy") /\ (r.op = "Wr")
         /\ Len(memQ) < QLen
         /\ cache' = [q \in Proc |->
-            IF(p = q) \/(cache[q][r.adr] /= NoVal)
+            IF (p = q) \/ (cache[q][r.adr] /= NoVal)
             THEN [cache[q] EXCEPT ![r.adr] = r.val]
             ELSE cache[q]]
         /\ memQ' = Append(memQ, << p, r >>)
@@ -70,7 +70,7 @@ vmem ==
 
 MemQWr == LET r == Head(memQ) [2]
     IN
-        /\(memQ /= <<>>) /\(r.op = "Wr")
+        /\ (memQ /= <<>>) /\ (r.op = "Wr")
         /\ wmem' = [wmem EXCEPT ![r.adr] = r.val]
         /\ memQ' = Tail(memQ)
         /\ UNCHANGED << memInt, buf, ctl, cache >>
@@ -79,13 +79,13 @@ MemQRd ==
     LET p == Head(memQ) [1]
         r == Head(memQ) [2]
     IN
-        /\(memQ /= <<>>) /\(r.op = "Rd")
+        /\ (memQ /= <<>>) /\ (r.op = "Rd")
         /\ memQ' = Tail(memQ)
         /\ cache' = [cache EXCEPT ![p][r.adr] = vmem[r.adr]]
         /\ UNCHANGED << memInt, wmem, buf, ctl >>
 
 Evict(p, a) ==
-    /\(ctl[p] = "waiting") =>(buf[p].adr /= a)
+    /\ (ctl[p] = "waiting") => (buf[p].adr /= a)
     /\ cache' = [cache EXCEPT ![p][a] = NoVal]
     /\ UNCHANGED << memInt, wmem, buf, ctl, memQ >>
 

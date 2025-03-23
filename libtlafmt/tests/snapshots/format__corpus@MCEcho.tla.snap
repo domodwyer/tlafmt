@@ -24,7 +24,7 @@ I1 == CHOOSE n \in N1: TRUE
 \*      <<"c", "b">> :> TRUE  @@
 \*      <<"c", "c">> :> FALSE
 \* More concisely defined as:
-R1 == [edge \in(N1 \X N1) |-> IF edge[1] = edge[2]
+R1 == [edge \in (N1 \X N1) |-> IF edge[1] = edge[2]
     THEN FALSE
     ELSE TRUE]
 

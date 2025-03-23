@@ -129,13 +129,13 @@ node(self) ==
         /\ self /= Initiator
         /\ \E tok \in pendingMsgs(network, self):
             /\ tok.type = "tok" /\ ~active[self]
-            /\ network' = passMsg(network, self, tok, self - 1, [type |-> "tok", q |-> tok.q + counter[self], color |->(IF color[self] = "black" THEN "black" ELSE tok.color)])
+            /\ network' = passMsg(network, self, tok, self - 1, [type |-> "tok", q |-> tok.q + counter[self], color |-> (IF color[self] = "black" THEN "black" ELSE tok.color)])
             /\ color' = [color EXCEPT ![self] = "white"]
         /\ UNCHANGED << active, counter >>
     \/
         /\ self = Initiator
         /\ \E tok \in pendingMsgs(network, self):
-            /\ tok.type = "tok" /\(color[self] = "black" \/ tok.q + counter[self] /= 0 \/ tok.color = "black")
+            /\ tok.type = "tok" /\ (color[self] = "black" \/ tok.q + counter[self] /= 0 \/ tok.color = "black")
             /\ network' = passMsg(network, self, tok, N - 1, [type |-> "tok", q |-> 0, color |-> "white"])
             /\ color' = [color EXCEPT ![self] = "white"]
         /\ UNCHANGED << active, counter >>

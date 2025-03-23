@@ -69,7 +69,7 @@ Partitions(seq, wt) ==
     ELSE LET r == N - Len(seq)
             max == IF Len(seq) = 0 THEN wt ELSE Head(seq)
             S == {x \in 1..max:
-                /\(r - 1) <= (wt - x)
+                /\ (r - 1) <= (wt - x)
                 /\ wt <= x * r}
         IN UNION {Partitions(<< x >> \o seq, wt - x): x \in S}
 

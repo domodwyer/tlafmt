@@ -44,7 +44,7 @@ TypeInvariant == \* The type invariant.
 
 TxLifecycle ==
     /\ \A t \in tx: \* If store != snapshot & we haven't written it, we must have missed a write.
-        \A k \in Key:(store[k] /= snapshotStore[t][k] /\ k \notin written[t]) => k \in missed[t]
+        \A k \in Key: (store[k] /= snapshotStore[t][k] /\ k \notin written[t]) => k \in missed[t]
     /\ \A t \in TxId \ tx: \* Checks transactions are cleaned up after disposal.
         /\ \A k \in Key: snapshotStore[t][k] = NoVal
         /\ written[t] = {}

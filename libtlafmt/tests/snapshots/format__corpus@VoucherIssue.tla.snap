@@ -84,7 +84,7 @@ VTPTypeOK ==
     /\ hState \in [H -> {"waiting", "prepared", "holding", "aborted"}]
     /\ iState \in [I -> {"waiting", "prepared", "issued", "aborted"}]
     /\ vtpState \in {"init", "done"}
-    /\ vtpIPrepared \subseteq(H \union I)
+    /\ vtpIPrepared \subseteq (H \union I)
     /\ msgs \subseteq Messages
 
 VTPInit ==

@@ -172,7 +172,7 @@ TypeInvariant ==
     /\ ReplicatedLog \in [Node -> Log]
     /\ ExecutionCounter \in [Node -> LogIndex]
     /\ LastVotePayload \in [Node -> LogIndex]
-    /\ CurrentLease \in [Node ->(CheckpointLease \union {NoCheckpointLease})]
+    /\ CurrentLease \in [Node -> (CheckpointLease \union {NoCheckpointLease})]
     /\ CanTakeCheckpoint \in [Node -> BOOLEAN ]
     /\ IsTakingCheckpoint \in [Node -> BOOLEAN ]
     /\ TimeoutCounter \in LogIndex
@@ -195,18 +195,18 @@ SafetyInvariant ==
                 \* If the leader knows about a lease, only that node can checkpoint
         /\ CurrentLease[Leader] /= NoCheckpointLease =>
             /\ \A n \in Node:
-                /\(CanTakeCheckpoint[n] \/ IsTakingCheckpoint[n]) =>
+                /\ (CanTakeCheckpoint[n] \/ IsTakingCheckpoint[n]) =>
                     /\ CurrentLease[Leader].node = n
                     \* Two nodes can't take a checkpoint simultaneously
     /\ \A n1, n2 \in Node:
-        /\(CanTakeCheckpoint[n1] /\ CanTakeCheckpoint[n2]) =>
+        /\ (CanTakeCheckpoint[n1] /\ CanTakeCheckpoint[n2]) =>
             /\ n1 = n2
-        /\(IsTakingCheckpoint[n1] /\ IsTakingCheckpoint[n2]) =>
+        /\ (IsTakingCheckpoint[n1] /\ IsTakingCheckpoint[n2]) =>
             /\ n1 = n2
             \* Prerequisites for taking a checkpoint must be satisfied
     /\ \A n \in Node:
         /\ IsTakingCheckpoint[n] => CanTakeCheckpoint[n]
-        /\ CanTakeCheckpoint[n] =>(CurrentLease[n] /= NoCheckpointLease)
+        /\ CanTakeCheckpoint[n] => (CurrentLease[n] /= NoCheckpointLease)
         /\ CanTakeCheckpoint[n] => CurrentLease[n].node = n
         /\ CanTakeCheckpoint[n] => CurrentLease[n].counter >= TimeoutCounter
         \* Replicated logs can never conflict

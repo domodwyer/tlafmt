@@ -38,7 +38,7 @@ heat ==
     /\ dna' = 0 \* the dna denatures
     /\ template' = template + hybrid + 2 * dna \* has to go somewhere
     /\ hybrid' = 0 \* these denature too
-    /\(stage = "init" \/ stage = "extended")
+    /\ (stage = "init" \/ stage = "extended")
     /\ stage' = "denatured"
     /\ UNCHANGED cycle
 

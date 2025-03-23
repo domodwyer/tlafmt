@@ -18,13 +18,13 @@ ASSUME /\ (Delta \in Real)   /\ (Delta > 0)
 --------------------------------------------------------------------------------
 VARIABLE lastP
 
-RTInit == Init /\(lastP \in Proc)
+RTInit == Init /\ (lastP \in Proc)
 
 position(p) == CHOOSE i \in 1..N: p = (lastP + i) % N
 
 canGoNext(p) ==
-    \A q \in Proc:(position(q) < position(p))
-    => ~ENABLED(RdMiss(q) \/ DoWr(q))
+    \A q \in Proc: (position(q) < position(p))
+    => ~ENABLED (RdMiss(q) \/ DoWr(q))
 
 RTRdMiss(p) ==
     /\ canGoNext(p)

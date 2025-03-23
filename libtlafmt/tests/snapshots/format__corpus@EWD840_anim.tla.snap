@@ -83,7 +83,7 @@ RingNetwork ==
                     [rx |-> IF ~active[n] THEN "0" ELSE "15",
                         stroke |-> "black",
                         fill |-> color[n]])
-        IN Group(<< node, id >>,("transform" :> "translate(0 125)"))
+        IN Group(<< node, id >>, ("transform" :> "translate(0 125)"))
     IN Group(RN, <<>>)
 
 --------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ TokenNetwork ==
     LET coord == NodeOfRingNetwork(TokenBasePos.w, TokenBasePos.h, TokenBasePos.r, tpos, N)
         circ == Circle(coord.x, coord.y, 5, [stroke |-> "black", fill |-> tcolor])
     \* Group always expects a sequence!
-    IN Group(<< circ >>,("transform" :> "translate(0 125)"))
+    IN Group(<< circ >>, ("transform" :> "translate(0 125)"))
 
 --------------------------------------------------------------------------------
 \* Messages send from one node to another.  A proper arrow would be more intuitive with regards to the direction
@@ -109,7 +109,7 @@ Messages ==
         line == Line(from.x + ArrowPosOffset, from.y + ArrowPosOffset,
             to.x + ArrowPosOffset, to.y + ArrowPosOffset,
             [stroke |-> "orange", marker_end |-> "url(#arrow)"])
-    IN Group(IF history[3] = "SendMsg" THEN << line >> ELSE <<>>,("transform" :> "translate(0 125)"))
+    IN Group(IF history[3] = "SendMsg" THEN << line >> ELSE <<>>, ("transform" :> "translate(0 125)"))
 
 --------------------------------------------------------------------------------
 \* This is just the arrow head that's used by the Message definition above as an attribute.

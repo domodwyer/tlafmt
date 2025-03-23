@@ -91,7 +91,7 @@ VTPTypeOK ==
     /\ shState \in [SH -> {"holding", "prepared", "transferred", "aborted"}]
     /\ dhState \in [DH -> {"waiting", "prepared", "holding", "aborted"}]
     /\ vtpState \in {"init", "done"}
-    /\ vtpTPrepared \subseteq(SH \union DH)
+    /\ vtpTPrepared \subseteq (SH \union DH)
     /\ msgs \subseteq Messages
 
 VTPInit ==

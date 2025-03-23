@@ -82,7 +82,7 @@ Correct ==
 \* inductive invariant for proving correctness
 Inv ==
     /\ cnt <= OccurrencesBefore(cand, i)
-    /\ 2 *(OccurrencesBefore(cand, i) - cnt) <= i - 1 - cnt
+    /\ 2 * (OccurrencesBefore(cand, i) - cnt) <= i - 1 - cnt
     /\ \A v \in Value \ {cand}: 2 * OccurrencesBefore(v, i) <= i - 1 - cnt
 
 ================================================================================

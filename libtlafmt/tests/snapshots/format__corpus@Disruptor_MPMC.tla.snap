@@ -68,7 +68,7 @@ Buffer == INSTANCE RingBuffer WITH Values <- Int
 Xor(A, B) == A = ~B
 
 Range(f) ==
-    {f[x]: x \in DOMAIN(f)}
+    {f[x]: x \in DOMAIN (f)}
 
 MinReadSequence ==
     CHOOSE min \in Range(read):

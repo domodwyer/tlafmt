@@ -322,7 +322,7 @@ Seq2Set(S) == Range(S)
 
 \*Select local port when client create socket connection, 
 \*the parameter count is related to  new session's timestamp, and will increase for each new link session.
-SelLocalPort(count, base) == (CHOOSE x \in(count + base)..(100 + base): TRUE)
+SelLocalPort(count, base) == (CHOOSE x \in (count + base)..(100 + base): TRUE)
 
 \*Simulate Symmetric-key based cryptographic algorithm AES-256: 
 \*For encrypt function, the operator is simplified by a single XOR operation,
@@ -394,7 +394,7 @@ UsrCommitSpaAuth ==
 \* legistimate user try to access target server after perform SPA (Single Packet Authentication) session.
 \* the first action to connect the server is sending TCP SYN packets.
 \* Variables changed: <uState, uTCPLinkSet, FwDataChannel>
-LatestAuthSession == CHOOSE x \in uAuthSession:(\A y \in uAuthSession: x.Tstamp >= y.Tstamp)
+LatestAuthSession == CHOOSE x \in uAuthSession: (\A y \in uAuthSession: x.Tstamp >= y.Tstamp)
 
 UsrBuildTcpSynPkt ==
     [sIP |-> uIP,
@@ -508,7 +508,7 @@ SDPSvrInit ==
 
 \* if a coming SPA message SN match the history message recorded in anti-replay window
 \* then it must be recognized as a replay attack packet.  
-FindAntiReplay(msg, wnd) == \E r \in wnd:(msg.ClientID = r.ClientID /\ msg.Tstamp = r.Tstamp)
+FindAntiReplay(msg, wnd) == \E r \in wnd: (msg.ClientID = r.ClientID /\ msg.Tstamp = r.Tstamp)
 
 \*For a recognized replay attack message, SDP controller drop it and recorded in the log. 
 SDPSvrAntiReplayAtk ==
@@ -525,7 +525,7 @@ SDPSvrAntiSpoof ==
 \* SDP controller implement authenticaiton triggered by a received SPA message
 \* The authentication is implemented by recaculate the HMAC according the user account Info
 SpaProcAuth(msg, accounts) ==
-    \E a \in accounts:(
+    \E a \in accounts: (
         /\ a.ClientID = msg.ClientID \* user ID must match
         \*Recaclulate the HMAC value by using local stored user Key and then compare the value of corresponding field in SPA packet.
         /\ CalcHMAC(msg.sIP, msg.ClientID, msg.Tstamp, msg.SvrIP, msg.SvrPort, a.Key) = msg.HMAC
@@ -653,11 +653,11 @@ CreateRelatedRule(p) ==
 FwProcEndPointAccess ==
     /\ FwState = "Work"
     /\ FwDataChannel /= <<>>
-    /\(
+    /\ (
         \/ Head(FwDataChannel).Flg = "TCP_SYN" \* to simplify the model, we only consider TCP connection proceudre for data access
         \/ Head(FwDataChannel).Flg = "TCP_ACK" \* the end point euipments as TCP client, only send TCP_SYN and TCP_ACK packet to target server.
     )
-    /\(IF AclMatch4Tuple(Head(FwDataChannel), AclRuleSet)
+    /\ (IF AclMatch4Tuple(Head(FwDataChannel), AclRuleSet)
         THEN \*CASE1 : the incoming packets exactly match a 4 tuple rule
             /\ sChannel' = Append(sChannel, Head(FwDataChannel)) \* route the packets to target server
             /\ FwDataChannel' = Tail(FwDataChannel)
@@ -738,7 +738,7 @@ ServerRcvTCPSyn ==
     /\ Head(sChannel).dIP = sSvrInfo.IP \* check incoming packets format
     /\ Head(sChannel).dPort = sSvrInfo.Port
     /\ sChannel' = Tail(sChannel)
-    /\(IF NewLink(Head(sChannel), sTCPLinkSet)
+    /\ (IF NewLink(Head(sChannel), sTCPLinkSet)
         THEN \*CASE1 : New TCP SYN packets
             /\ sTCPLinkSet' = sTCPLinkSet \union {\*create a TCB and update local link set.
                 [dIP |-> Head(sChannel).sIP,
@@ -748,7 +748,7 @@ ServerRcvTCPSyn ==
                     Type |-> Head(sChannel).Type,
                     State |-> "SYN_RCVD" \* the TCB 's state is SYN_RCVD
                 ]}
-            /\(IF Head(sChannel).Type = "User"
+            /\ (IF Head(sChannel).Type = "User"
                 THEN \*If the client is legistimate user, then send TCP_SYN_ACK packet to legistimate user.
                 (
                     /\ uChannel' = Append(uChannel, [
@@ -848,7 +848,7 @@ AttackerInit ==
 SelectNewAuthMsg(MsgQ, known) ==
     IF known /= {}
     THEN \*for a dedicate user, the difference among SPA messages is the value of SN (Tstamp) field.
-        CHOOSE S \in SUBSET Seq2Set(MsgQ):(\A x \in S:(\A y \in known: x.Tstamp /= y.Tstamp))
+        CHOOSE S \in SUBSET Seq2Set(MsgQ): (\A x \in S: (\A y \in known: x.Tstamp /= y.Tstamp))
     ELSE
         Seq2Set(MsgQ)
 
@@ -862,7 +862,7 @@ AttackerSniffAuthChannel ==
     /\ PureChannel(AuthChannel) /= <<>> \*pre-condition: there exists attacker unknown legistimate user originated SPA messages on the wire.
     /\ LET l == PureChannel(AuthChannel)
         IN
-            /\ \E i \in 1..Len(l):(\A x \in CapAuthMsg: l[i].Tstamp /= x.Tstamp)
+            /\ \E i \in 1..Len(l): (\A x \in CapAuthMsg: l[i].Tstamp /= x.Tstamp)
             /\ AuthKnowledge' = AuthKnowledge \union \*post-condition: attacker learned new intelligence by a successful sniffing.
                 SelectNewAuthMsg(l, CapAuthMsg)
             /\ CapAuthMsg' = CapAuthMsg \union \* All the captured message in history recorded in Log.
@@ -887,7 +887,7 @@ SelectNewDataMsg(MsgQ, known) ==
     IF known /= {}
     THEN   \* The aim of capturing  user data access packets is to get the exposed service info about the target server
            \* so (dIP,dPort) is the key info.
-        CHOOSE S \in SUBSET Seq2Set(MsgQ):(\A x \in S:(\A y \in known:(x.dIP /= y.dIP /\ x.dPort /= y.dPort)))
+        CHOOSE S \in SUBSET Seq2Set(MsgQ): (\A x \in S: (\A y \in known: (x.dIP /= y.dIP /\ x.dPort /= y.dPort)))
     ELSE
         Seq2Set(MsgQ)
 
@@ -993,10 +993,10 @@ AttckerBuildTcpSynPktByAuthMsg(m) == \* Attacker try to connect target service s
         Type |-> "Attacker"]
 
 Get_aSession4Battck == \* choose an historic auth attack session to make a brutal data access attack 
-    CHOOSE x \in aSession:(\A y \in aTCPLinkSet: x.Tstamp /= y.AuthID)
+    CHOOSE x \in aSession: (\A y \in aTCPLinkSet: x.Tstamp /= y.AuthID)
 
 AttackerBrutalAttck ==
-    /\ \E x \in aSession:(\A y \in aTCPLinkSet: x.Tstamp /= y.AuthID)
+    /\ \E x \in aSession: (\A y \in aTCPLinkSet: x.Tstamp /= y.AuthID)
     /\ aCounter' = aCounter + 1 \* acounter is used to build the local port value of the TCP connection, increase each time to avoid conflict among different TCP links
     /\ LET p == AttckerBuildTcpSynPktByAuthMsg(Get_aSession4Battck)
         IN
@@ -1202,9 +1202,9 @@ SDP_AclRuleMatch(m, r) == \* m is an auth Session, r is a ACL Rule
     \*3. For all successfully authenticated sessions, the Fire wall has been configured corresponding ACL Rule.
 SPA_AvailableProperty ==
 <>[](
-    /\ \A x \in uAuthSession:(\E y \in SDPSucSession: AuthMessageMatch(x, y))        \* user -> controller consistence
-    /\ \A x \in SDPSucSession:(\E y \in uAuthSession: AuthMessageMatch(x, y))        \* controller -> user consistence
-    /\ \A x \in uAuthSession:(\E y \in(AclRuleSet \union AgedRuleSet): SDP_AclRuleMatch(x, y)) \* Auth session-> Acl rule consistence
+    /\ \A x \in uAuthSession: (\E y \in SDPSucSession: AuthMessageMatch(x, y))       \* user -> controller consistence
+    /\ \A x \in SDPSucSession: (\E y \in uAuthSession: AuthMessageMatch(x, y))       \* controller -> user consistence
+    /\ \A x \in uAuthSession: (\E y \in (AclRuleSet \union AgedRuleSet): SDP_AclRuleMatch(x, y)) \* Auth session-> Acl rule consistence
 )
 
 \* Temporal Property 2: SPA_AntiDosProperty
@@ -1212,10 +1212,10 @@ SPA_AvailableProperty ==
 \* can always inspect and defeat spoof and replay attack.
 
 \* The following formula asserts that every SPA replay attack inspected by the SDP controller is originated from the attacker        
-SPA_AntiReplayProperty == \A x \in ReplaySession:(\E y \in aSession: AuthMessageMatch(x, y))
+SPA_AntiReplayProperty == \A x \in ReplaySession: (\E y \in aSession: AuthMessageMatch(x, y))
 
 \* The following formula asserts that every SPA spoof attack inspected by the SDP controller is originated from the attacker       
-SPA_AntiSpoofProperty == \A x \in SpoofSession:(\E y \in aSession: AuthMessageMatch(x, y))
+SPA_AntiSpoofProperty == \A x \in SpoofSession: (\E y \in aSession: AuthMessageMatch(x, y))
 
 \* The following formula asserts that the system's behavior eventually always meets the underlying propositions 
 
@@ -1228,7 +1228,7 @@ SPA_AntiDosProperty ==
 <>[](
     /\ CapAuthMsg \subseteq uAuthSession
     /\ Cardinality(CapAuthMsg) = Cardinality(aSession)
-    /\ \A x \in aSession:(\E y \in(ReplaySession \union SpoofSession): AuthMessageMatch(x, y))
+    /\ \A x \in aSession: (\E y \in (ReplaySession \union SpoofSession): AuthMessageMatch(x, y))
     /\ SPA_AntiReplayProperty
     /\ SPA_AntiSpoofProperty
 )
@@ -1244,13 +1244,13 @@ CliSvrLinkMatch(c, s) ==
 \* Legistimate user can eventually managed to access the target server except the case that 3 tuple Acl Rule is aged before th TCP connection established.         
 UserAccessAvailProperty ==
 <>[](
-    /\(\A x \in uTCPLinkSet:
-        \/(
+    /\ (\A x \in uTCPLinkSet:
+        \/ (
             /\ x.State = "ESTABLISHED" \* scenario1: TCP link established, and exactly matched Acl Rule available in FW.  
-            /\ \E y \in sTCPLinkSet:(CliSvrLinkMatch(x, y) /\ x.State = y.State)
+            /\ \E y \in sTCPLinkSet: (CliSvrLinkMatch(x, y) /\ x.State = y.State)
             /\ AclMatch4Tuple(x, AclRuleSet)
         )
-        \/(
+        \/ (
             /\ x.State = "SYN_SENT" \* scenario2: TCP link half-established due to 3 tuple Acl Rule aged in FW.
             /\ \A y \in sTCPLinkSet: ~CliSvrLinkMatch(x, y)
             /\ AclMatch3Tuple(x, AgedRuleSet)
@@ -1264,10 +1264,10 @@ UserAccessAvailProperty ==
 \*  finally attacker can not establish any link with the target server.
 SvrHidenProperty ==
 <>[](
-    /\(\A x \in sTCPLinkSet:
+    /\ (\A x \in sTCPLinkSet:
         /\ x.Type /= "Attacker"
         /\ x.State = "ESTABLISHED") \*All the established link in server side are not belongs to attacker.                               
-    /\(\A y \in aTCPLinkSet:
+    /\ (\A y \in aTCPLinkSet:
         /\ y.State /= "ESTABLISHED") \* Attacker as a TCP client, never established TCP link with traget server.
 )
 

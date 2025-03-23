@@ -620,6 +620,24 @@ mod tests {
         assert_eq!(output, "bananas @@ (x :> 42)");
     }
 
+    #[test]
+    fn test_token_paren() {
+        let tokens = [
+            (Token::And, r"/\"),
+            (Token::Or, r"\/"),
+            (Token::SubsetEq, r"\subseteq"),
+            (Token::Union, r"\union"),
+            (Token::KeywordSubset, "SUBSET"),
+            (Token::KeywordChoose, "CHOOSE"),
+            (Token::SetIn, r"\in"),
+        ];
+
+        for (t, repr) in tokens {
+            let output: String = format([t.clone(), Token::ParenOpen]);
+            assert_eq!(output, format!("{repr} ("));
+        }
+    }
+
     /// This test covers the unhandled tokens in the AST that are emitted as-is.
     /// Spacing is a best guess in this case, as the original may or may not
     /// have contained spacing between or after the raw token.

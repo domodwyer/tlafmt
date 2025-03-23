@@ -56,8 +56,8 @@ OrderIdxOfCmd(order, c) == CHOOSE j \in 1..Len(order): order[j] = c
 
 LastWriteBefore(order, j) ==
     LET k == CHOOSE k \in 0..(j - 1):
-        /\(k = 0 \/ order[k] \in Writes)
-        /\ \A l \in(k + 1)..(j - 1): order[l] \in Reads
+        /\ (k = 0 \/ order[k] \in Writes)
+        /\ \A l \in (k + 1)..(j - 1): order[l] \in Reads
     IN IF k = 0 THEN "nil" ELSE order[k]
 
 IsLinearOrder(order) ==
@@ -68,7 +68,7 @@ IsLinearOrder(order) ==
 ObeysRealTime(order) ==
     \A c1, c2 \in Commands:
         (AckPosOfCmd(c1) < ReqPosOfCmd(c2))
-        =>(OrderIdxOfCmd(order, c1) < OrderIdxOfCmd(order, c2))
+        => (OrderIdxOfCmd(order, c1) < OrderIdxOfCmd(order, c2))
 
 Linearizability ==
     terminated =>

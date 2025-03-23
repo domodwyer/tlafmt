@@ -80,16 +80,16 @@ Core_T1(i) ==
     /\ pc[i] = "DECIDE"
     /\ Cardinality({msg \in rcvdMsg[i]: msg.type = "Proposed"}) >= N - T
     /\ IF
-        /\(\E tV \in Values: \A msg \in rcvdMsg[i]: msg.type = "Proposed" => msg.value = tV)
+        /\ (\E tV \in Values: \A msg \in rcvdMsg[i]: msg.type = "Proposed" => msg.value = tV)
     THEN
-        /\ dValue' = [dValue EXCEPT ![i] = CHOOSE tV \in Values:(Cardinality({msg \in rcvdMsg[i]: msg.type = "Proposed" /\ msg.value = tV}) >= N - T)]
+        /\ dValue' = [dValue EXCEPT ![i] = CHOOSE tV \in Values: (Cardinality({msg \in rcvdMsg[i]: msg.type = "Proposed" /\ msg.value = tV}) >= N - T)]
         /\ bcastMsg' = bcastMsg \union {makeDecisionMsg(dValue' [i], i)}
         /\ pc' = [pc EXCEPT ![i] = "DONE"]
         /\ UNCHANGED << v >>
     ELSE
         /\ IF \E tV \in Values: Cardinality({msg \in rcvdMsg[i]: msg.type = "Proposed" /\ msg.value = tV}) >= N - 2 * T
         THEN
-            /\ v' = [v EXCEPT ![i] = CHOOSE tV \in Values:(Cardinality({msg \in rcvdMsg[i]: msg.type = "Proposed" /\ msg.value = tV}) >= N - 2 * T)]
+            /\ v' = [v EXCEPT ![i] = CHOOSE tV \in Values: (Cardinality({msg \in rcvdMsg[i]: msg.type = "Proposed" /\ msg.value = tV}) >= N - 2 * T)]
             /\ UNCHANGED << dValue, bcastMsg >>
         ELSE UNCHANGED << dValue, v, bcastMsg >>
         /\ pc' = [pc EXCEPT ![i] = "CALL"]
@@ -132,22 +132,22 @@ Spec == Init /\ [][Next]_<< pc, v, dValue, bcastMsg, rcvdMsg >>
 TypeOK ==
     /\ v \in [Proc -> Values]
     /\ pc \in [Proc -> Location]
-    /\ bcastMsg \in SUBSET(PMsg \union DMsg)
-    /\ rcvdMsg \in [Proc -> SUBSET(PMsg \union DMsg)]
+    /\ bcastMsg \in SUBSET (PMsg \union DMsg)
+    /\ rcvdMsg \in [Proc -> SUBSET (PMsg \union DMsg)]
     /\ dValue \in [Proc -> {Bottom} \union Values]
 
 (* If a process decides v, then v was proposed by some process. *)
-Validity == \A i \in Proc:((dValue[i] /= Bottom) =>(\E j \in Proc: dValue[i] = v[j]))
+Validity == \A i \in Proc: ((dValue[i] /= Bottom) => (\E j \in Proc: dValue[i] = v[j]))
 
 (* First line: No two processes decide differently. *)
 (* Second line: If some process decided v, all process calling the underlying consensus algorithm propose v. *)
 Agreement ==
-    /\ \A i, j \in Proc:((dValue[i] /= Bottom /\ dValue[j] /= Bottom) =>(dValue[i] = dValue[j]))
-    /\ \A i \in Proc: pc[i] = "CALL" =>(\A j \in Proc: pc[j] = "DONE" => v[i] = dValue[j])
+    /\ \A i, j \in Proc: ((dValue[i] /= Bottom /\ dValue[j] /= Bottom) => (dValue[i] = dValue[j]))
+    /\ \A i \in Proc: pc[i] = "CALL" => (\A j \in Proc: pc[j] = "DONE" => v[i] = dValue[j])
 
 (* Only talk about decided processes*)
 WeakAgreement ==
-    /\ \A i, j \in Proc:((dValue[i] /= Bottom /\ dValue[j] /= Bottom) =>(dValue[i] = dValue[j]))
+    /\ \A i, j \in Proc: ((dValue[i] /= Bottom /\ dValue[j] /= Bottom) => (dValue[i] = dValue[j]))
 
 (* Every correct process eventually decides on some values. *)
 Termination == <>(\A i \in Proc: pc[i] = "CRASH" \/ pc[i] = "DONE" \/ pc[i] = "CALL")
@@ -170,31 +170,31 @@ Termination == <>(\A i \in Proc: pc[i] = "CRASH" \/ pc[i] = "DONE" \/ pc[i] = "C
 IndStrengthens ==
     /\ TypeOK
     (* Every correct process proposes only its prefer value. *)
-    /\ \A msg \in bcastMsg:(msg.type = "Proposed" /\(pc[msg.sndr] = "PROPOSE" \/ pc[msg.sndr] = "DECIDE"))
+    /\ \A msg \in bcastMsg: (msg.type = "Proposed" /\ (pc[msg.sndr] = "PROPOSE" \/ pc[msg.sndr] = "DECIDE"))
         => msg.value = v[msg.sndr]
     (* A correct process can send at most one message for each kind of messages.  *)
-    /\ \A msg1 \in bcastMsg, msg2 \in bcastMsg:(msg1.sndr = msg2.sndr /\ msg1.type = msg2.type)
+    /\ \A msg1 \in bcastMsg, msg2 \in bcastMsg: (msg1.sndr = msg2.sndr /\ msg1.type = msg2.type)
         => msg1.value = msg2.value
 
     (* All DECISION messages have the same value. *)
-    /\ \A msg1 \in bcastMsg, msg2 \in bcastMsg:(msg1.type = "Decision" /\ msg2.type = "Decision")
+    /\ \A msg1 \in bcastMsg, msg2 \in bcastMsg: (msg1.type = "Decision" /\ msg2.type = "Decision")
         => msg1.value = msg2.value
     (* How to detect it automatically?
      Every DECISION message has the same value with at least N - T PROPOSED messages. *)
-    /\ \A msg1 \in bcastMsg: msg1.type = "Decision" =>(Cardinality({msg2 \in bcastMsg: msg2.type = "Proposed" /\ msg1.value = msg2.value}) >= N - T)
+    /\ \A msg1 \in bcastMsg: msg1.type = "Decision" => (Cardinality({msg2 \in bcastMsg: msg2.type = "Proposed" /\ msg1.value = msg2.value}) >= N - T)
     (* A process has not broadcasted any message before entering the location PROPOSE. *)
-    /\ \A i \in Proc: pc[i] = "PROPOSE" =>((\A msg \in bcastMsg: msg.sndr /= i))
+    /\ \A i \in Proc: pc[i] = "PROPOSE" => ((\A msg \in bcastMsg: msg.sndr /= i))
     (* How to detect it automatically?
      DECISION messages are always consistent with processes' decisions.  *)
-    /\ \A i \in Proc: dValue[i] = Bottom =>(\A msg \in bcastMsg: msg.type = "Decision" => msg.sndr /= i)
+    /\ \A i \in Proc: dValue[i] = Bottom => (\A msg \in bcastMsg: msg.type = "Decision" => msg.sndr /= i)
     (* A DECISION value must be different from Bottom *)
     /\ \A i \in Proc: pc[i] = "DONE" => dValue[i] /= Bottom
     (* After deciding, every correct process needs to broadcast its decision immediately. *)
-    /\ \A i \in Proc: dValue[i] /= Bottom =>(\E msg \in bcastMsg: msg.sndr = i /\ msg.type = "Decision" /\ msg.value = dValue[i])
+    /\ \A i \in Proc: dValue[i] /= Bottom => (\E msg \in bcastMsg: msg.sndr = i /\ msg.type = "Decision" /\ msg.value = dValue[i])
     (* A process decides only after entering the locations PROPOSE and DECIDE. *)
-    /\ \A i \in Proc: dValue[i] /= Bottom =>(pc[i] /= "PROPOSE" /\ pc[i] /= "DECIDE")
+    /\ \A i \in Proc: dValue[i] /= Bottom => (pc[i] /= "PROPOSE" /\ pc[i] /= "DECIDE")
     (* A process has not decided before entering the locations PROPOSE and DECIDE. *)
-    /\ \A i \in Proc:(pc[i] = "PROPOSE" \/ pc[i] = "DECIDE") =>((\A msg \in bcastMsg: dValue[i] = Bottom))
+    /\ \A i \in Proc: (pc[i] = "PROPOSE" \/ pc[i] = "DECIDE") => ((\A msg \in bcastMsg: dValue[i] = Bottom))
     (* Every received message were broadcasted by some process. *)
     /\ \A i \in Proc: rcvdMsg[i] \subseteq bcastMsg
 

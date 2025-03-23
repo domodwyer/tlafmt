@@ -324,7 +324,7 @@ Some blank lines have been deleted.
 VARIABLES maxBal, maxVBal, maxVVal, msgs
 
 (* define statement *)
-sentMsgs(t, b) == {m \in msgs:(m.type = t) /\(m.bal = b)}
+sentMsgs(t, b) == {m \in msgs: (m.type = t) /\ (m.bal = b)}
 
 ShowsSafeAt(Q, b, v) ==
     LET Q1b == {m \in sentMsgs("1b", b): m.acc \in Q}
@@ -336,11 +336,11 @@ ShowsSafeAt(Q, b, v) ==
                 /\ m1c = [type |-> "1c", bal |-> m1c.bal, val |-> v]
                 /\ \A m \in Q1b:
                     /\ m1c.bal >= m.mbal
-                    /\(m1c.bal = m.mbal) =>(m.mval = v)
+                    /\ (m1c.bal = m.mbal) => (m.mval = v)
 
 vars == << maxBal, maxVBal, maxVVal, msgs >>
 
-ProcSet == (Acceptor) \union(Ballot)
+ProcSet == (Acceptor) \union (Ballot)
 
 Init == (* Global variables *)
     /\ maxBal = [a \in Acceptor |-> - 1]
@@ -350,7 +350,7 @@ Init == (* Global variables *)
 
 acceptor(self) == \E b \in Ballot:
     \/
-        /\(b > maxBal[self]) /\(sentMsgs("1a", b) /= {})
+        /\ (b > maxBal[self]) /\ (sentMsgs("1a", b) /= {})
         /\ maxBal' = [maxBal EXCEPT ![self] = b]
         /\ msgs' = (msgs \union {([type |-> "1b", acc |-> self, bal |-> b,
             mbal |-> maxVBal[self], mval |-> maxVVal[self]])})
@@ -370,7 +370,7 @@ leader(self) ==
         \/
             /\ \E S \in SUBSET Value:
                 /\ \A v \in S: \E Q \in Quorum: ShowsSafeAt(Q, self, v)
-                /\ msgs' = (msgs \union({[type |-> "1c", bal |-> self, val |-> v]: v \in S}))
+                /\ msgs' = (msgs \union ({[type |-> "1c", bal |-> self, val |-> v]: v \in S}))
         \/
             /\ \E v \in Value:
                 /\
@@ -380,7 +380,7 @@ leader(self) ==
     /\ UNCHANGED << maxBal, maxVBal, maxVVal >>
 
 Next == (\E self \in Acceptor: acceptor(self))
-\/(\E self \in Ballot: leader(self))
+\/ (\E self \in Ballot: leader(self))
 
 Spec == Init /\ [][Next]_vars
 
@@ -506,15 +506,15 @@ V == INSTANCE VoteProof
 (***************************************************************************)
 PAccInv == \A a \in Acceptor:
     /\ maxBal[a] >= maxVBal[a]
-    /\ \A b \in(maxVBal[a] + 1)..(maxBal[a] - 1): V!DidNotVoteIn(a,b)
-    /\(maxVBal[a] /= - 1) => V!VotedFor(a, maxVBal[a], maxVVal[a])
+    /\ \A b \in (maxVBal[a] + 1)..(maxBal[a] - 1): V!DidNotVoteIn(a,b)
+    /\ (maxVBal[a] /= - 1) => V!VotedFor(a, maxVBal[a], maxVVal[a])
 
 P1bInv == \A m \in msgs:
     (m.type = "1b") =>
-        /\(maxBal[m.acc] >= m.bal) /\(m.bal > m.mbal)
-        /\ \A b \in(m.mbal + 1)..(m.bal - 1): V!DidNotVoteIn(m.acc,b)
+        /\ (maxBal[m.acc] >= m.bal) /\ (m.bal > m.mbal)
+        /\ \A b \in (m.mbal + 1)..(m.bal - 1): V!DidNotVoteIn(m.acc,b)
 
-P1cInv == \A m \in msgs:(m.type = "1c") => V!SafeAt(m.bal, m.val)
+P1cInv == \A m \in msgs: (m.type = "1c") => V!SafeAt(m.bal, m.val)
 
 P2aInv == \A m \in msgs:
     (m.type = "2a") => \E m1c \in msgs:

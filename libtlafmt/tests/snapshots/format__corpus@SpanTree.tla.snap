@@ -76,7 +76,7 @@ Init ==
 Next == \E n \in Nodes:
     \E m \in Nbrs(n):
         /\ dist[m] < 1 + dist[n]
-        /\ \E d \in(dist[m] + 1)..(dist[n] - 1):
+        /\ \E d \in (dist[m] + 1)..(dist[n] - 1):
             /\ dist' = [dist EXCEPT ![n] = d]
             /\ mom' = [mom EXCEPT ![n] = m]
 

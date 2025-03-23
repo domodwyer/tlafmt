@@ -88,8 +88,8 @@ LEMMA Reachable0 ==
 (***************************************************************************)
 LEMMA Reachable1 ==
     \A S, T \in SUBSET Nodes:
-        (\A n \in S: Succ[n] \subseteq(S \union T))
-        =>(S \union ReachableFrom(T)) = ReachableFrom(S \union T)
+        (\A n \in S: Succ[n] \subseteq (S \union T))
+        => (S \union ReachableFrom(T)) = ReachableFrom(S \union T)
 (*************************************************************************)
   (* An informal proof usually begins by implicitly assuming the following *)
   (* step.                                                                 *)

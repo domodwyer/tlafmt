@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 
 use assert_cmd::Command;
+use insta::assert_snapshot;
 use predicates::prelude::*;
 use pretty_assertions::assert_eq;
 use tempfile::TempDir;
@@ -79,15 +80,22 @@ Options:
 /// Check mode behaviour for formatted and unformatted input files.
 #[test]
 fn test_check_mode() {
-    // Failure case from test corpus
-    cmd()
-        .arg("--check")
-        .arg(BAD_PATH)
-        .assert()
-        .failure()
-        .stdout(predicate::eq(""))
-        .stderr(predicate::eq("input file needs formatting\n"))
-        .code(predicate::eq(3));
+    // Failure case from test corpus.
+    //
+    // Assert the diff markers rendered.
+    assert_snapshot!(String::from_utf8(
+        cmd()
+            .arg("--check")
+            .arg(BAD_PATH)
+            .assert()
+            .failure()
+            .stdout(predicate::eq(""))
+            .code(predicate::eq(3))
+            .get_output()
+            .stderr
+            .clone(),
+    )
+    .unwrap());
 
     // Success from corpus snapshot test output.
     cmd()
@@ -178,7 +186,6 @@ fn test_from_stdin() {
         .assert()
         .failure()
         .stdout(predicate::eq(""))
-        .stderr(predicate::eq("input file needs formatting\n"))
         .code(predicate::eq(3));
     cmd() // Already formatted
         .arg("--stdin")

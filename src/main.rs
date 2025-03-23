@@ -13,11 +13,16 @@
 //   limitations under the License.
 
 use std::{
-    io::{BufWriter, Write},
+    io::{BufWriter, IsTerminal, Write},
     path::PathBuf,
+    string::FromUtf8Error,
 };
 
-use clap::Parser;
+use anstyle::Style;
+use clap::{
+    builder::styling::{AnsiColor, Color},
+    Parser,
+};
 use libtlafmt::ParsedFile;
 use thiserror::Error;
 
@@ -64,6 +69,10 @@ enum Error {
     /// Persisting the formatted output for --in-place.
     #[error("failed to persist formatted output: {0}")]
     SaveTempFile(std::io::Error),
+
+    /// A non-UTF8 string was generated (likely from non-UTF8 input).
+    #[error("non-utf8 string found: {0}")]
+    Utf8(#[from] FromUtf8Error),
 }
 
 fn main() -> Result<(), Error> {
@@ -123,10 +132,39 @@ fn check(input: &str, parsed: ParsedFile<'_>) -> Result<(), Error> {
 
     parsed.format(&mut buf)?;
 
-    if buf.trim_ascii() != input.trim_ascii().as_bytes() {
-        eprintln!("input file needs formatting");
-        std::process::exit(3);
+    let input = input.trim_ascii();
+
+    // If the strings match, return early.
+    if buf.trim_ascii() == input.as_bytes() {
+        return Ok(());
     }
 
-    Ok(())
+    let buf = String::from_utf8(buf)?;
+    let mut out = std::io::stderr().lock();
+
+    // Define the styles used, or skip styling if used in a script.
+    let style_none = Style::new();
+    let (style_add, style_rem) = match out.is_terminal() {
+        true => (
+            Style::new().fg_color(Some(Color::Ansi(AnsiColor::Green))),
+            Style::new().fg_color(Some(Color::Ansi(AnsiColor::Red))),
+        ),
+        false => (style_none, style_none),
+    };
+
+    for diff in diff::lines(input, buf.trim_ascii()) {
+        // Reset the colour of the next line.
+        style_add
+            .write_reset_to(&mut out)
+            .expect("reset stderr colour");
+
+        match diff {
+            diff::Result::Left(l) => writeln!(&mut out, "{style_rem}- {}", l),
+            diff::Result::Both(l, _) => writeln!(&mut out, "  {}", l),
+            diff::Result::Right(r) => writeln!(&mut out, "{style_add}+ {}", r),
+        }
+        .expect("write to stderr")
+    }
+
+    std::process::exit(3);
 }

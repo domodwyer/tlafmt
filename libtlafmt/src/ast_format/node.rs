@@ -743,4 +743,21 @@ FairSpec ==
 "#
         );
     }
+
+    /// Reproducer for https://github.com/domodwyer/tlafmt/issues/24.
+    #[test]
+    fn test_let_in_no_in() {
+        assert_rewrite!(
+            r#"
+---- MODULE B ----
+Send ==
+    /\ i <= n
+    /\ \E v \in 0..n: i <= v /\ v <= i + l /\ v \notin got
+    /\ LET k == CHOOSE val \in 0..n:(val \in i..i + l /\ val \notin got) IN
+    /\ chan' = chan \union {<< k, INPUT[k] >>}
+    /\ UNCHANGED << i, INPUT, OUTPUT, got, ack, complete >>
+====
+"#
+        );
+    }
 }

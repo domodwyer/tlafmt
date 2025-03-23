@@ -1,0 +1,12 @@
+---
+source: libtlafmt/src/ast_format/node.rs
+expression: output
+---
+----------------------------------- MODULE B -----------------------------------
+Send ==
+    /\ i <= n
+    /\ \E v \in 0..n: i <= v /\ v <= i + l /\ v \notin got
+    /\ LET k == CHOOSE val \in 0..n: (val \in i..i + l /\ val \notin got) IN
+        /\ chan' = chan \union {<< k, INPUT[k] >>}
+    /\ UNCHANGED << i, INPUT, OUTPUT, got, ack, complete >>
+================================================================================

@@ -577,8 +577,11 @@ dependencies = [
 name = "tlafmt"
 version = "0.3.2"
 dependencies = [
+ "anstyle",
  "assert_cmd",
  "clap",
+ "diff",
+ "insta",
  "libtlafmt",
  "predicates",
  "pretty_assertions",

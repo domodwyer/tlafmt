@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 
 use assert_cmd::Command;
+use insta::assert_snapshot;
 use predicates::prelude::*;
 use pretty_assertions::assert_eq;
 use tempfile::TempDir;
@@ -56,38 +57,28 @@ fn test_help_text() {
     )
     .unwrap();
 
-    assert_eq!(
-        "\
-A formatter for TLA+ specs
-
-Usage: tlafmt [OPTIONS] [FILE]
-
-Arguments:
-  [FILE]  Path to the TLA+ file to format
-
-Options:
-  -c, --check     Check the input file and exit with an error (code 3) if it needs formatting
-  -i, --in-place  Overwrite the source file with the formatted output instead of printing it to stdout
-      --stdin     Read the input file from stdin instead of the filesystem
-  -h, --help      Print help
-  -V, --version   Print version
-",
-    stdout
-    );
+    assert_snapshot!(stdout);
 }
 
 /// Check mode behaviour for formatted and unformatted input files.
 #[test]
 fn test_check_mode() {
-    // Failure case from test corpus
-    cmd()
-        .arg("--check")
-        .arg(BAD_PATH)
-        .assert()
-        .failure()
-        .stdout(predicate::eq(""))
-        .stderr(predicate::eq("input file needs formatting\n"))
-        .code(predicate::eq(3));
+    // Failure case from test corpus.
+    //
+    // Assert the diff markers rendered.
+    assert_snapshot!(String::from_utf8(
+        cmd()
+            .arg("--check")
+            .arg(BAD_PATH)
+            .assert()
+            .failure()
+            .stdout(predicate::eq(""))
+            .code(predicate::eq(3))
+            .get_output()
+            .stderr
+            .clone(),
+    )
+    .unwrap());
 
     // Success from corpus snapshot test output.
     cmd()
@@ -178,7 +169,6 @@ fn test_from_stdin() {
         .assert()
         .failure()
         .stdout(predicate::eq(""))
-        .stderr(predicate::eq("input file needs formatting\n"))
         .code(predicate::eq(3));
     cmd() // Already formatted
         .arg("--stdin")

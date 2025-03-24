@@ -97,13 +97,13 @@ PaxosPrepare ==
 PaxosPromise ==
     /\ UNCHANGED << decision, maxVBallot, maxValue >>
     /\ \E a \in Replicas, m \in p1aMessages:
-            /\ maxBallot[a] < m.ballot
-            /\ maxBallot' = [maxBallot EXCEPT ![a] = m.ballot]
-            /\ SendMessage([type |-> "P1b",
-                ballot |-> m.ballot,
-                acceptor |-> a,
-                maxVBallot |-> maxVBallot[a],
-                maxValue |-> maxValue[a]])
+        /\ maxBallot[a] < m.ballot
+        /\ maxBallot' = [maxBallot EXCEPT ![a] = m.ballot]
+        /\ SendMessage([type |-> "P1b",
+            ballot |-> m.ballot,
+            acceptor |-> a,
+            maxVBallot |-> maxVBallot[a],
+            maxValue |-> maxValue[a]])
         
 (*
     Phase 2a:
@@ -133,7 +133,7 @@ PaxosAccept ==
                 /\ SendMessage([type |-> "P2a",
                     ballot |-> b,
                     value |-> v])
-            
+                
 (*
     Phase 2b:
 
@@ -149,15 +149,15 @@ PaxosAccept ==
 PaxosAccepted ==
     /\ UNCHANGED << decision >>
     /\ \E a \in Replicas, m \in p2aMessages:
-            /\ m.value \in Values
-            /\ maxBallot[a] <= m.ballot
-            /\ maxBallot' = [maxBallot EXCEPT ![a] = m.ballot]
-            /\ maxVBallot' = [maxVBallot EXCEPT ![a] = m.ballot]
-            /\ maxValue' = [maxValue EXCEPT ![a] = m.value]
-            /\ SendMessage([type |-> "P2b",
-                ballot |-> m.ballot,
-                acceptor |-> a,
-                value |-> m.value])
+        /\ m.value \in Values
+        /\ maxBallot[a] <= m.ballot
+        /\ maxBallot' = [maxBallot EXCEPT ![a] = m.ballot]
+        /\ maxVBallot' = [maxVBallot EXCEPT ![a] = m.ballot]
+        /\ maxValue' = [maxValue EXCEPT ![a] = m.value]
+        /\ SendMessage([type |-> "P2b",
+            ballot |-> m.ballot,
+            acceptor |-> a,
+            value |-> m.value])
         
 (*
     Consensus is achieved when a majority of acceptors accept the same ballot number (rather than the same value).
@@ -208,8 +208,8 @@ PaxosNontriviality ==
         \/ decision = none
         \/ \E m \in p2aMessages: m.value = decision
     /\ \A m \in p1bMessages:
-            /\ m.maxValue \in Values \/ 0 = m.maxVBallot
-            /\ m.maxValue = none \/ 0 < m.maxVBallot
+        /\ m.maxValue \in Values \/ 0 = m.maxVBallot
+        /\ m.maxValue = none \/ 0 < m.maxVBallot
         
 \* Consistency safety property: At most 1 value can be learnt.
 PaxosConsistency == [][decision = none]_<< decision >>

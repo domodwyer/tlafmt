@@ -194,8 +194,8 @@ ParentIsNeighbor == \A n \in Node: parent[n] \in neighbors(n) \union {NoNode}
 (* A node n is a child of node m only if m is the parent of n.
    At the end of the computation, this is "if and only if". *)
 ParentChild == \A m, n \in Node:
-        /\ n \in children[m] => m = parent[n]
-        /\ m = parent[n] /\ pc[m] = "Done" => n \in children[m]
+    /\ n \in children[m] => m = parent[n]
+    /\ m = parent[n] /\ pc[m] = "Done" => n \in children[m]
     
 (* Compute the ancestor relation *)
 IsParent == [m, n \in Node |-> n = parent[m]]

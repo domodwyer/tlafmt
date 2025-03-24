@@ -335,8 +335,8 @@ Spec == Init /\ [][progN]_<< coordinator, participant >> /\ fairness
 
 \* All participants that decide reach the same decision
 AC1 == [] \A i, j \in participants:
-        \/ participant[i].decision /= commit
-        \/ participant[j].decision /= abort
+    \/ participant[i].decision /= commit
+    \/ participant[j].decision /= abort
     
 \* If any participant decides commit, then all participants must have votes YES
 AC2 == []((\E i \in participants: participant[i].decision = commit)

@@ -831,18 +831,18 @@ TypeOK ==
                     /\ \A j \in 1..n.numberOfArgs:
                         Len(n.opLevelCond[i][j]) =
                         Node[n.params[i]].numberOfArgs
-        
+            
             /\ (n \in OpDeclNode) =>
                 /\ (n.kind = "ConstantDeclNode") => (n.level = 0)
                 /\ (n.kind = "VariableDeclNode") =>
                     /\ n.level = 1
                     /\ n.numberOfArgs = 0
-        
+            
             /\ (n \in OpApplNode) =>
             (Len(n.args) = Node[n.operator].numberOfArgs)
-        
+            
             /\ (n \in SubstitutionNode) => (Len(n.subFor) = Len(n.subWith))
-        
+            
             /\ (n \in InstanceNode) =>
                 /\ n.numberOfArgs = Len(n.params)
                 /\ (********************************************************)
@@ -897,17 +897,17 @@ SubstituteInLevelConstraint(rcd, subst) ==
          (* The set of substitution parameter numbers.                      *)
          (*******************************************************************)
 
-    ParamSubst(id) ==
-    (*******************************************************************)
+        ParamSubst(id) ==
+        (*******************************************************************)
          (* The set of "substitute parameters" of the parameter whose       *)
          (* NodeId is id.  If id is one of the parameters being substituted *)
          (* for in subst, then this is the set of LevelParams of the        *)
          (* expression being substituted for it; otherwise, it equals {id}. *)
          (*******************************************************************)
-        IF \E i \in paramNums: subst.subFor[i] = id
-        THEN LET subExpNum == CHOOSE i \in paramNums: subst.subFor[i] = id
-            IN Node[subst.subWith[subExpNum]].levelParams
-        ELSE {id}
+            IF \E i \in paramNums: subst.subFor[i] = id
+            THEN LET subExpNum == CHOOSE i \in paramNums: subst.subFor[i] = id
+                IN Node[subst.subWith[subExpNum]].levelParams
+            ELSE {id}
 
         IsOpParam(i) == Node[subst.subFor[i]].numberOfArgs > 0
     (*******************************************************************)
@@ -919,18 +919,18 @@ SubstituteInLevelConstraint(rcd, subst) ==
          (* The set of parameter numbers.                                   *)
          (*******************************************************************)
 
-    SubOp(opid) ==
-    (*******************************************************************)
+        SubOp(opid) ==
+        (*******************************************************************)
          (* If opid is the NodeId of an operator parameter, then this       *)
          (* equals the NodeId of the operator with which this operator is   *)
          (* substituted for by subst, which is opid itself if subst does    *)
          (* not substitute for opid.                                        *)
          (*******************************************************************)
-        IF \E i \in paramNums: subst.subFor[i] = opid
-        THEN LET subExpNum ==
-                CHOOSE i \in paramNums: subst.subFor[i] = opid
-            IN Node[subst.subWith[subExpNum]].ref
-        ELSE opid
+            IF \E i \in paramNums: subst.subFor[i] = opid
+            THEN LET subExpNum ==
+                    CHOOSE i \in paramNums: subst.subFor[i] = opid
+                IN Node[subst.subWith[subExpNum]].ref
+            ELSE opid
 
     IN [levelParams |->
             UNION {ParamSubst(id): id \in rcd.levelParams},
@@ -975,15 +975,15 @@ SubstituteInLevelConstraint(rcd, subst) ==
                 (* The set of all SubInALP(alp) with alp in ALP(i).         *)
                 (************************************************************)
             
-                LC(i, alp) ==
-                (************************************************************)
+                    LC(i, alp) ==
+                    (************************************************************)
                 (* The level constraint implied by an element alp of        *)
                 (* SubALP(i), if parameter i is an operator parameter       *)
                 (* instantiated by a defined operator.                      *)
                 (************************************************************)
-                    [param |-> alp.param,
-                        level |->
-                        Node[Node[subst.subWith[i]].ref].maxLevels[alp.idx]]
+                        [param |-> alp.param,
+                            level |->
+                            Node[Node[subst.subWith[i]].ref].maxLevels[alp.idx]]
             
                     OpDefParams ==
                     {i \in paramNums:
@@ -1127,7 +1127,7 @@ ModuleNodeLevelCorrect(n) ==
          (* OpDef nodes.                                                    *)
          (*******************************************************************)
 
-    allDefs == n.opDefs \union nonDefs
+        allDefs == n.opDefs \union nonDefs
 
     IN
         /\ (******************************************************************)
@@ -1794,16 +1794,16 @@ DefinedOpApplNodeLevelCorrect(n) ==
             (*      of level arg[j].level.                                  *)
             (****************************************************************)
                 (LET ALC(i, j) ==
-                        (*********************************************************)
+                    (*********************************************************)
                    (* If arg[i] is a declared operator, then this is the    *)
                    (* set of arg-level constraints implied for that         *)
                    (* operator by arg[j].level.                             *)
                    (*********************************************************)
-                            {[param |-> arg[i].ref,
-                                idx |-> k,
-                                level |-> arg[j].level]: k \in OpLevelCondIdx(i, j)}
+                        {[param |-> arg[i].ref,
+                            idx |-> k,
+                            level |-> arg[j].level]: k \in OpLevelCondIdx(i, j)}
                     
-                        IN UNION {ALC(i, j): i \in declOpArgs, j \in 1..p})
+                    IN UNION {ALC(i, j): i \in declOpArgs, j \in 1..p})
                 \union
                 (****************************************************************)
             (* 5. op.argLevelParams                                         *)

@@ -199,23 +199,23 @@ SafetyInvariant ==
                     /\ CurrentLease[Leader].node = n
                     \* Two nodes can't take a checkpoint simultaneously
     /\ \A n1, n2 \in Node:
-        /\ (CanTakeCheckpoint[n1] /\ CanTakeCheckpoint[n2]) =>
-            /\ n1 = n2
-        /\ (IsTakingCheckpoint[n1] /\ IsTakingCheckpoint[n2]) =>
-            /\ n1 = n2
-            \* Prerequisites for taking a checkpoint must be satisfied
+            /\ (CanTakeCheckpoint[n1] /\ CanTakeCheckpoint[n2]) =>
+                /\ n1 = n2
+            /\ (IsTakingCheckpoint[n1] /\ IsTakingCheckpoint[n2]) =>
+                /\ n1 = n2
+                \* Prerequisites for taking a checkpoint must be satisfied
     /\ \A n \in Node:
-        /\ IsTakingCheckpoint[n] => CanTakeCheckpoint[n]
-        /\ CanTakeCheckpoint[n] => (CurrentLease[n] /= NoCheckpointLease)
-        /\ CanTakeCheckpoint[n] => CurrentLease[n].node = n
-        /\ CanTakeCheckpoint[n] => CurrentLease[n].counter >= TimeoutCounter
-        \* Replicated logs can never conflict
+            /\ IsTakingCheckpoint[n] => CanTakeCheckpoint[n]
+            /\ CanTakeCheckpoint[n] => (CurrentLease[n] /= NoCheckpointLease)
+            /\ CanTakeCheckpoint[n] => CurrentLease[n].node = n
+            /\ CanTakeCheckpoint[n] => CurrentLease[n].counter >= TimeoutCounter
+            \* Replicated logs can never conflict
     /\ \A i \in LogIndex:
-        /\ \A n1, n2 \in Node:
+            /\ \A n1, n2 \in Node:
                 \/ ReadLog(n1, i) = NoNode
                 \/ ReadLog(n2, i) = NoNode
                 \/ ReadLog(n1, i) = ReadLog(n2, i)
-            
+                
 (***************************************************************************)
 (* Expectations about system capabilities.                                 *)
 (***************************************************************************)
@@ -230,11 +230,11 @@ TemporalInvariant ==
             \/ CurrentLease[n].counter < TimeoutCounter
             \* If a node takes a checkpoint, eventually it will complete or timeout
     /\ \A n \in Node:
-        /\ IsTakingCheckpoint[n] ~>
-            \/ LastVotePayload[n] = ExecutionCounter[n]
-            \/ ~IsNodeUp[n]
-            \/ CurrentLease[n].counter < TimeoutCounter
-            \* Eventually, a checkpoint will be completed
+            /\ IsTakingCheckpoint[n] ~>
+                \/ LastVotePayload[n] = ExecutionCounter[n]
+                \/ ~IsNodeUp[n]
+                \/ CurrentLease[n].counter < TimeoutCounter
+                \* Eventually, a checkpoint will be completed
     /\ <>(LatestCheckpoint /= BlankLog)
 
 (***************************************************************************)

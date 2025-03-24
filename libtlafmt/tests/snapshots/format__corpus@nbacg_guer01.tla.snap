@@ -142,14 +142,14 @@ Commit(i) ==
 
 Next ==
     /\ \E self \in Proc:
-            \/ Crash(self)
-            \/ Receive(self)
-            \/ SendYes(self)
-            \/ SendNo(self)
-            \/ AbortNoYes(self)
-            \/ AbortSent(self)
-            \/ Commit(self)
-            \/ UNCHANGED vars (* Avoid deadlocks. 
+        \/ Crash(self)
+        \/ Receive(self)
+        \/ SendYes(self)
+        \/ SendNo(self)
+        \/ AbortNoYes(self)
+        \/ AbortSent(self)
+        \/ Commit(self)
+        \/ UNCHANGED vars (* Avoid deadlocks. 
                                  After deciding, a correct process does nothing. *)
         
 (* 

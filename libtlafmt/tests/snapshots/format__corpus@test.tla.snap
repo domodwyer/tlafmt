@@ -1,0 +1,94 @@
+---
+source: libtlafmt/tests/format.rs
+expression: output
+input_file: libtlafmt/tests/corpus/test.tla
+---
+--------------------------------- MODULE main ----------------------------------
+
+EXTENDS Integers, Sequences, TLC, FiniteSets
+
+(*
+--wf
+--algorithm binary_search{
+variables nums, n, target, low, high, mid;
+{
+    low := 0;
+    high := n - 1;
+    while (low <= high){
+
+        mid := (low + high) / 2;
+
+        if (target = nums[mid]){
+            print mid;
+        };
+        if (target < nums[mid]) {
+             high := mid - 1;
+        } else{
+            low := mid + 1;
+        };
+
+
+}
+}}
+}
+end algorithm;
+
+*)
+\* BEGIN TRANSLATION (chksum(pcal) = "22207036" /\ chksum(tla) = "3c451e25")
+CONSTANT defaultInitValue
+VARIABLES nums, n, target, low, high, mid, pc
+
+vars == << nums, n, target, low, high, mid, pc >>
+
+Init == (* Global variables *)
+    /\ nums = defaultInitValue
+    /\ n = defaultInitValue
+    /\ target = defaultInitValue
+    /\ low = defaultInitValue
+    /\ high = defaultInitValue
+    /\ mid = defaultInitValue
+    /\ pc = "Lbl_1"
+
+Lbl_1 ==
+    /\ pc = "Lbl_1"
+    /\ low' = 0
+    /\ high' = n - 1
+    /\ pc' = "Lbl_2"
+    /\ UNCHANGED << nums, n, target, mid >>
+
+Lbl_2 ==
+    /\ pc = "Lbl_2"
+    /\ IF low <= high
+        THEN
+            /\ mid' = (low + high) / 2
+            /\ IF target = nums[mid']
+                THEN
+                    /\ PrintT(mid')
+                ELSE
+                    /\ TRUE
+            /\ IF target < nums[mid']
+                THEN
+                    /\ high' = mid' - 1
+                    /\ low' = low
+                ELSE
+                    /\ low' = mid' + 1
+                    /\ high' = high
+            /\ pc' = "Lbl_2"
+        ELSE
+            /\ pc' = "Done"
+            /\ UNCHANGED << low, high, mid >>
+    /\ UNCHANGED << nums, n, target >>
+
+(* Allow infinite stuttering to prevent deadlock on termination. *)
+Terminating == pc = "Done" /\ UNCHANGED vars
+
+Next == Lbl_1 \/ Lbl_2
+\/ Terminating
+
+Spec == Init /\ [][Next]_vars
+
+Termination == <>(pc = "Done")
+
+\* END TRANSLATION
+
+================================================================================

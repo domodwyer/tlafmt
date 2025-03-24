@@ -126,7 +126,7 @@ Inv ==
     /\
         \/ \E i \in 0..(N - 1): pc[i] /= "Done"
         \/ \E i \in 0..(N - 1): y[i] = 1
-    
+        
 (***************************************************************************)
 (* Here is the proof of correctness.  The top-level steps <1>1 - <1>4 are  *)
 (* the standard ones for an invariance proof, and the decomposition of the *)

@@ -83,24 +83,24 @@ Init == (* Global variables *)
 nxtQ ==
     /\ pc = "nxtQ"
     /\ IF todo /= {}
-    THEN
-        /\ \E queens \in todo:
-            LET nxtQ == Len(queens) + 1 IN
-                LET cols == {c \in 1..N: ~\E i \in 1..Len(queens):
-                            Attacks(Append(queens, c), i, nxtQ)} IN
-                    LET exts == {Append(queens, c): c \in cols} IN
-                    IF (nxtQ = N)
-                    THEN
-                        /\ todo' = todo \ {queens}
-                        /\ sols' = (sols \union exts)
-                    ELSE
-                        /\ todo' = ((todo \ {queens}) \union exts)
-                        /\ sols' = sols
-        /\ pc' = "nxtQ"
-    ELSE
-        /\ pc' = "Done"
-        /\ UNCHANGED << todo, sols >>
-    
+        THEN
+            /\ \E queens \in todo:
+                LET nxtQ == Len(queens) + 1 IN
+                    LET cols == {c \in 1..N: ~\E i \in 1..Len(queens):
+                                Attacks(Append(queens, c), i, nxtQ)} IN
+                        LET exts == {Append(queens, c): c \in cols} IN
+                        IF (nxtQ = N)
+                        THEN
+                            /\ todo' = todo \ {queens}
+                            /\ sols' = (sols \union exts)
+                        ELSE
+                            /\ todo' = ((todo \ {queens}) \union exts)
+                            /\ sols' = sols
+            /\ pc' = "nxtQ"
+        ELSE
+            /\ pc' = "Done"
+            /\ UNCHANGED << todo, sols >>
+        
 (* Allow infinite stuttering to prevent deadlock on termination. *)
 Terminating == pc = "Done" /\ UNCHANGED vars
 

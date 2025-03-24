@@ -127,13 +127,13 @@ NonCounterStep(i) ==
   (* flips switch B.                                                       *)
   (*************************************************************************)
     /\ IF (~switchAUp) /\ (timesSwitched[i] < 2)
-    THEN
-        /\ switchAUp' = TRUE
-        /\ timesSwitched' = [timesSwitched EXCEPT ![i] = @ + 1]
-        /\ UNCHANGED switchBUp
-    ELSE
-        /\ switchBUp' = ~switchBUp
-        /\ UNCHANGED << switchAUp, timesSwitched >>
+        THEN
+            /\ switchAUp' = TRUE
+            /\ timesSwitched' = [timesSwitched EXCEPT ![i] = @ + 1]
+            /\ UNCHANGED switchBUp
+        ELSE
+            /\ switchBUp' = ~switchBUp
+            /\ UNCHANGED << switchAUp, timesSwitched >>
     /\ UNCHANGED count
 
 CounterStep ==
@@ -142,13 +142,13 @@ CounterStep ==
   (* her) count.  Otherwise, (s)he flips switch B.                         *)
   (*************************************************************************)
     /\ IF switchAUp
-    THEN
-        /\ switchAUp' = FALSE
-        /\ UNCHANGED switchBUp
-        /\ count' = count + 1
-    ELSE
-        /\ switchBUp' = ~switchBUp
-        /\ UNCHANGED << switchAUp, count >>
+        THEN
+            /\ switchAUp' = FALSE
+            /\ UNCHANGED switchBUp
+            /\ count' = count + 1
+        ELSE
+            /\ switchBUp' = ~switchBUp
+            /\ UNCHANGED << switchAUp, count >>
     /\ UNCHANGED timesSwitched
 
 Next ==

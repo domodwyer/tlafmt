@@ -46,7 +46,7 @@ Msgs == Msg1s \union Msg2s
 (* Find the maximum value in arr *)
 MAX(arr) == CHOOSE maxVal \in Values:
     /\ (\E p \in Proc: arr[p] = maxVal)
-    /\ (\A p \in Proc: maxVal >= arr[p])
+        /\ (\A p \in Proc: maxVal >= arr[p])
 
 (* Line 1 *)
 Init ==
@@ -128,7 +128,7 @@ Phs2(i) ==
             /\ \A j \in Proc: \E m \in rcvdMsgs[i]: m.type = "Phs2" /\ m.sndr = j
             /\ pc' = [pc EXCEPT ![i] = "CHOOSE"]
             /\ UNCHANGED << v, w, nCrash, sntMsgs, dval, rcvdMsgs, V >>
-        
+                
 (* Process i has received all PHASE2 messages and therefore, it can deterministically
    choose a value appearing in V[i]. 
  *)

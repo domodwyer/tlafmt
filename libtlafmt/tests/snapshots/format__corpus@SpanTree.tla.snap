@@ -110,7 +110,7 @@ PostCondition ==
             /\ dist[n] \in 1..(MaxCardinality - 1)
             /\ mom[n] \in Nbrs(n)
             /\ dist[n] = dist[mom[n]] + 1
-        
+            
 (***************************************************************************)
 (* ENABLED Next is the TLA+ formula that is true of a state iff (if and    *)
 (* only if) there is a step satisfying Next starting in the state.  Thus,  *)

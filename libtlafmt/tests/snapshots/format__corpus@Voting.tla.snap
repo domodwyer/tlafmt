@@ -174,7 +174,7 @@ ShowsSafeAt(Q, b, v) ==
     /\ \E c \in - 1..(b - 1):
         /\ (c /= - 1) => \E a \in Q: VotedFor(a, c, v)
         /\ \A d \in (c + 1)..(b - 1), a \in Q: DidNotVoteAt(a, d)
-        
+            
 (***************************************************************************)
 (* This is the theorem that's at the heart of the algorithm.  It shows     *)
 (* that if the algorithm has maintained the invariance of Inv, then the    *)

@@ -1,7 +1,7 @@
 use tree_sitter::Node;
 
 use crate::{
-    ast_format::{case::format_case, format_comment, format_module},
+    ast_format::{case::format_case, format_comment, format_module, list_item::format_list_item},
     get_str,
     helpers::EmptyLines,
     token::Token,
@@ -130,8 +130,7 @@ where
         // Conjunction and disjunction always appear on newlines and are never
         // explicitly indented - the parent list nodes are indented instead.
         "conj_item" | "disj_item" => {
-            writer.push(Token::Newline)?;
-            skip_indent = true
+            return format_list_item(def, input, empty_lines, writer);
         }
 
         // These are always indented.

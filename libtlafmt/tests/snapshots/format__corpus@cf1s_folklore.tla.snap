@@ -114,7 +114,7 @@ Next ==
         \/ Decide(self)
         \/ Faulty(self)
         \/ UNCHANGED vars
-        
+            
 (* Add weak fairness condition since we want to check liveness properties.  *)
 (* We require that if UponV1 (UponNonFaulty, UponAcceptNotSent, UponAccept) *)
 (* ever becomes forever enabled, then this step must eventually occur.      *)

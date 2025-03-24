@@ -87,30 +87,30 @@ Init == (* Global variables *)
 RS(self) ==
     /\ pc[self] = "RS"
     /\ IF rmState[self] \in {"working", "prepared"}
-    THEN
-        /\
-            \/
-                /\ rmState[self] = "working"
-                /\ rmState' = [rmState EXCEPT ![self] = "prepared"]
-            \/
-                /\
-                    \/
-                        /\ tmState = "commit"
-                        /\ rmState' = [rmState EXCEPT ![self] = "committed"]
-                    \/
-                        /\ rmState[self] = "working" \/ tmState = "abort"
-                        /\ rmState' = [rmState EXCEPT ![self] = "aborted"]
-            \/
-                /\ IF RMMAYFAIL /\ ~\E rm \in RM: rmState[rm] = "failed"
-                THEN
-                    /\ rmState' = [rmState EXCEPT ![self] = "failed"]
-                ELSE
-                    /\ TRUE
-                    /\ UNCHANGED rmState
-        /\ pc' = [pc EXCEPT ![self] = "RS"]
-    ELSE
-        /\ pc' = [pc EXCEPT ![self] = "Done"]
-        /\ UNCHANGED rmState
+        THEN
+            /\
+                \/
+                    /\ rmState[self] = "working"
+                    /\ rmState' = [rmState EXCEPT ![self] = "prepared"]
+                \/
+                    /\
+                        \/
+                            /\ tmState = "commit"
+                            /\ rmState' = [rmState EXCEPT ![self] = "committed"]
+                        \/
+                            /\ rmState[self] = "working" \/ tmState = "abort"
+                            /\ rmState' = [rmState EXCEPT ![self] = "aborted"]
+                \/
+                        /\ IF RMMAYFAIL /\ ~\E rm \in RM: rmState[rm] = "failed"
+                            THEN
+                                /\ rmState' = [rmState EXCEPT ![self] = "failed"]
+                            ELSE
+                                /\ TRUE
+                                /\ UNCHANGED rmState
+            /\ pc' = [pc EXCEPT ![self] = "RS"]
+        ELSE
+            /\ pc' = [pc EXCEPT ![self] = "Done"]
+            /\ UNCHANGED rmState
     /\ UNCHANGED tmState
 
 RManager(self) == RS(self)
@@ -135,11 +135,11 @@ TC ==
 F1 ==
     /\ pc[0] = "F1"
     /\ IF TMMAYFAIL
-    THEN
-        /\ tmState' = "hidden"
-    ELSE
-        /\ TRUE
-        /\ UNCHANGED tmState
+        THEN
+            /\ tmState' = "hidden"
+        ELSE
+            /\ TRUE
+            /\ UNCHANGED tmState
     /\ pc' = [pc EXCEPT ![0] = "Done"]
     /\ UNCHANGED rmState
 
@@ -152,11 +152,11 @@ TA ==
 F2 ==
     /\ pc[0] = "F2"
     /\ IF TMMAYFAIL
-    THEN
-        /\ tmState' = "hidden"
-    ELSE
-        /\ TRUE
-        /\ UNCHANGED tmState
+        THEN
+            /\ tmState' = "hidden"
+        ELSE
+            /\ TRUE
+            /\ UNCHANGED tmState
     /\ pc' = [pc EXCEPT ![0] = "Done"]
     /\ UNCHANGED rmState
 

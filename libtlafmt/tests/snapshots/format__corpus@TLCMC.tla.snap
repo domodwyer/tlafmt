@@ -205,20 +205,20 @@ Init == (* Global variables *)
 init ==
     /\ pc = "init"
     /\ IF i <= Len(S)
-    THEN
-        /\ state' = S[i]
-        /\ C' = (C \union {state'})
-        /\ i' = i + 1
-        /\ IF state' \in ViolationStates
         THEN
-            /\ counterexample' = << state' >>
-            /\ pc' = "trc"
+            /\ state' = S[i]
+            /\ C' = (C \union {state'})
+            /\ i' = i + 1
+            /\ IF state' \in ViolationStates
+                THEN
+                    /\ counterexample' = << state' >>
+                    /\ pc' = "trc"
+                ELSE
+                    /\ pc' = "init"
+                    /\ UNCHANGED counterexample
         ELSE
-            /\ pc' = "init"
-            /\ UNCHANGED counterexample
-    ELSE
-        /\ pc' = "initPost"
-        /\ UNCHANGED << C, state, i, counterexample >>
+            /\ pc' = "initPost"
+            /\ UNCHANGED << C, state, i, counterexample >>
     /\ UNCHANGED << S, successors, T >>
 
 initPost ==
@@ -231,56 +231,56 @@ initPost ==
 scsr ==
     /\ pc = "scsr"
     /\ IF Len(S) /= 0
-    THEN
-        /\ state' = Head(S)
-        /\ S' = Tail(S)
-        /\ successors' = SuccessorsOf(state', StateGraph) \ C
-        /\ IF SuccessorsOf(state', StateGraph) = {}
         THEN
-            /\ counterexample' = << state' >>
-            /\ pc' = "trc"
+            /\ state' = Head(S)
+            /\ S' = Tail(S)
+            /\ successors' = SuccessorsOf(state', StateGraph) \ C
+            /\ IF SuccessorsOf(state', StateGraph) = {}
+                THEN
+                    /\ counterexample' = << state' >>
+                    /\ pc' = "trc"
+                ELSE
+                    /\ pc' = "each"
+                    /\ UNCHANGED counterexample
         ELSE
-            /\ pc' = "each"
-            /\ UNCHANGED counterexample
-    ELSE
-        /\ Assert(S = <<>> /\ ViolationStates = {},
-            "Failure of assertion at line 164, column 8.")
-        /\ pc' = "Done"
-        /\ UNCHANGED << S, state, successors, counterexample >>
+            /\ Assert(S = <<>> /\ ViolationStates = {},
+                "Failure of assertion at line 164, column 8.")
+            /\ pc' = "Done"
+            /\ UNCHANGED << S, state, successors, counterexample >>
     /\ UNCHANGED << C, i, T >>
 
 each ==
     /\ pc = "each"
     /\ IF successors /= {}
-    THEN
-        /\ \E succ \in successors:
-            /\ successors' = successors \ {succ}
-            /\ C' = (C \union {succ})
-            /\ S' = S \o << succ >>
-            /\ T' = T \o << << state, succ >> >>
-            /\ IF succ \in ViolationStates
-            THEN
-                /\ counterexample' = << succ >>
-                /\ pc' = "trc"
-            ELSE
-                /\ pc' = "each"
-                /\ UNCHANGED counterexample
-    ELSE
-        /\ pc' = "scsr"
-        /\ UNCHANGED << S, C, successors, counterexample, T >>
+        THEN
+            /\ \E succ \in successors:
+                /\ successors' = successors \ {succ}
+                /\ C' = (C \union {succ})
+                /\ S' = S \o << succ >>
+                /\ T' = T \o << << state, succ >> >>
+                /\ IF succ \in ViolationStates
+                    THEN
+                        /\ counterexample' = << succ >>
+                        /\ pc' = "trc"
+                    ELSE
+                        /\ pc' = "each"
+                        /\ UNCHANGED counterexample
+        ELSE
+            /\ pc' = "scsr"
+            /\ UNCHANGED << S, C, successors, counterexample, T >>
     /\ UNCHANGED << state, i >>
 
 trc ==
     /\ pc = "trc"
     /\ IF Head(counterexample) \notin StateGraph.initials
-    THEN
-        /\ counterexample' = << Predecessor(T, Head(counterexample)) >> \o counterexample
-        /\ pc' = "trc"
-    ELSE
-        /\ Assert(counterexample /= <<>>,
-            "Failure of assertion at line 177, column 20.")
-        /\ pc' = "Done"
-        /\ UNCHANGED counterexample
+        THEN
+            /\ counterexample' = << Predecessor(T, Head(counterexample)) >> \o counterexample
+            /\ pc' = "trc"
+        ELSE
+            /\ Assert(counterexample /= <<>>,
+                "Failure of assertion at line 177, column 20.")
+            /\ pc' = "Done"
+            /\ UNCHANGED counterexample
     /\ UNCHANGED << S, C, state, successors, i, T >>
 
 (* Allow infinite stuttering to prevent deadlock on termination. *)

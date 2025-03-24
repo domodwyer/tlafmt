@@ -5,6 +5,7 @@
 
 mod case;
 mod comment;
+mod list_item;
 mod module;
 mod node;
 

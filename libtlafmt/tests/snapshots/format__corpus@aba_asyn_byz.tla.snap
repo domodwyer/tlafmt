@@ -89,7 +89,7 @@ Receive(i, includeByz) ==
         /\ UNCHANGED << nSntE, nSntR, nRcvdE, nByz, pc >>
     \/
         /\ UNCHANGED vars
-    
+        
 (* Process i will send an ECHO message if it proposed 1 and did not send an ECHO message. 
    If process i proposed 0, did not send an ECHO message but has received greater than 
    (N + F) / 2 ECHO messages or (F + 1) READY messages, it will also send an ECHO messages. 
@@ -133,7 +133,7 @@ Next ==
         \/ SendReady(self)
         \/ Decide(self)
         \/ UNCHANGED vars
-        
+            
 (* Add weak fairness condition since we want to check liveness properties.  *)
 Spec == Init /\ [][Next]_vars
 /\ WF_vars(\E self \in Proc:

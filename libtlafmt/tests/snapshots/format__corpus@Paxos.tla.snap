@@ -104,7 +104,7 @@ PaxosPromise ==
             acceptor |-> a,
             maxVBallot |-> maxVBallot[a],
             maxValue |-> maxValue[a]])
-        
+            
 (*
     Phase 2a:
 
@@ -133,7 +133,7 @@ PaxosAccept ==
                 /\ SendMessage([type |-> "P2a",
                     ballot |-> b,
                     value |-> v])
-                
+                        
 (*
     Phase 2b:
 
@@ -158,7 +158,7 @@ PaxosAccepted ==
             ballot |-> m.ballot,
             acceptor |-> a,
             value |-> m.value])
-        
+            
 (*
     Consensus is achieved when a majority of acceptors accept the same ballot number (rather than the same value).
     Because each ballot is unique to a proposer and only one value may be proposed per ballot, all acceptors
@@ -210,7 +210,7 @@ PaxosNontriviality ==
     /\ \A m \in p1bMessages:
         /\ m.maxValue \in Values \/ 0 = m.maxVBallot
         /\ m.maxValue = none \/ 0 < m.maxVBallot
-        
+            
 \* Consistency safety property: At most 1 value can be learnt.
 PaxosConsistency == [][decision = none]_<< decision >>
 

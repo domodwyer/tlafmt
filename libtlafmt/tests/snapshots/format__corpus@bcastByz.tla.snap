@@ -158,7 +158,7 @@ Step(self) ==
         \/ UponNonFaulty(self)
         \/ UponAcceptNotSentBefore(self)
         \/ UponAcceptSentBefore(self)
-    
+        
 (* Some correct process does a transition step.*)
 Next ==
     \/ \E self \in Corr: Step(self)

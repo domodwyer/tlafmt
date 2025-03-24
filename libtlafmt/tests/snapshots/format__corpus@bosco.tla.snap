@@ -184,7 +184,7 @@ Step(self) ==
         \/ UponUnderlying1(self)
         \/ UponUnderlyingUndecided(self)
         \/ pc' = pc /\ sent' = sent
-    
+        
 (* Initial step *)
 Init ==
     /\ pc \in [Corr -> {"V0", "V1"}]  (* Processes can propose V0 and V1. *)

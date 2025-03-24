@@ -187,7 +187,7 @@ ThreadShouldProbe_probe(t) ==
         \/ ProbeStart(t) /\ UNCHANGED << counter_resets >>
         \/ ProbeContinue(t) /\ UNCHANGED << vars_counts, probe_windows >>
         \/ ProbeExhausted(t) /\ UNCHANGED << vars_counts, vars_probes >>
-    
+        
 \* The thread makes a request to the upstream and records the result.
 ThreadMakeRequest(t) ==
     /\ GetThread(t) = T_MakeRequest

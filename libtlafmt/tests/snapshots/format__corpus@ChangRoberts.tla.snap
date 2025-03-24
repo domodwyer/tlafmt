@@ -84,11 +84,11 @@ Init == (* Global variables *)
 n0(self) ==
     /\ pc[self] = "n0"
     /\ IF initiator[self]
-    THEN
-        /\ msgs' = [msgs EXCEPT ![succ(self)] = @ \union {Id[self]}]
-    ELSE
-        /\ TRUE
-        /\ msgs' = msgs
+        THEN
+            /\ msgs' = [msgs EXCEPT ![succ(self)] = @ \union {Id[self]}]
+        ELSE
+            /\ TRUE
+            /\ msgs' = msgs
     /\ pc' = [pc EXCEPT ![self] = "n1"]
     /\ UNCHANGED << initiator, state >>
 
@@ -102,17 +102,17 @@ n1(self) ==
                 /\ state' = state
             ELSE
                 /\ IF id < Id[self]
-                THEN
-                    /\ state' = [state EXCEPT ![self] = "lost"]
-                    /\ msgs' = [_msgs EXCEPT ![succ(self)] = @ \union {id}]
-                ELSE
-                    /\ msgs' = _msgs
-                    /\ IF id = Id[self]
                     THEN
-                        /\ state' = [state EXCEPT ![self] = "won"]
+                        /\ state' = [state EXCEPT ![self] = "lost"]
+                        /\ msgs' = [_msgs EXCEPT ![succ(self)] = @ \union {id}]
                     ELSE
-                        /\ TRUE
-                        /\ state' = state
+                        /\ msgs' = _msgs
+                        /\ IF id = Id[self]
+                            THEN
+                                /\ state' = [state EXCEPT ![self] = "won"]
+                            ELSE
+                                /\ TRUE
+                                /\ state' = state
     /\ pc' = [pc EXCEPT ![self] = "n1"]
     /\ UNCHANGED initiator
 

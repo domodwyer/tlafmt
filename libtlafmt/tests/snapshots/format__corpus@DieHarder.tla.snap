@@ -36,7 +36,7 @@ Min(m, n) == IF m < n THEN m ELSE n
 (***************************************************************************)
 VARIABLE contents \* contents[j] is the amount of water in jug j
 
-TypeOK == contents \in [Jug -> Nat ]
+TypeOK == contents \in [Jug -> Nat]
 
 Init == contents = [j \in Jug |-> 0]
 --------------------------------------------------------------------------------

@@ -30,7 +30,7 @@ LOCAL ZSeqOfLength(S, n) ==
     ELSE [0..(n - 1) -> S]
 
 \* The set of all zero-indexed sequences of elements in S
-ZSeq(S) == UNION {ZSeqOfLength(S, n): n \in Nat }
+ZSeq(S) == UNION {ZSeqOfLength(S, n): n \in Nat}
 
 \* The length of zero-indexed sequence s
 ZLen(s) ==

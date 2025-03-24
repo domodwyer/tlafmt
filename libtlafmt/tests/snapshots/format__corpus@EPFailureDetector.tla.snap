@@ -151,9 +151,9 @@ Predict(i) ==
 
 (* Type invariant *)
 TypeOK ==
-    /\ fromLastHeard \in [Proc -> [Proc -> Int ]]
+    /\ fromLastHeard \in [Proc -> [Proc -> Int]]
     /\ \A p, q \in Proc: fromLastHeard[p][q] \in Int
-    /\ delta \in [Proc -> [Proc -> Int ]]
+    /\ delta \in [Proc -> [Proc -> Int]]
     /\ suspected \in [Proc -> SUBSET Proc]
     /\ outgoingMessages \in [Proc -> SUBSET Messages]
 

@@ -14,7 +14,7 @@ vars == << log, executed >>
 
 TypeOK ==
     /\ log \in Seq(Transaction)
-    /\ executed \in [Node -> Nat ]
+    /\ executed \in [Node -> Nat]
 
 Convergence == []<>(\A n \in Node: executed[n] = Len(log))
 

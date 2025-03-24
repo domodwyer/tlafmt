@@ -6,7 +6,7 @@ input_file: libtlafmt/tests/corpus/Bags.tla
 --------------------------------- MODULE Bags ----------------------------------
 LOCAL INSTANCE Naturals
 
-IsABag(B) == B \in [DOMAIN B -> {n \in Nat : n > 0}]
+IsABag(B) == B \in [DOMAIN B -> {n \in Nat: n > 0}]
 
 BagToSet(B) == DOMAIN B
 
@@ -41,7 +41,7 @@ B1 \sqsubseteq B2 ==
 
 SubBag(B) ==
     LET AllBagsOfSubset ==
-    UNION {[SB -> {n \in Nat : n > 0}]: SB \in SUBSET BagToSet(B)}
+    UNION {[SB -> {n \in Nat: n > 0}]: SB \in SUBSET BagToSet(B)}
     IN {SB \in AllBagsOfSubset: \A e \in DOMAIN SB: SB[e] <= B[e]}
 
 BagOfAll( F(_) , B) ==

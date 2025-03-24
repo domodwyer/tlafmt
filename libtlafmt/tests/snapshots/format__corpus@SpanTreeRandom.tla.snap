@@ -56,7 +56,7 @@ Nbrs(n) == {m \in Nodes: {m, n} \in Edges}
 
 TypeOK ==
     /\ mom \in [Nodes -> Nodes]
-    /\ dist \in [Nodes -> Nat ]
+    /\ dist \in [Nodes -> Nat]
     /\ \A e \in Edges: (e \subseteq Nodes) /\ (Cardinality(e) = 2)
 
 Init ==

@@ -518,7 +518,7 @@ OpDefOrDeclNodeFields ==
       (* running tests of the spec with TLC.)                               *)
       (**********************************************************************)
     
-        numberOfArgs: Nat ,
+        numberOfArgs: Nat,
         (**********************************************************************)
       (* The number of arguments of the operator.  Operators that can take  *)
       (* an arbitrary number of arguments are represented by an infinite    *)
@@ -673,7 +673,7 @@ InstanceNode ==
         (* substitution with subFor and subWith fields equal to the empty   *)
         (* sequence.                                                        *)
         (********************************************************************)
-        numberOfArgs: Nat ,
+        numberOfArgs: Nat,
         levelConstraints: SUBSET LevelConstraint,
         argLevelConstraints: SUBSET ArgLevelConstraint,
         argLevelParams: SUBSET ArgLevelParam]

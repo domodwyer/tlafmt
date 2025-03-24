@@ -16,12 +16,12 @@ LOCAL INSTANCE Naturals
   (* Imports the definitions from Naturals, but don't export them.         *)
   (*************************************************************************)
 
-Seq(S) == UNION {[1..n -> S]: n \in Nat }
+Seq(S) == UNION {[1..n -> S]: n \in Nat}
 (*************************************************************************)
   (* The set of all sequences of elements in S.                            *)
   (*************************************************************************)
 
-Len(s) == CHOOSE n \in Nat : DOMAIN s = 1..n
+Len(s) == CHOOSE n \in Nat: DOMAIN s = 1..n
 (*************************************************************************)
   (* The length of sequence s.                                             *)
   (*************************************************************************)

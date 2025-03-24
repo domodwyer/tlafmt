@@ -12,11 +12,11 @@ Even(x) == x % 2 = 0
 Odd(x) == x % 2 = 1
 
 \* Z3 can solve it in a single step
-THEOREM \A x \in Nat : Even(x + x)
+THEOREM \A x \in Nat: Even(x + x)
 BY Z3 DEF Even
 
 \* alternatively we prove this step-wise by making a case distinction on x being even or odd
-THEOREM T1 == \A x \in Nat : Even(x + x)
+THEOREM T1 == \A x \in Nat: Even(x + x)
 <1>a TAKE x \in Nat
 <1>1 \A z \in Nat : Even(z) \/ Odd(z) BY DEF Even, Odd
 <1>2 CASE Even(x)

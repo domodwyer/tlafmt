@@ -142,7 +142,7 @@ Messages == [from: Proc, to: Proc, type: {"alive"}]
 (* Whenever a message is picked up, the communication system puts this message into
    a box with an age. The age shows how long a message has been in transit. The field
    "content" points to a message. *)
-Boxes == [content: Messages, age: Int ]
+Boxes == [content: Messages, age: Int]
 
 (*  - maxAge is an estimated upper bound of how long a message in transit. In other 
       word, this constant should be a maximum age of above boxes.

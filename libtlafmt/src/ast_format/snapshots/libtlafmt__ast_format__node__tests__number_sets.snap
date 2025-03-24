@@ -1,0 +1,10 @@
+---
+source: libtlafmt/src/ast_format/node.rs
+expression: output
+---
+----------------------------------- MODULE B -----------------------------------
+EXTENDS Integers
+X == [version: Int]
+X == [version: Real]
+X == [version: Nat]
+================================================================================

@@ -12,7 +12,7 @@ CONSTANT Node
 VARIABLE counter
 vars == counter
 
-TypeOK == counter \in [Node -> [Node -> Nat ]]
+TypeOK == counter \in [Node -> [Node -> Nat]]
 
 Safety == \A n, o \in Node: counter[n][n] >= counter[o][n]
 

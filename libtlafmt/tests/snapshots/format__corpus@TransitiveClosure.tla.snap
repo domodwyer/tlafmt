@@ -88,7 +88,7 @@ R ** T == LET SR == Support(R)
 (* to the following definition.                                            *)
 (***************************************************************************)
 TC2(R) ==
-    LET C[n \in Nat ] == IF n = 0 THEN R
+    LET C[n \in Nat] == IF n = 0 THEN R
     ELSE C[n - 1] \union (C[n - 1] ** R)
     IN IF R = {} THEN {} ELSE C[Cardinality(Support(R)) - 1]
 
@@ -160,7 +160,7 @@ ASSUME \A N \in 0..3 :
 (* operator R on a set S, R(s, t) equals FALSE for all s and t not in S.)  *)
 (***************************************************************************)
 TC5( R(_,_) , S, s, t) ==
-    LET CR[n \in Nat , v \in S] ==
+    LET CR[n \in Nat, v \in S] ==
         IF n = 0 THEN R(s, v)
         ELSE
             \/ CR[n - 1, v]

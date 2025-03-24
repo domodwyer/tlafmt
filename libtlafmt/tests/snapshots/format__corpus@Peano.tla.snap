@@ -14,5 +14,5 @@ ASSUME \E N, Z, Sc : PeanoAxioms(N, Z, Sc)
 
 Succ == CHOOSE Sc: \E N, Z : PeanoAxioms(N, Z, Sc)
 Nat == DOMAIN Succ
-Zero == CHOOSE Z: PeanoAxioms( Nat , Z, Succ)
+Zero == CHOOSE Z: PeanoAxioms(Nat, Z, Succ)
 ================================================================================

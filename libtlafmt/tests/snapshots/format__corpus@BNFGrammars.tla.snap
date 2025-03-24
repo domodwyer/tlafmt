@@ -18,10 +18,10 @@ L & M == {s \o t: s \in L, t \in M}
 L | M == L \union M
 
 L ^+ ==
-    LET LL[n \in Nat ] == IF n = 0 THEN L
+    LET LL[n \in Nat] == IF n = 0 THEN L
     ELSE LL[n - 1] | (LL[n - 1] & L)
 
-    IN UNION {LL[n]: n \in Nat }
+    IN UNION {LL[n]: n \in Nat}
 
 L ^* == Nil | L ^+
 --------------------------------------------------------------------------------

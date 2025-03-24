@@ -31,8 +31,8 @@ Gossip(n, o) ==
     LET Max(a, b) == IF a > b THEN a ELSE b IN
         counter' = [
             counter EXCEPT ![o] = [
-                        nodeView \in Node |->
-                        Max(counter[n][nodeView], counter[o][nodeView])
+                    nodeView \in Node |->
+                    Max(counter[n][nodeView], counter[o][nodeView])
                 ]
         ]
 

@@ -76,7 +76,7 @@ Next == \E j \in Jug:
     \/ FillJug(j)
     \/ EmptyJug(j)
     \/ \E k \in Jug \ {j}: JugToJug(j, k)
-    
+
 (***************************************************************************)
 (* We define the formula Spec to be the complete specification, asserting  *)
 (* of a behavior that it begins in a state satisfying Init, and that every *)

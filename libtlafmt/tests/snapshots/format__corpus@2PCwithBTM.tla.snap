@@ -69,9 +69,9 @@ VARIABLES rmState, tmState, pc
 
 (* define statement *)
 canCommit == \A rmc \in RM: rmState[rmc] \in {"prepared"}
-    \/ \E rm \in RM: rmState[rm] \in {"committed"}
+\/ \E rm \in RM: rmState[rm] \in {"committed"}
 canAbort == \E rm \in RM: rmState[rm] \in {"aborted", "failed"}
-    /\ ~\E rmc \in RM: rmState[rmc] = "committed"
+/\ ~\E rmc \in RM: rmState[rmc] = "committed"
 
 vars == << rmState, tmState, pc >>
 

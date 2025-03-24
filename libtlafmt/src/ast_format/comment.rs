@@ -42,7 +42,7 @@ where
 
     let orig = writer.indent_get();
 
-    writer.indent_set(Indent::new(0));
+    writer.indent_set(Indent::ZERO);
     let ret = writer.push(Token::Comment(get_str(&def, input), Position::from(&def)));
     writer.indent_set(orig);
 

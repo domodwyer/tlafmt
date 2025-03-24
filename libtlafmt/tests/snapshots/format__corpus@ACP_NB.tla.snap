@@ -69,9 +69,9 @@ forward(i, j) ==
     /\ participant[i].forward[i] /= notsent
     /\ participant[i].forward[j] = notsent
     /\ participant' = [participant EXCEPT ![i] =
-                [@ EXCEPT !.forward =
-                    [@ EXCEPT ![j] = participant[i].forward[i]]
-                ]
+            [@ EXCEPT !.forward =
+                [@ EXCEPT ![j] = participant[i].forward[i]]
+            ]
         ]
     /\ UNCHANGED << coordinator >>
 
@@ -89,9 +89,9 @@ preDecideOnForward(i, j) ==
     /\ participant[i].forward[i] = notsent
     /\ participant[j].forward[i] /= notsent
     /\ participant' = [participant EXCEPT ![i] =
-                [@ EXCEPT !.forward =
-                    [@ EXCEPT ![i] = participant[j].forward[i]]
-                ]
+            [@ EXCEPT !.forward =
+                [@ EXCEPT ![i] = participant[j].forward[i]]
+            ]
         ]
     /\ UNCHANGED << coordinator >>
 
@@ -108,9 +108,9 @@ preDecide(i) ==
     /\ participant[i].forward[i] = notsent
     /\ coordinator.broadcast[i] /= notsent
     /\ participant' = [participant EXCEPT ![i] =
-                [@ EXCEPT !.forward =
-                    [@ EXCEPT ![i] = coordinator.broadcast[i]]
-                ]
+            [@ EXCEPT !.forward =
+                [@ EXCEPT ![i] = coordinator.broadcast[i]]
+            ]
         ]
     /\ UNCHANGED << coordinator >>
 
@@ -125,7 +125,7 @@ decideNB(i) ==
     /\ participant[i].alive
     /\ \A j \in participants: participant[i].forward[j] /= notsent
     /\ participant' = [participant EXCEPT ![i] =
-                [@ EXCEPT !.decision = participant[i].forward[i]]
+            [@ EXCEPT !.decision = participant[i].forward[i]]
         ]
     /\ UNCHANGED << coordinator >>
 

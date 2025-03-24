@@ -31,7 +31,7 @@ where
     /// Initialise a [`Renderer`] to write to `out`.
     pub(crate) fn new(out: W) -> Self {
         Self {
-            indent_depth: Indent::new(0),
+            indent_depth: Indent::ZERO,
             indent: IndentDecorator::new(out),
             buf: Default::default(),
             last_token_was_newline: false,
@@ -141,7 +141,7 @@ where
 
                     // Write the rest of the lines without indentation.
                     let orig = self.indent_depth;
-                    self.indent.set(Indent::new(0));
+                    self.indent.set(Indent::ZERO);
                     for v in comment_parts {
                         self.indent.write_all(b"\n")?;
                         self.indent.write_all(v.as_bytes())?;
@@ -382,7 +382,7 @@ mod tests {
     use super::*;
 
     fn format<'a>(tokens: impl IntoIterator<Item = Token<'a>>) -> String {
-        format_indented(tokens.into_iter().map(|v| (v, Indent::new(0))))
+        format_indented(tokens.into_iter().map(|v| (v, Indent::ZERO)))
     }
 
     fn format_indented<'a>(tokens: impl IntoIterator<Item = (Token<'a>, Indent)>) -> String {
@@ -713,7 +713,7 @@ mod tests {
     #[test]
     fn test_comment_only_line_positioning() {
         let output: String = format_indented([
-            (Token::Newline, Indent::new(0)),
+            (Token::Newline, Indent::ZERO),
             (
                 Token::Comment(r"(* 42 *)", crate::token::Position::Relative(1)),
                 Indent::new(1),

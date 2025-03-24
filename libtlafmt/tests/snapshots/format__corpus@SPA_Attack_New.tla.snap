@@ -383,20 +383,20 @@ UsrConnectServerEnhance ==
     /\ uState' = "Auth_End_Connecting"
     /\ uTstamp' = uTstamp + 1 \* uTstamp increases each session for anti-replay.
     /\ AuthChannel' = Append(AuthChannel,
-                [MsgID |-> "SPA_AUTH",
-                    sIP |-> uIP,
-                    sPort |-> SelLocalPort(uTstamp, USER_BASEPORT), \* the random port of SPA message 
-                    dIP |-> uSDPSvrInfo.IP,
-                    dPort |-> uSDPSvrInfo.Port,
-                    ClientID |-> uID,
-                    Tstamp |-> uTstamp,
-                    CliIP |-> Encrypt(uIP, Key), \* <CliIP,CliPort,SvrIP,SvrPort> is the connecting TCP link info to the target server 
-                    CliPort |-> Encrypt(SelLocalPort(uTstamp, USER_BASEPORT) + 1, Key), \*the random local port of TCP connection for data access    
-                    SvrIP |-> Encrypt(uSvrInfo.IP, Key),
-                    SvrPort |-> Encrypt(uSvrInfo.Port, Key),
-                    HMAC |-> CalcHMAC(uIP, uID, uTstamp, Encrypt(uIP, Key), Encrypt(SelLocalPort(uTstamp + 1, USER_BASEPORT), Key),
-                        Encrypt(uSvrInfo.IP, Key), Encrypt(uSvrInfo.Port, Key), Key),
-                    Type |-> "User"]
+            [MsgID |-> "SPA_AUTH",
+                sIP |-> uIP,
+                sPort |-> SelLocalPort(uTstamp, USER_BASEPORT), \* the random port of SPA message 
+                dIP |-> uSDPSvrInfo.IP,
+                dPort |-> uSDPSvrInfo.Port,
+                ClientID |-> uID,
+                Tstamp |-> uTstamp,
+                CliIP |-> Encrypt(uIP, Key), \* <CliIP,CliPort,SvrIP,SvrPort> is the connecting TCP link info to the target server 
+                CliPort |-> Encrypt(SelLocalPort(uTstamp, USER_BASEPORT) + 1, Key), \*the random local port of TCP connection for data access    
+                SvrIP |-> Encrypt(uSvrInfo.IP, Key),
+                SvrPort |-> Encrypt(uSvrInfo.Port, Key),
+                HMAC |-> CalcHMAC(uIP, uID, uTstamp, Encrypt(uIP, Key), Encrypt(SelLocalPort(uTstamp + 1, USER_BASEPORT), Key),
+                    Encrypt(uSvrInfo.IP, Key), Encrypt(uSvrInfo.Port, Key), Key),
+                Type |-> "User"]
         )
     /\ uAuthSession' = uAuthSession \union {Head(AuthChannel')} \* Auth session is recorded in Log
     /\ uTCPLinkSet = {}
@@ -446,8 +446,8 @@ EndPointBuildTcpAckPkt(p, t) == \* End point equipment might be a legistimate us
 
 UsrRcvSynAck ==
     /\ (
-                \/ uState = "Auth_End_Connecting"
-                \/ uState = "Auth_End_Reconnecting"
+            \/ uState = "Auth_End_Connecting"
+            \/ uState = "Auth_End_Reconnecting"
         )
     /\ uTCPLinkSet /= {}
     /\ uChannel /= <<>>
@@ -488,7 +488,7 @@ TcpLnkHasMatchAcl(l, AclSet) == \E r \in AclSet:
     /\ r.dIP = l.dIP
     /\ r.dPort = l.dPort
     /\ r.action = "Accept"
-    
+
 \* Whether the fire wall has packets dropping record for the given TCP link x.
 WithDropPkts(x) == \E p \in DropPackets:
     /\ p.sIP = x.sIP
@@ -683,8 +683,8 @@ FwProcEndPointAccessEx ==
     /\ FwState = "Work"
     /\ FwDataChannel /= <<>>
     /\ (
-                \/ Head(FwDataChannel).Flg = "TCP_SYN" \* to simplify the model, we only consider TCP connection proceudre for data access
-                \/ Head(FwDataChannel).Flg = "TCP_ACK" \* the end point euipments as TCP client, only send TCP_SYN and TCP_ACK packet to target server.
+            \/ Head(FwDataChannel).Flg = "TCP_SYN" \* to simplify the model, we only consider TCP connection proceudre for data access
+            \/ Head(FwDataChannel).Flg = "TCP_ACK" \* the end point euipments as TCP client, only send TCP_SYN and TCP_ACK packet to target server.
         )
     /\ (IF AclMatch4Tuple(Head(FwDataChannel), AclRuleSet)
             THEN \*CASE1 : the incoming packets exactly match a 4 tuple rule
@@ -757,24 +757,24 @@ ServerRcvTCPSyn ==
                         THEN \*If the client is legistimate user, then send TCP_SYN_ACK packet to legistimate user.
                         (
                             /\ uChannel' = Append(uChannel, [
-                                        sIP |-> Head(sChannel).dIP,
-                                        sPort |-> Head(sChannel).dPort,
-                                        dIP |-> Head(sChannel).sIP,
-                                        dPort |-> Head(sChannel).sPort,
-                                        Flg |-> "TCP_SYN_ACK",
-                                        Type |-> Head(sChannel).Type]
+                                    sIP |-> Head(sChannel).dIP,
+                                    sPort |-> Head(sChannel).dPort,
+                                    dIP |-> Head(sChannel).sIP,
+                                    dPort |-> Head(sChannel).sPort,
+                                    Flg |-> "TCP_SYN_ACK",
+                                    Type |-> Head(sChannel).Type]
                                 )
                             /\ aChannel' = aChannel
                         )
                         ELSE \*If the client is attacker, then send TCP_SYN_ACK packet to attacker.
                         (
                             /\ aChannel' = Append(aChannel, [
-                                        sIP |-> Head(sChannel).dIP,
-                                        sPort |-> Head(sChannel).dPort,
-                                        dIP |-> Head(sChannel).sIP,
-                                        dPort |-> Head(sChannel).sPort,
-                                        Flg |-> "TCP_SYN_ACK",
-                                        Type |-> Head(sChannel).Type]
+                                    sIP |-> Head(sChannel).dIP,
+                                    sPort |-> Head(sChannel).dPort,
+                                    dIP |-> Head(sChannel).sIP,
+                                    dPort |-> Head(sChannel).sPort,
+                                    Flg |-> "TCP_SYN_ACK",
+                                    Type |-> Head(sChannel).Type]
                                 )
                             /\ uChannel' = uChannel
                         )
@@ -1252,9 +1252,9 @@ CliSvrLinkMatch(c, s) ==
 UserAccessAvailProperty ==
 <>[](
     /\ (\A x \in uTCPLinkSet:
-                    /\ x.State = "ESTABLISHED" \* scenario1: TCP link established, and exactly matched Acl Rule available in FW.  
-                    /\ \E y \in sTCPLinkSet: (CliSvrLinkMatch(x, y) /\ x.State = y.State)
-                    /\ AclMatch4Tuple(x, AclRuleSet)
+            /\ x.State = "ESTABLISHED" \* scenario1: TCP link established, and exactly matched Acl Rule available in FW.  
+            /\ \E y \in sTCPLinkSet: (CliSvrLinkMatch(x, y) /\ x.State = y.State)
+            /\ AclMatch4Tuple(x, AclRuleSet)
         )
     /\ uTCPLinkSet /= {}
 )
@@ -1313,10 +1313,10 @@ FwCorrectProperty == \*to simplify the model, we don't consider TCP packets re-t
         ELSE
             WithDropPkts(x)
     /\ \A x \in uTCPLinkSet: IF (x.State = "ESTABLISHED" /\ x.Retrans = FALSE)
-            THEN
-                WithOutDropPkts(x)
-            ELSE
-                WithDropPkts(x)
+        THEN
+            WithOutDropPkts(x)
+        ELSE
+            WithDropPkts(x)
 )
 
 ================================================================================

@@ -30,7 +30,7 @@ Attacks(queens, i, j) ==
    attack each other in it. *)
 IsSolution(queens) ==
     \A i \in 1..Len(queens) - 1: \A j \in i + 1..Len(queens):
-        ~Attacks(queens, i, j)
+    ~Attacks(queens, i, j)
 
 (* Compute the set of solutions of the N-queens problem. *)
 Solutions == {queens \in [1..N -> 1..N]: IsSolution(queens)}
@@ -87,7 +87,7 @@ nxtQ ==
             /\ \E queens \in todo:
                 LET nxtQ == Len(queens) + 1 IN
                     LET cols == {c \in 1..N: ~\E i \in 1..Len(queens):
-                                Attacks(Append(queens, c), i, nxtQ)} IN
+                            Attacks(Append(queens, c), i, nxtQ)} IN
                         LET exts == {Append(queens, c): c \in cols} IN
                         IF (nxtQ = N)
                         THEN

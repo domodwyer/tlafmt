@@ -133,7 +133,7 @@ Next ==
         \/ SendReady(self)
         \/ Decide(self)
         \/ UNCHANGED vars
-            
+        
 (* Add weak fairness condition since we want to check liveness properties.  *)
 Spec == Init /\ [][Next]_vars
 /\ WF_vars(\E self \in Proc:

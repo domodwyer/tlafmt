@@ -196,7 +196,7 @@ Move(S, b) ==
 (* asserts that A(x) is true for at least one value x in the set T.        *)
 (***************************************************************************)
 Next == \E S \in SUBSET who_is_on_bank[bank_of_boat]:
-        Move(S, bank_of_boat)
+    Move(S, bank_of_boat)
 
 (***************************************************************************)
 (* The usual reason for writing a spec is to check the system you're       *)

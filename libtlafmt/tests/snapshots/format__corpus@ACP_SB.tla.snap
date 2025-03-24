@@ -106,7 +106,7 @@ request(i) ==
     /\ coordinator.alive
     /\ ~coordinator.request[i]
     /\ coordinator' = [coordinator EXCEPT !.request =
-                [@ EXCEPT ![i] = TRUE]
+            [@ EXCEPT ![i] = TRUE]
         ]
     /\ UNCHANGED << participant >>
 
@@ -127,7 +127,7 @@ getVote(i) ==
     /\ coordinator.vote[i] = waiting
     /\ participant[i].voteSent
     /\ coordinator' = [coordinator EXCEPT !.vote =
-                [@ EXCEPT ![i] = participant[i].vote]
+            [@ EXCEPT ![i] = participant[i].vote]
         ]
     /\ UNCHANGED << participant >>
 
@@ -190,7 +190,7 @@ coordBroadcast(i) ==
     /\ coordinator.decision /= undecided
     /\ coordinator.broadcast[i] = notsent
     /\ coordinator' = [coordinator EXCEPT !.broadcast =
-                [@ EXCEPT ![i] = coordinator.decision]
+            [@ EXCEPT ![i] = coordinator.decision]
         ]
     /\ UNCHANGED << participant >>
 
@@ -221,7 +221,7 @@ sendVote(i) ==
     /\ participant[i].alive
     /\ coordinator.request[i]
     /\ participant' = [participant EXCEPT ![i] =
-                [@ EXCEPT !.voteSent = TRUE]
+            [@ EXCEPT !.voteSent = TRUE]
         ]
     /\ UNCHANGED << coordinator >>
 
@@ -240,7 +240,7 @@ abortOnVote(i) ==
     /\ participant[i].voteSent
     /\ participant[i].vote = no
     /\ participant' = [participant EXCEPT ![i] =
-                [@ EXCEPT !.decision = abort]
+            [@ EXCEPT !.decision = abort]
         ]
     /\ UNCHANGED << coordinator >>
 
@@ -258,7 +258,7 @@ abortOnTimeoutRequest(i) ==
     /\ ~coordinator.alive
     /\ ~coordinator.request[i]
     /\ participant' = [participant EXCEPT ![i] =
-                [@ EXCEPT !.decision = abort]
+            [@ EXCEPT !.decision = abort]
         ]
     /\ UNCHANGED << coordinator >>
 
@@ -276,7 +276,7 @@ decide(i) ==
     /\ participant[i].decision = undecided
     /\ coordinator.broadcast[i] /= notsent
     /\ participant' = [participant EXCEPT ![i] =
-                [@ EXCEPT !.decision = coordinator.broadcast[i]]
+            [@ EXCEPT !.decision = coordinator.broadcast[i]]
         ]
     /\ UNCHANGED << coordinator >>
 
@@ -289,7 +289,7 @@ decide(i) ==
 parDie(i) ==
     /\ participant[i].alive
     /\ participant' = [participant EXCEPT ![i] =
-                [@ EXCEPT !.alive = FALSE, !.faulty = TRUE]
+            [@ EXCEPT !.alive = FALSE, !.faulty = TRUE]
         ]
     /\ UNCHANGED << coordinator >>
 
@@ -337,7 +337,7 @@ Spec == Init /\ [][progN]_<< coordinator, participant >> /\ fairness
 AC1 == [] \A i, j \in participants:
     \/ participant[i].decision /= commit
     \/ participant[j].decision /= abort
-    
+
 \* If any participant decides commit, then all participants must have votes YES
 AC2 == []((\E i \in participants: participant[i].decision = commit)
     => (\A j \in participants: participant[j].vote = yes))

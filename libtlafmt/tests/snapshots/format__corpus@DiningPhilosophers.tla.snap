@@ -143,12 +143,12 @@ ProcSet == (1..NP)
 
 Init == (* Global variables *)
     /\ forks = [
-                fork \in 1..NP |-> [
+            fork \in 1..NP |-> [
                 
-                    holder |-> IF fork = 2 THEN 1 ELSE fork,
+                holder |-> IF fork = 2 THEN 1 ELSE fork,
                 
-                    clean |-> FALSE
-                ]
+                clean |-> FALSE
+            ]
         ]
     (* Process Philosopher *)
     /\ hungry = [self \in 1..NP |-> TRUE]

@@ -195,7 +195,7 @@ Inv ==
     /\ \A q \in Procs:
         /\ (pc[q] \in {"a", "b", "Done"}) => (toVroot[q] = {})
         /\ (pc[q] = "b") => (u[q] \in vroot \union marked)
-            
+        
 (***************************************************************************)
 (* To define a refinement mapping from states of the parallel algorithm to *)
 (* states of Misra's algorithm, we must define the expressions in this     *)

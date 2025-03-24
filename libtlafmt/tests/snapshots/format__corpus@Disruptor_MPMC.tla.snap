@@ -112,7 +112,7 @@ AvailablePublishedSequence ==
         IsPublished(max) => ~\E w \in Writers:
             /\ claimed_sequence[w] = max + 1
             /\ IsPublished(claimed_sequence[w])
-                
+            
 (***************************************************************************)
 (* Producer Actions:                                                       *)
 (***************************************************************************)
@@ -221,6 +221,6 @@ TypeOk ==
 (* Eventually always, consumers must have read all published values.       *)
 Liveliness ==
     \A r \in Readers: \A i \in 0..(MaxPublished - 1):
-        <>[](i \in 0..AvailablePublishedSequence => Len(consumed[r]) >= i + 1 /\ consumed[r][i + 1] = i)
+    <>[](i \in 0..AvailablePublishedSequence => Len(consumed[r]) >= i + 1 /\ consumed[r][i + 1] = i)
 
 ================================================================================

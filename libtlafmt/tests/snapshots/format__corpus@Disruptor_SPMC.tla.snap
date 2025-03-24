@@ -171,6 +171,6 @@ NoDataRaces == Buffer!NoDataRaces
 (* Eventually always, consumers must have read all published values.       *)
 Liveliness ==
     \A r \in Readers: \A i \in 0..(MaxPublished - 1):
-        <>[](i \in 0..published => Len(consumed[r]) >= i + 1 /\ consumed[r][i + 1] = i)
+    <>[](i \in 0..published => Len(consumed[r]) >= i + 1 /\ consumed[r][i + 1] = i)
 
 ================================================================================

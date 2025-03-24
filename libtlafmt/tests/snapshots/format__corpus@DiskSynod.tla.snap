@@ -116,7 +116,7 @@ EndPhase0(p) ==
         /\ \A r \in allBlocksRead(p): b > r.mbal
         /\ dblock' = [dblock EXCEPT
             ![p] = [(CHOOSE r \in allBlocksRead(p):
-                            \A s \in allBlocksRead(p): r.bal >= s.bal)
+                    \A s \in allBlocksRead(p): r.bal >= s.bal)
                 EXCEPT !.mbal = b]]
     /\ InitializePhase(p)
     /\ phase' = [phase EXCEPT ![p] = 1]

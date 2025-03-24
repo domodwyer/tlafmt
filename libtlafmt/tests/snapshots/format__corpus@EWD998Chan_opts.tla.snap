@@ -78,9 +78,9 @@ PassTokenOpts(n) ==
                                 [] "pt4" \in F /\ tkn.color = "black" -> 0
                                 [] OTHER    ->  n-1 ] =
                         Append(@, [tkn EXCEPT !.q = tkn.q + counter[n],
-                                !.color = IF color[n] = "black"
-                                    THEN "black"
-                                    ELSE tkn.color]),
+                        !.color = IF color[n] = "black"
+                            THEN "black"
+                            ELSE tkn.color]),
                     ![n] = RemoveAt(@, j)] \* pass on the token.
             (* Rule 7 *)
     /\ color' = [color EXCEPT ![n] = "white"]

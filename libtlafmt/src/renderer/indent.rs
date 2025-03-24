@@ -1,4 +1,4 @@
-use crate::{helpers::Indent, token::Token};
+use crate::{helpers::Indent, renderer::is_newline, token::Token};
 
 /// Process the token buffer, reducing the indentation of excessively indented
 /// blocks relative to the previous line.
@@ -25,7 +25,7 @@ use crate::{helpers::Indent, token::Token};
 /// ```
 ///
 pub(super) fn limit_indents(buf: &mut [(Token<'_>, Indent)]) {
-    recurse(buf);
+    recurse(buf, true, None);
 }
 
 /// The indentation rewriter state.
@@ -98,11 +98,15 @@ enum State {
     },
 }
 
-fn recurse(buf: &mut [(Token<'_>, Indent)]) -> usize {
+fn recurse(
+    buf: &mut [(Token<'_>, Indent)],
+    mut last_was_newline: bool,
+    current_depth: Option<Indent>,
+) -> usize {
     // Extract the current indentation depth for this call to operate relative
     // to.
-    let current_depth = match buf.first() {
-        Some((_, v)) => *v,
+    let current_depth = match current_depth.or(buf.first().map(|(_, v)| *v)) {
+        Some(v) => v,
         None => {
             return 0;
         }
@@ -111,18 +115,18 @@ fn recurse(buf: &mut [(Token<'_>, Indent)]) -> usize {
     // The rewrite state.
     let mut state = State::Skipping;
 
-    // Indentation is only effective immediately following a newline token,
-    // therefore only those tokens are considered when advancing the FSM or
-    // rewriting indentation levels.
-    let mut last_was_newline = false;
-
     let mut i = 0;
     while i < buf.len() {
+        // Indentation is only effective immediately following a newline token,
+        // therefore only those tokens are considered when advancing the FSM or
+        // rewriting indentation levels.
+        //
         // Observe if this token is a newline, and skip visiting it if the last
         // token was not a newline.
         let last = last_was_newline;
-        last_was_newline = matches!(buf[i].0, Token::Newline | Token::SourceNewline);
-        if !last || last_was_newline {
+        last_was_newline = is_newline(&buf[i].0);
+
+        if !last || is_newline(&buf[i].0) {
             i += 1;
             continue;
         }
@@ -136,7 +140,7 @@ fn recurse(buf: &mut [(Token<'_>, Indent)]) -> usize {
 
             // Recurse into an nested block of +1 depth for processing.
             State::Skipping if this == current_depth + 1 => {
-                i += recurse(&mut buf[i..]);
+                i += recurse(&mut buf[i..], last_was_newline, None);
                 continue;
             }
 
@@ -182,16 +186,15 @@ fn recurse(buf: &mut [(Token<'_>, Indent)]) -> usize {
             // transition back to skipping, meaning it is confirmed to be
             // excessively indented.
             State::ScanningMin { start_index, min } if this <= current_depth => {
-                // Reset the index back to the first occurrence of `child`,
-                // which is guaranteed to have followed a newline.
+                // Reset the index back to the first occurrence of `child`.
                 i = start_index;
-                last_was_newline = true;
+                last_was_newline = true; // Do not skip the jumped-to token
 
                 let delta = min - current_depth - Indent::new(1);
-
                 state = if delta == Indent::ZERO {
-                    recurse(&mut buf[start_index..]);
-                    i += 1;
+                    // Optimisation: skip re-visiting tokens to apply a no-op
+                    // delta.
+                    i += recurse(&mut buf[start_index..], last_was_newline, Some(min));
                     State::Skipping
                 } else {
                     // And begin reducing the indentation by the specified amount.
@@ -206,7 +209,7 @@ fn recurse(buf: &mut [(Token<'_>, Indent)]) -> usize {
             // indented.
             State::ScanningMin { start_index, min } if min == current_depth + 1 => {
                 state = State::Skipping;
-                i = start_index + recurse(&mut buf[start_index..]);
+                i = start_index + recurse(&mut buf[start_index..], last_was_newline, None);
                 continue;
             }
 
@@ -232,7 +235,7 @@ fn recurse(buf: &mut [(Token<'_>, Indent)]) -> usize {
             // relative to it.
             State::Rewriting { start_index, .. } => {
                 state = State::Skipping;
-                i = start_index + recurse(&mut buf[start_index..]);
+                i = start_index + recurse(&mut buf[start_index..], last_was_newline, None);
                 continue;
             }
         };
@@ -407,6 +410,24 @@ ClientRejectsBadMetadata ==
         /\ f.version /= InvalidVersion
 
 \* This repro only happens when there's a comment here
+====
+"
+        )
+    }
+
+    #[test]
+    fn test_fairness_body_list() {
+        assert_rewrite!(
+            r"
+---- MODULE B ----
+Fairness ==
+    \* The TUF repo state shall eventually advance.
+    /\ WF_vars(
+            \/ Repo_AddTargetFile
+            \/ Repo_UpdateSnapshot
+            \/ Repo_RotateKey_Add
+            \/ Repo_RotateKey_Remove
+        )
 ====
 "
         )

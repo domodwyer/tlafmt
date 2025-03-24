@@ -831,18 +831,18 @@ TypeOK ==
                     /\ \A j \in 1..n.numberOfArgs:
                         Len(n.opLevelCond[i][j]) =
                         Node[n.params[i]].numberOfArgs
-                
+            
             /\ (n \in OpDeclNode) =>
                     /\ (n.kind = "ConstantDeclNode") => (n.level = 0)
                     /\ (n.kind = "VariableDeclNode") =>
                         /\ n.level = 1
                         /\ n.numberOfArgs = 0
-                
+            
             /\ (n \in OpApplNode) =>
                 (Len(n.args) = Node[n.operator].numberOfArgs)
-                
+            
             /\ (n \in SubstitutionNode) => (Len(n.subFor) = Len(n.subWith))
-                
+            
             /\ (n \in InstanceNode) =>
                 /\ n.numberOfArgs = Len(n.params)
                 /\ (********************************************************)

@@ -65,7 +65,7 @@ Receive(i) ==
         /\ msg \notin rcvdMsg[i]
         /\ rcvdMsg' = [rcvdMsg EXCEPT ![i] = rcvdMsg[i] \union {msg}]
         /\ UNCHANGED << pc, v, dValue, bcastMsg >>
-            
+        
 (* Broadcasts PROPOSED(v_i) *)
 Propose(i) ==
     /\ pc[i] = "PROPOSE"
@@ -105,7 +105,7 @@ T2(i) ==
         /\ bcastMsg' = bcastMsg \union {makeDecisionMsg(dValue' [i], i)}
         /\ pc' = [pc EXCEPT ![i] = "DONE"]
         /\ UNCHANGED << v, rcvdMsg >>
-            
+        
 (* Just to avoid deadlock checking. *)
 DoNothing(i) ==
     /\

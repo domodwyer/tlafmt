@@ -151,7 +151,7 @@ Next ==
         \/ Commit(self)
         \/ UNCHANGED vars (* Avoid deadlocks. 
                                  After deciding, a correct process does nothing. *)
-            
+        
 (* 
   In this specification, a process can vote YES or NO. Weak fairness condition is added 
   since we want to check liveness properties.        

@@ -32,10 +32,10 @@ Parent(i) ==
     /\ UNCHANGED << msg, prnt >>
 
 Next == \E i, j \in Proc: IF i /= root /\ prnt[i] = NoPrnt /\ << j, i >> \in msg
-    THEN Update(i, j)
-    ELSE
-        \/ Send(i) \/ Parent(i)
-        \/ UNCHANGED << prnt, msg, rpt >>
+THEN Update(i, j)
+ELSE
+    \/ Send(i) \/ Parent(i)
+    \/ UNCHANGED << prnt, msg, rpt >>
 
 Spec ==
     /\ Init /\ [][Next]_vars

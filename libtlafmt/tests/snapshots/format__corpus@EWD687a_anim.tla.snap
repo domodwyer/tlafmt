@@ -40,9 +40,9 @@ Legend ==
     (* The name of the action concatenated with the action's context. *)
         Action == TLCGet("action").name \o ToString(TLCGet("action").context) IN
         Group(<< Text(BasePos.x, BasePos.y, "Step: " \o ToString(TLCGet("level")), <<>>),
-                    Text(BasePos.x, BasePos.y + 20, "A:  " \o Action, <<>>),
-                    Text(BasePos.x, BasePos.y + 40, "A': " \o Action', <<>>),
-                    Text(BasePos.x, BasePos.y + 60, "~neutral procs red, round when also active", <<>>) >>,
+                Text(BasePos.x, BasePos.y + 20, "A:  " \o Action, <<>>),
+                Text(BasePos.x, BasePos.y + 40, "A': " \o Action', <<>>),
+                Text(BasePos.x, BasePos.y + 60, "~neutral procs red, round when also active", <<>>) >>,
             <<>>)
 
 --------------------------------------------------------------------------------

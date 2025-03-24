@@ -199,23 +199,23 @@ SafetyInvariant ==
                             /\ CurrentLease[Leader].node = n
                             \* Two nodes can't take a checkpoint simultaneously
     /\ \A n1, n2 \in Node:
-                /\ (CanTakeCheckpoint[n1] /\ CanTakeCheckpoint[n2]) =>
-                        /\ n1 = n2
-                /\ (IsTakingCheckpoint[n1] /\ IsTakingCheckpoint[n2]) =>
-                        /\ n1 = n2
-                        \* Prerequisites for taking a checkpoint must be satisfied
+            /\ (CanTakeCheckpoint[n1] /\ CanTakeCheckpoint[n2]) =>
+                    /\ n1 = n2
+            /\ (IsTakingCheckpoint[n1] /\ IsTakingCheckpoint[n2]) =>
+                    /\ n1 = n2
+                    \* Prerequisites for taking a checkpoint must be satisfied
     /\ \A n \in Node:
-                /\ IsTakingCheckpoint[n] => CanTakeCheckpoint[n]
-                /\ CanTakeCheckpoint[n] => (CurrentLease[n] /= NoCheckpointLease)
-                /\ CanTakeCheckpoint[n] => CurrentLease[n].node = n
-                /\ CanTakeCheckpoint[n] => CurrentLease[n].counter >= TimeoutCounter
-                \* Replicated logs can never conflict
+            /\ IsTakingCheckpoint[n] => CanTakeCheckpoint[n]
+            /\ CanTakeCheckpoint[n] => (CurrentLease[n] /= NoCheckpointLease)
+            /\ CanTakeCheckpoint[n] => CurrentLease[n].node = n
+            /\ CanTakeCheckpoint[n] => CurrentLease[n].counter >= TimeoutCounter
+            \* Replicated logs can never conflict
     /\ \A i \in LogIndex:
-                /\ \A n1, n2 \in Node:
-                    \/ ReadLog(n1, i) = NoNode
-                    \/ ReadLog(n2, i) = NoNode
-                    \/ ReadLog(n1, i) = ReadLog(n2, i)
-                        
+            /\ \A n1, n2 \in Node:
+                \/ ReadLog(n1, i) = NoNode
+                \/ ReadLog(n2, i) = NoNode
+                \/ ReadLog(n1, i) = ReadLog(n2, i)
+                
 (***************************************************************************)
 (* Expectations about system capabilities.                                 *)
 (***************************************************************************)
@@ -401,19 +401,19 @@ ProcessReplicatedRequest(n) ==
             /\ request /= NoNode
             /\ CanTakeCheckpoint' = [
                     CanTakeCheckpoint EXCEPT ![n] =
-                    /\ Leader /= n
-                    /\ n = request
-                    /\ ~isTimedOut
+                        /\ Leader /= n
+                        /\ n = request
+                        /\ ~isTimedOut
                 ]
             /\ CurrentLease' =
-                IF n = Leader
-                THEN CurrentLease
-                ELSE [
-                        CurrentLease EXCEPT ![n] =
-                            IF isTimedOut
-                            THEN NoCheckpointLease
-                            ELSE [node |-> request, counter |-> ExecutionCounter[n]]
-                    ]
+                    IF n = Leader
+                    THEN CurrentLease
+                    ELSE [
+                            CurrentLease EXCEPT ![n] =
+                                IF isTimedOut
+                                THEN NoCheckpointLease
+                                ELSE [node |-> request, counter |-> ExecutionCounter[n]]
+                        ]
             /\ ExecutionCounter' = [ExecutionCounter EXCEPT ![n] = @ + 1]
             /\ UNCHANGED EnvironmentVars
             /\ UNCHANGED << Leader, ReplicatedLog, LastVotePayload >>
@@ -460,14 +460,14 @@ TriggerTimeout ==
     /\ \E n \in Node: ReadLog(n, TimeoutCounter) /= NoNode
     /\ TimeoutCounter' = TimeoutCounter + 1
     /\ CanTakeCheckpoint' = [
-                n \in Node |->
-                /\ CanTakeCheckpoint[n]
-                /\ CurrentLease[n].counter > TimeoutCounter
+            n \in Node |->
+            /\ CanTakeCheckpoint[n]
+            /\ CurrentLease[n].counter > TimeoutCounter
         ]
     /\ IsTakingCheckpoint' = [
-                n \in Node |->
-                /\ IsTakingCheckpoint[n]
-                /\ CurrentLease[n].counter > TimeoutCounter
+            n \in Node |->
+            /\ IsTakingCheckpoint[n]
+            /\ CurrentLease[n].counter > TimeoutCounter
         ]
     /\ UNCHANGED EnvironmentVars
     /\ UNCHANGED PaxosVars

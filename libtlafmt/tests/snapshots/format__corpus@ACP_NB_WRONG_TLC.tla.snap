@@ -65,9 +65,9 @@ forward(i, j) ==
     /\ participant[i].decision /= notsent
     /\ participant[i].forward[j] = notsent
     /\ participant' = [participant EXCEPT ![i] =
-                [@ EXCEPT !.forward =
-                    [@ EXCEPT ![j] = participant[i].decision]
-                ]
+            [@ EXCEPT !.forward =
+                [@ EXCEPT ![j] = participant[i].decision]
+            ]
         ]
     /\ UNCHANGED << coordinator >>
 
@@ -85,7 +85,7 @@ decideOnForward(i, j) ==
     /\ participant[i].decision = undecided
     /\ participant[j].forward[i] /= notsent
     /\ participant' = [participant EXCEPT ![i] =
-                [@ EXCEPT !.decision = participant[j].forward[i]]
+            [@ EXCEPT !.decision = participant[j].forward[i]]
         ]
     /\ UNCHANGED << coordinator >>
 

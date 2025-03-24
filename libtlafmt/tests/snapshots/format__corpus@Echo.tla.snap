@@ -196,7 +196,7 @@ ParentIsNeighbor == \A n \in Node: parent[n] \in neighbors(n) \union {NoNode}
 ParentChild == \A m, n \in Node:
     /\ n \in children[m] => m = parent[n]
     /\ m = parent[n] /\ pc[m] = "Done" => n \in children[m]
-    
+
 (* Compute the ancestor relation *)
 IsParent == [m, n \in Node |-> n = parent[m]]
 IsAncestor == TransitiveClosure(IsParent, Node)

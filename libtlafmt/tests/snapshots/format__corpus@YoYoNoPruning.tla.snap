@@ -240,7 +240,7 @@ NeighborInv == \A m, n \in Nodes:
         \/
             /\ n \in outgoing[m]
             /\ upMsg(n, "no") \in mailbox[m] \/ upMsg(m, "no") \in mailbox[n]
-                
+            
 (****************************************************************************)
 (* No new sources are generated during execution of the algorithm.          *)
 (****************************************************************************)

@@ -434,7 +434,7 @@ TLANext ==
             \/ Phase1a(self)
             \/ \E S \in SUBSET Value: Phase1c(self, S)
             \/ \E v \in Value: Phase2a(self, v)
-            
+        
 (***************************************************************************)
 (* The following theorem specifies the relation between the next-state     *)
 (* relation Next obtained by translating the PlusCal code and the          *)

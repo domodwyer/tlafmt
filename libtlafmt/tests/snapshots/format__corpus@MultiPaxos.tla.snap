@@ -486,21 +486,21 @@ rloop(self) ==
                                 THEN "Preparing"
                                 ELSE @]]]
                     /\ msgs' = (msgs \union ({PrepareMsg(self, b),
-                        PrepareReplyMsg(self, b, VotesByNode(node' [self]))}))
+                                PrepareReplyMsg(self, b, VotesByNode(node' [self]))}))
                 /\ UNCHANGED << pending, observed >>
             \/
                 /\ \E m \in msgs:
-                    /\
-                        /\ m.type = "Prepare"
-                        /\ m.bal > node[self].balMaxKnown
-                    /\ node' = [node EXCEPT ![self].leader = m.src,
-                        ![self].balMaxKnown = m.bal,
-                        ![self].insts = [s \in Slots |->
-                            [node[self].insts[s]
-                            EXCEPT !.status = IF @ = "Accepting"
-                                THEN "Preparing"
-                                ELSE @]]]
-                    /\ msgs' = (msgs \union ({PrepareReplyMsg(self, m.bal, VotesByNode(node' [self]))}))
+                        /\
+                            /\ m.type = "Prepare"
+                            /\ m.bal > node[self].balMaxKnown
+                        /\ node' = [node EXCEPT ![self].leader = m.src,
+                            ![self].balMaxKnown = m.bal,
+                            ![self].insts = [s \in Slots |->
+                                [node[self].insts[s]
+                                EXCEPT !.status = IF @ = "Accepting"
+                                    THEN "Preparing"
+                                    ELSE @]]]
+                        /\ msgs' = (msgs \union ({PrepareReplyMsg(self, m.bal, VotesByNode(node' [self]))}))
                 /\ UNCHANGED << pending, observed >>
             \/
                 /\
@@ -522,7 +522,7 @@ rloop(self) ==
                                     ELSE @,
                                 !.cmd = PeakVotedCmd(prs, s)]]]
                     /\ msgs' = (msgs \union ({AcceptMsg(self, node' [self].balPrepared, s, node' [self].insts[s].cmd):
-                        s \in {s \in Slots: node' [self].insts[s].status = "Accepting"}}))
+                                s \in {s \in Slots: node' [self].insts[s].status = "Accepting"}}))
                 /\ UNCHANGED << pending, observed >>
             \/
                 /\

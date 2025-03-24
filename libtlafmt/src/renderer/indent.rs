@@ -122,7 +122,7 @@ fn recurse(buf: &mut [(Token<'_>, Indent)]) -> usize {
         // token was not a newline.
         let last = last_was_newline;
         last_was_newline = matches!(buf[i].0, Token::Newline | Token::SourceNewline);
-        if !last {
+        if !last || last_was_newline {
             i += 1;
             continue;
         }
@@ -383,6 +383,23 @@ AppendEntries(i, j) ==
                 mterm          |-> currentTerm[i],
                 mprevLogIndex  |-> prevLogIndex,
                 mdest          |-> j])
+====
+"
+        )
+    }
+
+    #[test]
+    fn test_conj_list_in_bounded_quantification_then_comment() {
+        assert_rewrite!(
+            r"
+---- MODULE B ----
+ClientRejectsBadMetadata ==
+    /\ BadKey \notin sigs
+    /\ \A f \in target_files:
+        /\ BadKey \notin f.sigs
+        /\ f.version /= InvalidVersion
+
+\* This repro only happens when there's a comment here
 ====
 "
         )

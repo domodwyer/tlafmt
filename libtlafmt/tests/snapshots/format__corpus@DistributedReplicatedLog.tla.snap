@@ -38,9 +38,9 @@ Copy(i) ==
 
 Extend(i) ==
     /\ \A j \in Servers:
-        Len(cLogs[j]) <= Len(cLogs[i])
+            Len(cLogs[j]) <= Len(cLogs[i])
     /\ \E s \in BoundedSeq(Values, Lag - Max({Len(cLogs[i]) - Len(cLogs[j]): j \in Servers})):
-        cLogs' = [cLogs EXCEPT ![i] = @ \o s]
+            cLogs' = [cLogs EXCEPT ![i] = @ \o s]
 
 Next ==
     \E i \in Servers:

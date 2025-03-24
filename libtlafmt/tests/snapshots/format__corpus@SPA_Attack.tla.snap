@@ -688,16 +688,16 @@ FwProcEndPointAccess ==
 \* A 3 Tuple ACL Rule configured by SDP controller automatically deleted due to aging mechanism.
 \* Variables changed: <AclRuleSet,AgedRuleSet >  
 FwProcAclTimeOut == \E r \in AclRuleSet: \*aging and deleted randomly,remove from current rule table
-        /\ r.sPort = MATCH_ANY \*only 3 tuple rule with aging mechanism
-        /\ FwState = "Work"
-        /\ AclRuleSet' = AclRuleSet \ {r}
-        /\ AgedRuleSet' = AgedRuleSet \union {r} \* record aged rule into log.
-        /\ UNCHANGED user_vars
-        /\ UNCHANGED sdpsvr_vars
-        /\ UNCHANGED attacker_vars
-        /\ UNCHANGED << FwState, DropPackets >>
-        /\ UNCHANGED server_vars
-        /\ UNCHANGED Public_vars
+    /\ r.sPort = MATCH_ANY \*only 3 tuple rule with aging mechanism
+    /\ FwState = "Work"
+    /\ AclRuleSet' = AclRuleSet \ {r}
+    /\ AgedRuleSet' = AgedRuleSet \union {r} \* record aged rule into log.
+    /\ UNCHANGED user_vars
+    /\ UNCHANGED sdpsvr_vars
+    /\ UNCHANGED attacker_vars
+    /\ UNCHANGED << FwState, DropPackets >>
+    /\ UNCHANGED server_vars
+    /\ UNCHANGED Public_vars
     
 (***************************************************************************)
 (* `^                                                                      *)
@@ -1318,17 +1318,17 @@ WithOutDropPkts(x) == ~WithDropPkts(x)
 
 FwCorrectProperty == \*to simplify the model, we don't consider TCP packets re-transport mechanism, so established TCP links without packet dropping.
 <>[](
-        /\ \A x \in aTCPLinkSet: IF x.State = "ESTABLISHED"
-            THEN
-                WithOutDropPkts(x)
-            ELSE
-                WithDropPkts(x)
+    /\ \A x \in aTCPLinkSet: IF x.State = "ESTABLISHED"
+        THEN
+            WithOutDropPkts(x)
+        ELSE
+            WithDropPkts(x)
     
-        /\ \A x \in uTCPLinkSet: IF x.State = "ESTABLISHED"
-            THEN
-                WithOutDropPkts(x)
-            ELSE
-                WithDropPkts(x)
+    /\ \A x \in uTCPLinkSet: IF x.State = "ESTABLISHED"
+        THEN
+            WithOutDropPkts(x)
+        ELSE
+            WithDropPkts(x)
 )
 ================================================================================
 \* Modification History

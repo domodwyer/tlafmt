@@ -191,8 +191,8 @@ Read(data) ==
                 numToRead == Min(ArrayLen(data), numReadableWithoutSeeking)
                 buffOff == curr - lo
             IN
-                /\ data = ArraySlice(buff, buffOff, buffOff + numToRead)
-                /\ curr' = curr + numToRead
+            /\ data = ArraySlice(buff, buffOff, buffOff + numToRead)
+            /\ curr' = curr + numToRead
         /\ UNCHANGED << buff, dirty, diskPos, file_content, file_pointer, length, lo >>
     
 \* The `write()` method is composed of repeated calls to `writeAtMost()`, so

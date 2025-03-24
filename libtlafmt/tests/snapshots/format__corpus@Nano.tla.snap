@@ -205,16 +205,16 @@ SumBag(B) ==
 
 BalanceInvariant ==
     /\ \A node \in Node:
-        LET
-            ledger == distributedLedger[node]
-            openAccounts == {account \in PublicKey: IsAccountOpen(ledger, account)}
-            topBlocks == {TopBlock(ledger, account): account \in openAccounts}
-            accountBalances ==
-                LET ledgerBalanceAt(hash) == BalanceAt(ledger, hash) IN
-                    BagOfAll(ledgerBalanceAt, SetToBag(topBlocks))
-        IN
-            /\ GenesisBlockExists =>
-                /\ SumBag(accountBalances) <= GenesisBalance
+            LET
+                ledger == distributedLedger[node]
+                openAccounts == {account \in PublicKey: IsAccountOpen(ledger, account)}
+                topBlocks == {TopBlock(ledger, account): account \in openAccounts}
+                accountBalances ==
+                    LET ledgerBalanceAt(hash) == BalanceAt(ledger, hash) IN
+                        BagOfAll(ledgerBalanceAt, SetToBag(topBlocks))
+            IN
+                /\ GenesisBlockExists =>
+                    /\ SumBag(accountBalances) <= GenesisBalance
 
 SafetyInvariant ==
     /\ CryptographicInvariant

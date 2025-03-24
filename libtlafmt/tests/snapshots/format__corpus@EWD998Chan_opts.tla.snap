@@ -71,18 +71,18 @@ PassTokenOpts(n) ==
             /\ "pt2" \in F
             /\ \E j \in 1..Len(inbox[n]): inbox[n][j].type = "tok" /\ inbox[n][j].color = "black"
     /\ \E j \in 1..Len(inbox[n]):
-        /\ inbox[n][j].type = "tok"
-        \* the machine nr.i+1 transmits the token to machine nr.i under q := q + c[i+1]
-        /\ LET tkn == inbox[n][j]
-            IN inbox' = [inbox EXCEPT ![CASE "pt3" \in F /\ color[n] = "black" -> 0
-                            [] "pt4" \in F /\ tkn.color = "black" -> 0
-                            [] OTHER    ->  n-1 ] =
-                    Append(@, [tkn EXCEPT !.q = tkn.q + counter[n],
-                            !.color = IF color[n] = "black"
-                                THEN "black"
-                                ELSE tkn.color]),
-                ![n] = RemoveAt(@, j)] \* pass on the token.
-        (* Rule 7 *)
+            /\ inbox[n][j].type = "tok"
+            \* the machine nr.i+1 transmits the token to machine nr.i under q := q + c[i+1]
+            /\ LET tkn == inbox[n][j]
+                IN inbox' = [inbox EXCEPT ![CASE "pt3" \in F /\ color[n] = "black" -> 0
+                                [] "pt4" \in F /\ tkn.color = "black" -> 0
+                                [] OTHER    ->  n-1 ] =
+                        Append(@, [tkn EXCEPT !.q = tkn.q + counter[n],
+                                !.color = IF color[n] = "black"
+                                    THEN "black"
+                                    ELSE tkn.color]),
+                    ![n] = RemoveAt(@, j)] \* pass on the token.
+            (* Rule 7 *)
     /\ color' = [color EXCEPT ![n] = "white"]
     \* The state of the nodes remains unchanged by token-related actions.
     /\ UNCHANGED << active, counter >>

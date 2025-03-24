@@ -79,8 +79,8 @@ PassTokenOpts(i) ==
             /\ "pt2" \in F
             /\ token.color = "black"
     /\ token' = [token EXCEPT !.pos = CASE "pt3" \in F /\ color[i] = "black" -> 0
-                [] "pt4" \in F /\ token.color = "black" -> 0
-                [] OTHER    ->  @ - 1 ,
+            [] "pt4" \in F /\ token.color = "black" -> 0
+            [] OTHER    ->  @ - 1 ,
         !.q = @ + counter[i],
         !.color = IF color[i] = "black" THEN "black" ELSE @]
     /\ color' = [color EXCEPT ![i] = "white"]

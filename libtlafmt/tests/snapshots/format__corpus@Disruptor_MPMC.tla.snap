@@ -110,9 +110,9 @@ AvailablePublishedSequence ==
         candidate_sequences == {guaranteed_published} \union Range(claimed_sequence)
     IN CHOOSE max \in candidate_sequences:
         IsPublished(max) => ~\E w \in Writers:
-                /\ claimed_sequence[w] = max + 1
-                /\ IsPublished(claimed_sequence[w])
-            
+            /\ claimed_sequence[w] = max + 1
+            /\ IsPublished(claimed_sequence[w])
+                
 (***************************************************************************)
 (* Producer Actions:                                                       *)
 (***************************************************************************)

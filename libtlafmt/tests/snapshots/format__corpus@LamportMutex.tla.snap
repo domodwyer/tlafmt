@@ -106,12 +106,12 @@ ReceiveRequest(p, q) ==
     /\ LET m == Head(network[q][p])
             c == m.clock
         IN
-            /\ m.type = "req"
-            /\ req' = [req EXCEPT ![p][q] = c]
-            /\ clock' = [clock EXCEPT ![p] = IF c > clock[p] THEN c + 1 ELSE @ + 1]
-            /\ network' = [network EXCEPT ![q][p] = Tail(@),
-                ![p][q] = Append(@, AckMessage)]
-            /\ UNCHANGED << ack, crit >>
+        /\ m.type = "req"
+        /\ req' = [req EXCEPT ![p][q] = c]
+        /\ clock' = [clock EXCEPT ![p] = IF c > clock[p] THEN c + 1 ELSE @ + 1]
+        /\ network' = [network EXCEPT ![q][p] = Tail(@),
+            ![p][q] = Append(@, AckMessage)]
+        /\ UNCHANGED << ack, crit >>
         
 (***************************************************************************)
 (* Process p receives an acknowledgement from q.                           *)

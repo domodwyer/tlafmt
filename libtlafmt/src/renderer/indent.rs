@@ -187,11 +187,17 @@ fn recurse(buf: &mut [(Token<'_>, Indent)]) -> usize {
                 i = start_index;
                 last_was_newline = true;
 
-                // And begin reducing the indentation by the specified amount.
-                state = State::Rewriting {
-                    start_index,
-                    delta: min - current_depth - Indent::new(1),
+                let delta = min - current_depth - Indent::new(1);
+
+                state = if delta == Indent::ZERO {
+                    recurse(&mut buf[start_index..]);
+                    i += 1;
+                    State::Skipping
+                } else {
+                    // And begin reducing the indentation by the specified amount.
+                    State::Rewriting { start_index, delta }
                 };
+
                 continue;
             }
 
@@ -215,6 +221,7 @@ fn recurse(buf: &mut [(Token<'_>, Indent)]) -> usize {
 
             // Apply a delta adjustment to reduce this node's indentation level.
             State::Rewriting { delta, .. } if this > current_depth => {
+                debug_assert_ne!(delta, Indent::ZERO); // Pointless revisit
                 buf[i].1 = this - delta;
             }
 

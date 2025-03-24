@@ -7,6 +7,8 @@ pub(crate) const INDENT_STR: &str = "    ";
 pub(crate) struct Indent(u8);
 
 impl Indent {
+    pub(crate) const ZERO: Self = Self::new(0);
+
     pub(crate) const fn new(v: u8) -> Self {
         Self(v)
     }

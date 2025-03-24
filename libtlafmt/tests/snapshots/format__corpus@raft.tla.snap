@@ -371,51 +371,51 @@ HandleAppendEntriesRequest(i, j, m) ==
                         m)
                 /\ UNCHANGED << serverVars, logVars >>
             \/ \* return to follower state
-                /\ m.mterm = currentTerm[i]
-                /\ state[i] = Candidate
-                /\ state' = [state EXCEPT ![i] = Follower]
-                /\ UNCHANGED << currentTerm, votedFor, logVars, messages >>
+                    /\ m.mterm = currentTerm[i]
+                    /\ state[i] = Candidate
+                    /\ state' = [state EXCEPT ![i] = Follower]
+                    /\ UNCHANGED << currentTerm, votedFor, logVars, messages >>
             \/ \* accept request
-                /\ m.mterm = currentTerm[i]
-                /\ state[i] = Follower
-                /\ logOk
-                /\ LET index == m.mprevLogIndex + 1
-                    IN
-                        \/ \* already done with request
-                            /\
-                                \/ m.mentries = <<>>
-                                \/
+                    /\ m.mterm = currentTerm[i]
+                    /\ state[i] = Follower
+                    /\ logOk
+                    /\ LET index == m.mprevLogIndex + 1
+                        IN
+                            \/ \* already done with request
+                                /\
+                                    \/ m.mentries = <<>>
+                                    \/
+                                        /\ m.mentries /= <<>>
+                                        /\ Len(log[i]) >= index
+                                        /\ log[i][index].term = m.mentries[1].term
+                                        \* This could make our commitIndex decrease (for
+                                        \* example if we process an old, duplicated request),
+                                        \* but that doesn't really affect anything.
+                                /\ commitIndex' = [commitIndex EXCEPT ![i] =
+                                        m.mcommitIndex]
+                                /\ Reply([mtype |-> AppendEntriesResponse,
+                                            mterm |-> currentTerm[i],
+                                            msuccess |-> TRUE,
+                                            mmatchIndex |-> m.mprevLogIndex +
+                                                Len(m.mentries),
+                                            msource |-> i,
+                                            mdest |-> j],
+                                        m)
+                                /\ UNCHANGED << serverVars, log >>
+                            \/ \* conflict: remove 1 entry
                                     /\ m.mentries /= <<>>
                                     /\ Len(log[i]) >= index
-                                    /\ log[i][index].term = m.mentries[1].term
-                                    \* This could make our commitIndex decrease (for
-                                    \* example if we process an old, duplicated request),
-                                    \* but that doesn't really affect anything.
-                            /\ commitIndex' = [commitIndex EXCEPT ![i] =
-                                    m.mcommitIndex]
-                            /\ Reply([mtype |-> AppendEntriesResponse,
-                                        mterm |-> currentTerm[i],
-                                        msuccess |-> TRUE,
-                                        mmatchIndex |-> m.mprevLogIndex +
-                                            Len(m.mentries),
-                                        msource |-> i,
-                                        mdest |-> j],
-                                    m)
-                            /\ UNCHANGED << serverVars, log >>
-                        \/ \* conflict: remove 1 entry
-                            /\ m.mentries /= <<>>
-                            /\ Len(log[i]) >= index
-                            /\ log[i][index].term /= m.mentries[1].term
-                            /\ LET new == [index2 \in 1..(Len(log[i]) - 1) |->
-                                    log[i][index2]]
-                                IN log' = [log EXCEPT ![i] = new]
-                            /\ UNCHANGED << serverVars, commitIndex, messages >>
-                        \/ \* no conflict: append entry
-                            /\ m.mentries /= <<>>
-                            /\ Len(log[i]) = m.mprevLogIndex
-                            /\ log' = [log EXCEPT ![i] =
-                                Append(log[i], m.mentries[1])]
-                            /\ UNCHANGED << serverVars, commitIndex, messages >>
+                                    /\ log[i][index].term /= m.mentries[1].term
+                                    /\ LET new == [index2 \in 1..(Len(log[i]) - 1) |->
+                                            log[i][index2]]
+                                        IN log' = [log EXCEPT ![i] = new]
+                                    /\ UNCHANGED << serverVars, commitIndex, messages >>
+                            \/ \* no conflict: append entry
+                                    /\ m.mentries /= <<>>
+                                    /\ Len(log[i]) = m.mprevLogIndex
+                                    /\ log' = [log EXCEPT ![i] =
+                                        Append(log[i], m.mentries[1])]
+                                    /\ UNCHANGED << serverVars, commitIndex, messages >>
         /\ UNCHANGED << candidateVars, leaderVars >>
     
 \* Server i receives an AppendEntries response from server j with
@@ -423,15 +423,15 @@ HandleAppendEntriesRequest(i, j, m) ==
 HandleAppendEntriesResponse(i, j, m) ==
     /\ m.mterm = currentTerm[i]
     /\
-        \/
-            /\ m.msuccess \* successful
-            /\ nextIndex' = [nextIndex EXCEPT ![i][j] = m.mmatchIndex + 1]
-            /\ matchIndex' = [matchIndex EXCEPT ![i][j] = m.mmatchIndex]
-        \/
-            /\ ~m.msuccess \* not successful
-            /\ nextIndex' = [nextIndex EXCEPT ![i][j] =
-                Max({nextIndex[i][j] - 1, 1})]
-            /\ UNCHANGED << matchIndex >>
+            \/
+                /\ m.msuccess \* successful
+                /\ nextIndex' = [nextIndex EXCEPT ![i][j] = m.mmatchIndex + 1]
+                /\ matchIndex' = [matchIndex EXCEPT ![i][j] = m.mmatchIndex]
+            \/
+                /\ ~m.msuccess \* not successful
+                /\ nextIndex' = [nextIndex EXCEPT ![i][j] =
+                    Max({nextIndex[i][j] - 1, 1})]
+                /\ UNCHANGED << matchIndex >>
     /\ Discard(m)
     /\ UNCHANGED << serverVars, candidateVars, logVars, elections >>
 

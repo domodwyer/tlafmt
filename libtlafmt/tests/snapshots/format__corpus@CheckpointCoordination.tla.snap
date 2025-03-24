@@ -401,9 +401,9 @@ ProcessReplicatedRequest(n) ==
             /\ request /= NoNode
             /\ CanTakeCheckpoint' = [
                     CanTakeCheckpoint EXCEPT ![n] =
-                        /\ Leader /= n
-                        /\ n = request
-                        /\ ~isTimedOut
+                    /\ Leader /= n
+                    /\ n = request
+                    /\ ~isTimedOut
                 ]
             /\ CurrentLease' =
                 IF n = Leader

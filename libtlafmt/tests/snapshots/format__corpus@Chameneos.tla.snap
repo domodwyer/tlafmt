@@ -58,7 +58,7 @@ THEN IF numMeetings < N
         /\ UNCHANGED << chameneoses, numMeetings >>
         \* chameneos takes on faded color
     ELSE
-        /\ chameneoses' = [chameneoses EXCEPT ![cid] = << Faded, @ [2] >>]
+        /\ chameneoses' = [chameneoses EXCEPT ![cid] = << Faded, @[2] >>]
         /\ UNCHANGED << meetingPlace, numMeetings >>
         \* meeting place is not empty - two chameneoses mutate
 ELSE
@@ -67,8 +67,8 @@ ELSE
     /\ chameneoses' =
         LET newColor == Complement(chameneoses[cid][1],
             chameneoses[meetingPlace][1])
-        IN [chameneoses EXCEPT ![cid] = << newColor, @ [2] + 1 >>,
-            ![meetingPlace] = << newColor, @ [2] + 1 >>]
+        IN [chameneoses EXCEPT ![cid] = << newColor, @[2] + 1 >>,
+            ![meetingPlace] = << newColor, @[2] + 1 >>]
     /\ numMeetings' = numMeetings + 1
 
 \* Repeatedly try to enter meeting place for chameneoses that are not faded yet.

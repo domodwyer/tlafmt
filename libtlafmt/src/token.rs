@@ -120,6 +120,9 @@ pub(crate) enum Token<'a> {
     /// A `THEOREM` sequence.
     KeywordTheorem,
 
+    /// A `UNION` sequence.
+    KeywordUnion,
+
     /// A `\E` sequence.
     Exists,
 
@@ -330,24 +333,23 @@ impl Token<'_> {
 
             // These tokens allow immediate dots, to support <<thing>>.field
             (
-                Token::ParenClose | Token::SquareClose | Token::CurlyClose | Token::AngleClose,
-                Token::Dot,
+                Token::ParenClose
+                | Token::SquareClose
+                | Token::CurlyClose
+                | Token::AngleClose
+                | Token::At
+                | Token::Bang,
+                Token::Dot | Token::SquareOpen,
             ) => 0,
 
             // No space between Fn[application].
             (Token::Ident(_), Token::SquareOpen) => 0,
-
-            // No space between x[1][2].
-            (Token::SquareClose, Token::SquareOpen) => 0,
 
             (Token::AngleOpen, Token::AngleClose) => 0,
 
             // A `record.field` sequence.
             (Token::Ident(_), Token::Dot) => 0,
             (Token::Dot, Token::Ident(_)) => 0,
-
-            // A `EXCEPT !.ok` sequence or `EXCEPT ![x]`.
-            (Token::Bang, Token::Dot | Token::SquareOpen) => 0,
 
             // Any "not" sequence such as `~(thing)`.
             (Token::Not, _) => 0,

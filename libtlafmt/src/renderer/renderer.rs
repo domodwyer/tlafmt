@@ -178,6 +178,7 @@ where
                 Token::KeywordUnchanged => "UNCHANGED",
                 Token::KeywordEnabled => "ENABLED",
                 Token::KeywordSubset => "SUBSET",
+                Token::KeywordUnion => "UNION",
                 Token::CaseBox => "[]",
                 Token::MapTo => ":>",
                 Token::MapsTo => "->",
@@ -314,6 +315,7 @@ pub(super) fn token_len(t: &Token<'_>) -> usize {
         Token::KeywordThen => 4,
         Token::KeywordElse => 4,
         Token::KeywordCase => 4,
+        Token::KeywordUnion => 5,
         Token::Exists => 2,
         Token::All => 2,
         Token::SetIn => 3,
@@ -718,5 +720,13 @@ mod tests {
             ),
         ]);
         assert_eq!(output, "\n     (* 42 *)");
+    }
+
+    /// Raw tokens followed by relatively spaced comments should respect the
+    /// relative spacing.
+    #[test]
+    fn test_old_value_dot_fieldname() {
+        let output: String = format([Token::At, Token::Dot, Token::Ident("bananas")]);
+        assert_eq!(output, "@.bananas");
     }
 }

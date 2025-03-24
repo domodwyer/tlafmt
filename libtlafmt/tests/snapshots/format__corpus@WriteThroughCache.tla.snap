@@ -68,7 +68,7 @@ vmem ==
                 memQ[i][2].val]
     IN f[Len(memQ)]
 
-MemQWr == LET r == Head(memQ) [2]
+MemQWr == LET r == Head(memQ)[2]
     IN
         /\ (memQ /= <<>>) /\ (r.op = "Wr")
         /\ wmem' = [wmem EXCEPT ![r.adr] = r.val]
@@ -76,8 +76,8 @@ MemQWr == LET r == Head(memQ) [2]
         /\ UNCHANGED << memInt, buf, ctl, cache >>
 
 MemQRd ==
-    LET p == Head(memQ) [1]
-        r == Head(memQ) [2]
+    LET p == Head(memQ)[1]
+        r == Head(memQ)[2]
     IN
         /\ (memQ /= <<>>) /\ (r.op = "Rd")
         /\ memQ' = Tail(memQ)

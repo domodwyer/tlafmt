@@ -280,6 +280,7 @@ fn into_output_token<'a>(node: &Node<'_>, input: &'a str) -> Option<Token<'a>> {
         "powerset" => Token::KeywordSubset,
         "domain" => Token::KeywordDomain,
         "enabled" => Token::KeywordEnabled,
+        "union" => Token::KeywordUnion,
         "implies" => Token::Implies,
         "compose" => Token::Compose,
         "TRUE" => Token::True,

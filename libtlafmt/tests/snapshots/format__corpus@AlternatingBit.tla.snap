@@ -47,8 +47,8 @@ ReSndMsg ==
 RcvMsg ==
     /\ msgQ /= <<>>
     /\ msgQ' = Tail(msgQ)
-    /\ rBit' = Head(msgQ) [1]
-    /\ rcvd' = Head(msgQ) [2]
+    /\ rBit' = Head(msgQ)[1]
+    /\ rcvd' = Head(msgQ)[2]
     /\ UNCHANGED << ackQ, sBit, sAck, sent >>
 
 SndAck ==

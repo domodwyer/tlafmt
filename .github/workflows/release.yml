@@ -38,6 +38,9 @@ jobs:
   github_release:
     needs: [build, test, lint, fuzz, check_version]
 
+    permissions:
+      contents: write
+
     runs-on: ubuntu-latest
 
     steps:
@@ -53,8 +56,6 @@ jobs:
   # Publish the crate (scoping the secret to only this job)
   publish_crate:
     needs: [build, test, lint, fuzz, github_release]
-    permissions:
-      contents: write
     env:
       CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
 

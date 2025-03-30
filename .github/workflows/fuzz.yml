@@ -1,10 +1,11 @@
 name: fuzz
-
 on:
   workflow_call:
   pull_request:
   push:
     branches: [master]
+
+permissions: {}
 
 jobs:
   # Run each fuzz target for 60s.
@@ -22,6 +23,8 @@ jobs:
 
       - name: Checkout source
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Cache cargo dir
         id: cargo-dir

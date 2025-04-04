@@ -15,6 +15,10 @@ jobs:
       image: rustlang/rust:nightly
       env:
         CARGO_HOME: "/cargo/"
+        FUZZ_TARGET: "${{ matrix.fuzz_target }}"
+    strategy:
+      matrix:
+        fuzz_target: ["e2e", "module_body"]
 
     steps:
       - name: Ensure node is installed for act checkout
@@ -30,7 +34,7 @@ jobs:
         id: cargo-dir
         uses: actions/cache@v4
         with:
-          key: ${{ runner.os }}-cargo-nightly-${{ hashFiles('Cargo.lock') }}-${{ hashFiles('libtlafmt/fuzz/Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-nightly-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-nightly
           path: /cargo
 
@@ -43,19 +47,19 @@ jobs:
         uses: actions/cache@v4
         with:
           enableCrossOsArchive: true
-          key: fuzz-corpus-e2e
-          path: libtlafmt/fuzz/corpus/e2e
+          key: fuzz-corpus-${{ matrix.fuzz_target }}
+          path: libtlafmt/fuzz/corpus/${{ matrix.fuzz_target }}
 
       - name: Seed fuzzing corpus from test corpus
         run: >
-          mkdir -p libtlafmt/fuzz/corpus/e2e;
-          cp libtlafmt/tests/corpus/* libtlafmt/fuzz/corpus/e2e
+          mkdir -p libtlafmt/fuzz/corpus/$FUZZ_TARGET;
+          cp libtlafmt/tests/corpus/* libtlafmt/fuzz/corpus/$FUZZ_TARGET
 
       - name: Cache fuzz target dir
         id: target-dir
         uses: actions/cache@v4
         with:
-          key: ${{ runner.os }}-fuzz-target-dir-${{ hashFiles('Cargo.lock') }}-${{ hashFiles('libtlafmt/fuzz/Cargo.lock') }}
+          key: ${{ runner.os }}-fuzz-target-dir-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-fuzz-target-dir
           path: libtlafmt/fuzz/target
 
@@ -63,7 +67,7 @@ jobs:
         id: fuzz
         run: >
           cd libtlafmt &&
-          cargo +nightly fuzz run e2e --
+          cargo +nightly fuzz run $FUZZ_TARGET --
           -max_total_time=120
           -max_len=1022
 
@@ -72,4 +76,4 @@ jobs:
         if: failure() && steps.fuzz.outcome == 'failure'
         with:
           name: fuzz-crash
-          path: libtlafmt/fuzz/artifacts/e2e
+          path: libtlafmt/fuzz/artifacts/${{ matrix.fuzz_target }}

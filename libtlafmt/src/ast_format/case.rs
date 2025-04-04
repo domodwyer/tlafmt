@@ -46,8 +46,7 @@ where
                     in_condition_expr = false;
                 }
             }
-            "comment" | "block_comment" => format_node(n, input, empty_lines, writer)?,
-            _ => unreachable!(),
+            _ => format_node(n, input, empty_lines, writer)?,
         }
     }
 
@@ -176,6 +175,19 @@ X == CASE \/ x = 0 \/ y = 0
           \/ x > N \/ y > N
           \/ ~grid[<<x, y>>] -> 0
         [] OTHER -> 1
+====
+"#
+        );
+    }
+
+    /// Discovered by fuzzing, this test reproduces a CASE node that contains an
+    /// ERROR child node.
+    #[test]
+    fn test_fuzz_error_node_kind() {
+        assert_rewrite!(
+            r#"
+---- MODULE B ----
+==CASE>d->0
 ====
 "#
         );

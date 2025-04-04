@@ -118,7 +118,7 @@ where
                     continue;
                 }
                 Token::LineDivider(c) => {
-                    let s = std::iter::repeat(c).take(LINE_WIDTH).collect::<String>();
+                    let s = std::iter::repeat_n(c, LINE_WIDTH).collect::<String>();
                     debug_assert_eq!(s.len(), token_len(&t));
 
                     self.indent.write_all(s.as_bytes())?;

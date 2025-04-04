@@ -21,3 +21,10 @@ doc = false
 bench = false
 
 [workspace]
+
+[[bin]]
+name = "module_body"
+path = "fuzz_targets/module_body.rs"
+test = false
+doc = false
+bench = false

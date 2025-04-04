@@ -118,7 +118,7 @@ where
                     continue;
                 }
                 Token::LineDivider(c) => {
-                    let s = std::iter::repeat(c).take(LINE_WIDTH).collect::<String>();
+                    let s = std::iter::repeat_n(c, LINE_WIDTH).collect::<String>();
                     debug_assert_eq!(s.len(), token_len(&t));
 
                     self.indent.write_all(s.as_bytes())?;
@@ -728,5 +728,16 @@ mod tests {
     fn test_old_value_dot_fieldname() {
         let output: String = format([Token::At, Token::Dot, Token::Ident("bananas")]);
         assert_eq!(output, "@.bananas");
+    }
+
+    /// Raw tokens followed by relatively spaced comments should respect the
+    /// relative spacing.
+    #[test]
+    fn test_comment_space() {
+        let output: String = format([
+            Token::Comment("bananas", crate::token::Position::Source { row: 1, col: 0 }),
+            Token::Newline,
+        ]);
+        assert_eq!(output, "bananas\n");
     }
 }

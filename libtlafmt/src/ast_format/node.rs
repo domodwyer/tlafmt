@@ -30,6 +30,9 @@ where
     // Some tokens can be extracted one-to-one from the AST.
     if let Some(t) = into_output_token(&def, input) {
         match t {
+            // Suppress empty an ident that results in extraneous spacing.
+            Token::Ident("") => return Ok(()),
+
             // Dedent these tokens from their bodies.
             Token::KeywordExcept
             | Token::KeywordVariable
@@ -774,6 +777,19 @@ X == [version: Real]
 X == [version: Nat]
 ====
 "
+        );
+    }
+
+    #[test]
+    fn test_inline_comment_col_0() {
+        assert_rewrite!(
+            r#"
+---- MODULE B ----
+Inv == /\ TypeOK
+       /\ \A i \in Procs :
+\*             /\ (pc[i] \in {"ncs", "e1", "e2"}) => (num[i] = 0)
+====
+"#
         );
     }
 }

@@ -729,4 +729,15 @@ mod tests {
         let output: String = format([Token::At, Token::Dot, Token::Ident("bananas")]);
         assert_eq!(output, "@.bananas");
     }
+
+    /// Raw tokens followed by relatively spaced comments should respect the
+    /// relative spacing.
+    #[test]
+    fn test_comment_space() {
+        let output: String = format([
+            Token::Comment("bananas", crate::token::Position::Source { row: 1, col: 0 }),
+            Token::Newline,
+        ]);
+        assert_eq!(output, "bananas\n");
+    }
 }

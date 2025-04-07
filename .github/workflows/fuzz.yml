@@ -60,7 +60,9 @@ jobs:
         uses: actions/cache@v4
         with:
           key: ${{ runner.os }}-fuzz-target-dir-${{ matrix.fuzz_target }}-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: ${{ runner.os }}-fuzz-target-dir-${{ matrix.fuzz_target }}
+          restore-keys: |
+            ${{ runner.os }}-fuzz-target-dir-${{ matrix.fuzz_target }}
+            ${{ runner.os }}-fuzz-target-dir
           path: libtlafmt/fuzz/target
 
       - name: Run fuzzer

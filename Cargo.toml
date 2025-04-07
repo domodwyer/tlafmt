@@ -1,6 +1,6 @@
 [package]
 name = "tlafmt"
-version = "0.4.0"
+version = "0.4.1"
 edition = "2021"
 authors = ["Dom <dom@itsallbroken.com>"]
 description = "A formatter for TLA+ specs"
@@ -13,7 +13,7 @@ keywords = ["tla", "plus", "tla+", "formatter"]
 anstyle = "1.0.10"
 clap = { version = "4.5.35", features = ["derive"] }
 diff = "0.1.13"
-libtlafmt = { path = "libtlafmt", version = "0.4.0" }
+libtlafmt = { path = "libtlafmt", version = "0.4.1" }
 tempfile = "3.19.1"
 thiserror = "2.0.12"
 

@@ -321,8 +321,8 @@ impl Token<'_> {
 
             // Newlines are never automatically followed by whitespace.
             (Token::Newline | Token::SourceNewline, _) => 0,
+            (_, Token::Newline | Token::SourceNewline) => 0,
 
-            (Token::Raw(_), Token::Newline | Token::SourceNewline) => 0,
             (Token::Raw(s), _) if s.ends_with("\n") => 0,
             (Token::Raw(_), _) => 1,
             (_, Token::Raw(_)) => 1,
@@ -384,9 +384,7 @@ impl Token<'_> {
             // No space between any token and the listed tokens.
             (
                 _,
-                Token::SourceNewline
-                | Token::Newline
-                | Token::ParenClose
+                Token::ParenClose
                 | Token::SquareClose
                 | Token::CurlyClose
                 | Token::Comma

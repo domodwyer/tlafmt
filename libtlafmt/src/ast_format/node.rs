@@ -781,7 +781,7 @@ X == [version: Nat]
     }
 
     #[test]
-    fn test_inline_comment_col_0() {
+    fn test_inline_comment_empty_ident() {
         assert_rewrite!(
             r#"
 ---- MODULE B ----

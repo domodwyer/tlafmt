@@ -10,7 +10,7 @@ categories = ["command-line-utilities", "development-tools"]
 keywords = ["tla", "plus", "tla+", "formatter"]
 
 [dependencies]
-anstyle = "1.0.10"
+anstyle = "1.0.11"
 clap = { version = "4.5.40", features = ["derive"] }
 diff = "0.1.13"
 libtlafmt = { path = "libtlafmt", version = "0.4.1" }

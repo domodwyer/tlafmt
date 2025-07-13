@@ -158,9 +158,9 @@ fn check(input: &str, parsed: ParsedFile<'_>) -> Result<(), Error> {
             .expect("reset stderr colour");
 
         match diff {
-            diff::Result::Left(l) => writeln!(&mut out, "{style_rem}- {}", l),
-            diff::Result::Both(l, _) => writeln!(&mut out, "  {}", l),
-            diff::Result::Right(r) => writeln!(&mut out, "{style_add}+ {}", r),
+            diff::Result::Left(l) => writeln!(&mut out, "{style_rem}- {l}"),
+            diff::Result::Both(l, _) => writeln!(&mut out, "  {l}"),
+            diff::Result::Right(r) => writeln!(&mut out, "{style_add}+ {r}"),
         }
         .expect("write to stderr")
     }

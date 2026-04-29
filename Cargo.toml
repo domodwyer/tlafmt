@@ -18,7 +18,7 @@ tempfile = "3.27.0"
 thiserror = "2.0.18"
 
 [dev-dependencies]
-assert_cmd = "2.2.0"
+assert_cmd = "2.2.1"
 insta = "1.47.2"
 predicates = { version = "3.1.4", default-features = false }
 pretty_assertions = "1.4.1"

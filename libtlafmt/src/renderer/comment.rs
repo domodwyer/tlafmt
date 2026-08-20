@@ -67,7 +67,7 @@ pub(super) fn align_comments(buf: &mut Vec<(Token<'_>, Indent)>) {
             })
         {
             process_candidates(buf, &mut candidates);
-            candidates.truncate(0);
+            candidates.clear();
         }
 
         // Remember the line number at which the last candidate was observed.
